@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#232B54">
+    <meta name="description" content="Team Manager Dashboard for The Angutsa Football Championship: manage teams, squads, registrations, payments and match day preparation.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <title>Team Manager Dashboard | The Angutsa Football Championship</title>
+
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/rich-text.css">
+    <link rel="stylesheet" href="/css/team-manager-dashboard.css">
+
+    <script src="/js/data.js" defer></script>
+    <script src="/js/eat-time.js" defer></script>
+    <script src="/js/common.js" defer></script>
+    <script src="/js/rules-data.js" defer></script>
+    <script src="/js/rules-format.js" defer></script>
+    <script src="/js/platform-config.js" defer></script>
+    <script src="/js/turnstile.js" defer></script>
+    <script src="/js/platform-loader.js" defer></script>
+    <script src="/js/action-loading.js" defer></script>
+    <script src="/js/team-manager-dashboard.js" defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+</head>
+
+<body class="app-page is-preview">
+
+    <div class="manager-boot-screen" id="managerBootScreen" role="status" aria-live="polite">
+        <div class="manager-boot-card">
+            <span class="spinner" aria-hidden="true"></span>
+            <strong>Preparing your dashboard</strong>
+            <p>Verifying your account and loading your team data.</p>
+        </div>
+    </div>
+
+    <a class="skip-link" id="dashboardSkipLink" href="#main">Skip to dashboard content</a>
+
+    <div class="app-shell" id="appShell" hidden>
+
+        <!-- Sidebar navigation -->
+        <aside class="app-sidebar" id="appSidebar" aria-label="Dashboard navigation">
+            <div class="app-sidebar-head">
+                <a href="/" class="app-brand" aria-label="The Angutsa Football Championship homepage">
+                    <img class="app-brand-logo" src="/images/logo.png" alt="">
+                    <span class="app-brand-text">
+                        <strong>The Angutsa Football Championship</strong>
+                        <span>Manager Console</span>
+                    </span>
+                </a>
+
+                <button type="button" class="app-sidebar-close" id="sidebarClose"
+                        aria-label="Close navigation">
+                    <span data-nav-icon="close" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <nav class="app-nav" id="appNav" aria-label="Dashboard sections">
+
+                <div class="app-nav-group">
+                    <button type="button" class="app-nav-group-toggle" data-nav-group="overview"
+                            aria-expanded="true" aria-controls="navGroupOverview">
+                        <span data-nav-icon="chevron" aria-hidden="true"></span>
+                        <span>Overview</span>
+                    </button>
+                    <div class="app-nav-group-body" id="navGroupOverview">
+                        <a class="app-nav-item" href="#/overview" data-view-link="overview">
+                            <span class="app-nav-icon" data-nav-icon="home" aria-hidden="true"></span>
+                            <span class="app-nav-label">Dashboard</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="app-nav-group">
+                    <button type="button" class="app-nav-group-toggle" data-nav-group="team"
+                            aria-expanded="true" aria-controls="navGroupTeam">
+                        <span data-nav-icon="chevron" aria-hidden="true"></span>
+                        <span>Team</span>
+                    </button>
+                    <div class="app-nav-group-body" id="navGroupTeam">
+                        <a class="app-nav-item" href="#/teams" data-view-link="teams">
+                            <span class="app-nav-icon" data-nav-icon="shield" aria-hidden="true"></span>
+                            <span class="app-nav-label">Teams</span>
+                            <span class="app-nav-count" id="navTeamCount"></span>
+                        </a>
+
+                        <a class="app-nav-item" href="#/squad" data-view-link="squad">
+                            <span class="app-nav-icon" data-nav-icon="users" aria-hidden="true"></span>
+                            <span class="app-nav-label">Squad</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="app-nav-group">
+                    <button type="button" class="app-nav-group-toggle" data-nav-group="competition"
+                            aria-expanded="true" aria-controls="navGroupCompetition">
+                        <span data-nav-icon="chevron" aria-hidden="true"></span>
+                        <span>Competition</span>
+                    </button>
+                    <div class="app-nav-group-body" id="navGroupCompetition">
+                        <a class="app-nav-item" href="#/registrations" data-view-link="registrations">
+                            <span class="app-nav-icon" data-nav-icon="clipboard" aria-hidden="true"></span>
+                            <span class="app-nav-label">Registrations</span>
+                        </a>
+
+                        <a class="app-nav-item" href="#/fixtures" data-view-link="fixtures">
+                            <span class="app-nav-icon" data-nav-icon="calendar" aria-hidden="true"></span>
+                            <span class="app-nav-label">Fixtures</span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div class="app-nav-group">
+                    <button type="button" class="app-nav-group-toggle" data-nav-group="finance"
+                            aria-expanded="true" aria-controls="navGroupFinance">
+                        <span data-nav-icon="chevron" aria-hidden="true"></span>
+                        <span>Finance</span>
+                    </button>
+                    <div class="app-nav-group-body" id="navGroupFinance">
+                        <a class="app-nav-item" href="#/payments" data-view-link="payments">
+                            <span class="app-nav-icon" data-nav-icon="wallet" aria-hidden="true"></span>
+                            <span class="app-nav-label">Payments</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="app-nav-group">
+                    <button type="button" class="app-nav-group-toggle" data-nav-group="account"
+                            aria-expanded="true" aria-controls="navGroupAccount">
+                        <span data-nav-icon="chevron" aria-hidden="true"></span>
+                        <span>Account</span>
+                    </button>
+                    <div class="app-nav-group-body" id="navGroupAccount">
+                        <a class="app-nav-item" href="#/rules" data-view-link="rules">
+                            <span class="app-nav-icon" data-nav-icon="book" aria-hidden="true"></span>
+                            <span class="app-nav-label">Rules</span>
+                        </a>
+
+                        <a class="app-nav-item" href="#/help" data-view-link="help">
+                            <span class="app-nav-icon" data-nav-icon="info" aria-hidden="true"></span>
+                            <span class="app-nav-label">Help</span>
+                        </a>
+
+                        <a class="app-nav-item" href="#/profile" data-view-link="profile">
+                            <span class="app-nav-icon" data-nav-icon="settings" aria-hidden="true"></span>
+                            <span class="app-nav-label">Profile</span>
+                        </a>
+
+                        <a class="app-nav-item is-danger" href="#/signout" data-view-link="signout">
+                            <span class="app-nav-icon" data-nav-icon="logout" aria-hidden="true"></span>
+                            <span class="app-nav-label">Sign out</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="app-sidebar-foot">
+                <div class="app-sidebar-user">
+                    <span class="profile-avatar" id="sidebarAvatar" aria-hidden="true">TM</span>
+                    <span class="app-sidebar-user-text">
+                        <strong id="sidebarUserName">Manager</strong>
+                        <span id="sidebarUserRole">Team Manager</span>
+                    </span>
+                </div>
+
+            </div>
+        </aside>
+
+        <div class="app-scrim" id="appScrim" hidden></div>
+
+                <div class="app-body">
+            <!-- Top bar -->
+            <header class="app-topbar">
+                <div class="app-topbar-row">
+
+                    <button type="button" class="app-menu-button" id="menuButton"
+                            aria-label="Open navigation" aria-expanded="false" aria-controls="appSidebar">
+                        <span class="app-menu-bars" aria-hidden="true">
+                            <span></span><span></span><span></span>
+                        </span>
+                    </button>
+
+                    <button type="button" class="app-rail-toggle" id="sidebarToggle"
+                            aria-label="Collapse navigation" aria-expanded="true" aria-controls="appSidebar">
+                        <span data-rail-icon="chevron"></span>
+                    </button>
+
+                    <div class="app-topbar-title">
+                        <nav class="app-breadcrumb" aria-label="Breadcrumb">
+                            <a href="/">Home</a>
+                            <span class="breadcrumbs-sep" aria-hidden="true">/</span>
+                            <a href="#/overview">Manager</a>
+                            <span class="breadcrumbs-sep" aria-hidden="true">/</span>
+                            <span id="appCrumb" aria-current="page">Dashboard</span>
+                        </nav>
+                        <h1 class="app-page-title" id="appTitle">Dashboard</h1>
+                    </div>
+
+                    <div class="team-switcher" id="teamSwitcherWrap" hidden>
+                        <label class="team-switcher-label" for="teamSwitcher">Team</label>
+                        <select class="form-select" id="teamSwitcher"
+                                aria-label="Switch active team"></select>
+                    </div>
+
+                    <div class="app-topbar-actions">
+
+                        <div class="app-menu" data-menu="notifications">
+                            <button type="button" class="icon-button" id="bellButton"
+                                    aria-expanded="false" aria-haspopup="true" aria-controls="notificationMenu"
+                                    aria-label="Notifications">
+                                <span data-nav-icon="bell" aria-hidden="true"></span>
+                                <span class="icon-button-dot" id="bellDot" hidden></span>
+                            </button>
+
+                            <div class="app-menu-panel" id="notificationMenu" hidden role="dialog"
+                                 aria-label="Recent notifications">
+                                <div class="app-menu-head">
+                                    <strong>Notifications</strong>
+                                    <button type="button" class="link-button" id="menuMarkAllRead">
+                                        Mark all as read
+                                    </button>
+                                </div>
+                                <div class="app-menu-body" id="menuNotificationList"></div>
+                                <div class="app-menu-foot">
+                                    <button type="button" class="btn btn-outline btn-sm btn-block"
+                                            data-view-link="notifications">View all notifications</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="app-menu" data-menu="profile">
+                            <button type="button" class="profile-button" id="profileButton"
+                                    aria-expanded="false" aria-haspopup="true" aria-controls="profileMenu">
+                                <span class="profile-avatar" id="profileAvatar">TM</span>
+                                <span class="profile-button-text">
+                                    <strong id="profileButtonName">Manager</strong>
+                                    <span id="profileButtonRole">Team Manager</span>
+                                </span>
+                                <span class="nav-caret" data-nav-icon="chevron" aria-hidden="true"></span>
+                            </button>
+
+                            <div class="app-menu-panel is-right" id="profileMenu" hidden role="dialog"
+                                 aria-label="Account menu">
+                                <div class="app-menu-head is-stacked">
+                                    <strong id="profileMenuName">Manager</strong>
+                                    <span id="profileMenuEmail">manager@example.com</span>
+                                    <span class="badge badge-purple">Preview account</span>
+                                </div>
+                                <button type="button" class="menu-item" data-view-link="profile">
+                                    <span data-nav-icon="settings" aria-hidden="true"></span> Profile
+                                </button>
+                                <button type="button" class="menu-item" data-view-link="payments">
+                                    <span data-nav-icon="wallet" aria-hidden="true"></span> Payments
+                                </button>
+                                <a class="menu-item" href="/forgot-password/">
+                                    <span data-nav-icon="lock" aria-hidden="true"></span> Account security
+                                </a>
+                                <a class="menu-item" href="/">
+                                    <span data-nav-icon="external" aria-hidden="true"></span> Public website
+                                </a>
+                                <button type="button" class="menu-item is-danger" data-action="signout">
+                                    <span data-nav-icon="logout" aria-hidden="true"></span> Sign out
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </header>
+
+                        <!-- Main dashboard content -->
+            <main class="app-main" id="main" tabindex="-1">
+
+                <!-- Dashboard -->
+                <section class="app-view" id="viewOverview" data-view="overview" aria-label="Dashboard">
+                    <div id="payBanner"></div>
+                    <div class="kpi-grid" id="kpiGrid"></div>
+                </section>
+
+                <!-- Teams -->
+                <section class="app-view" id="viewTeams" data-view="teams" hidden aria-label="Teams">
+                    <div class="view-head">
+                        <div>
+                            <p>Teams you manage and their status.</p>
+                        </div>
+                        <div class="view-head-actions">
+                            <a class="btn btn-dark-outline btn-sm" href="/teams/">Team directory</a>
+                            <button type="button" class="btn btn-primary btn-sm" data-action="create-team" id="createTeamButton">
+                                Create a team
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="teamsEmpty"></div>
+
+                    <div class="filter-bar" id="teamsFilterBar">
+                        <div class="form-field">
+                            <label class="form-label" for="teamSearch">Search</label>
+                            <input class="form-control" type="search" id="teamSearch"
+                                   placeholder="Team name or code">
+                        </div>
+                    </div>
+
+                    <p class="result-count" id="teamsResultCount" role="status"></p>
+
+                    <div class="team-grid" id="teamCards"></div>
+
+                    <div id="teamsNoMatch"></div>
+                </section>
+
+                                <!-- Squad -->
+                <section class="app-view" id="viewSquad" data-view="squad" hidden aria-label="Squad">
+                    <div class="view-head">
+                        <div>
+                            <p>Players for <strong id="squadTeamName">-</strong>.</p>
+                        </div>
+                        <div class="view-head-actions">
+                            <button type="button" class="btn btn-primary btn-sm" id="addPlayerButton">
+                                Add a player
+                            </button>
+                            <button type="button" class="btn btn-dark-outline btn-sm" id="squadIssuesButton">
+                                Show incomplete records
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="squadSummary"></div>
+
+                    <div id="squadRoster"></div>
+
+                    <div class="table-wrap" id="squadTableWrap">
+                        <table class="data-table is-stackable" id="squadTable">
+                            <caption id="squadCaption">
+                                Players are not approved individually; category eligibility and required consent
+                                are handled separately.
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Player</th>
+                                    <th scope="col">Position</th>
+                                    <th scope="col">Shirt</th>
+                                    <th scope="col">Class</th>
+                                    <th scope="col">Roster status</th>
+                                    <th scope="col">Consent</th>
+                                    <th scope="col" class="table-actions">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="squadTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="inline-note" id="squadPrivacyNote"></div>
+                </section>
+
+                                <!-- Registrations -->
+                <section class="app-view" id="viewRegistrations" data-view="registrations" hidden
+                         aria-label="Registrations">
+                    <div class="view-head">
+                        <div>
+                            <p>Track the approval status of your team registrations.</p>
+                        </div>
+                        <div class="view-head-actions">
+                            <button type="button" class="btn btn-primary btn-sm" data-action="create-team">Register a team</button>
+                            <a class="btn btn-dark-outline btn-sm" href="/tournaments/">Browse tournaments</a>
+                        </div>
+                    </div>
+
+                    <div id="registrationList"></div>
+                </section>
+
+                <!-- Payments and receipts -->
+                <section class="app-view" id="viewPayments" data-view="payments" hidden
+                         aria-label="Payments">
+                    <div class="view-head">
+                        <div>
+                            <p>Your registration fees and payment status.</p>
+                        </div>
+                        <div class="view-head-actions">
+                            <button type="button" class="btn btn-dark-outline btn-sm" id="paymentHistoryButton">
+                                View payment history
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="paymentSummary"></div>
+
+                    <div class="panel" id="paymentHistoryPanel">
+                        <div class="panel-head">
+                            <h3>Payment history</h3>
+                            <span class="badge" id="paymentHistoryCount">0 records</span>
+                        </div>
+                        <div class="panel-body is-flush">
+                            <div class="table-wrap">
+                                <table class="data-table is-stackable" id="paymentTable">
+                                    <caption>
+                                        Payment records are read-only here. Receipts are issued by the finance
+                                        office after payment review.
+                                    </caption>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Reference</th>
+                                            <th scope="col">Recorded</th>
+                                            <th scope="col">Method</th>
+                                            <th scope="col">Amount</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col" class="table-actions">Receipt</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="paymentTableBody"></tbody>
+                                </table>
+                            </div>
+
+                            <div id="paymentEmpty"></div>
+                        </div>
+                    </div>
+                </section>
+
+                                <!-- Fixtures and results -->
+                <section class="app-view" id="viewFixtures" data-view="fixtures" hidden
+                         aria-label="Fixtures">
+                    <div class="view-head">
+                        <div>
+                            <p>Confirmed matches and results for your team.</p>
+                        </div>
+                        <div class="view-head-actions">
+                            <a class="btn btn-dark-outline btn-sm" href="/fixtures/">Fixture centre</a>
+                            <a class="btn btn-dark-outline btn-sm" href="/results/">All results</a>
+                        </div>
+                    </div>
+
+                    <div class="chip-row" id="matchFilter" role="group" aria-label="Filter matches">
+                        <button type="button" class="chip is-active" data-match-filter="upcoming"
+                                aria-pressed="true">Upcoming</button>
+                        <button type="button" class="chip" data-match-filter="results"
+                                aria-pressed="false">Recent results</button>
+                        <button type="button" class="chip" data-match-filter="all"
+                                aria-pressed="false">All matches</button>
+                    </div>
+
+                    <div id="upcomingSection">
+                        <h3 class="view-subhead">Upcoming matches</h3>
+                        <div class="match-list" id="upcomingList"></div>
+                        <div id="upcomingEmpty"></div>
+                    </div>
+
+                    <div id="resultsSection" hidden>
+                        <h3 class="view-subhead">Recent results</h3>
+                        <div class="match-list" id="resultsList"></div>
+                        <div id="resultsEmpty"></div>
+                    </div>
+                </section>
+
+                                <!-- Notifications -->
+                <section class="app-view" id="viewNotifications" data-view="notifications" hidden
+                         aria-label="Notifications">
+                    <div class="view-head">
+                        <div>
+                            <p>Updates on registrations, payments, squad and fixtures.</p>
+                        </div>
+                        <div class="view-head-actions">
+                            <button type="button" class="btn btn-dark-outline btn-sm" id="markAllReadButton">
+                                Mark all as read
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="chip-row" id="notificationFilter" role="group" aria-label="Filter notifications">
+                        <button type="button" class="chip is-active" data-notif-filter="all"
+                                aria-pressed="true">All</button>
+                        <button type="button" class="chip" data-notif-filter="unread"
+                                aria-pressed="false">Unread</button>
+                        <button type="button" class="chip" data-notif-filter="read"
+                                aria-pressed="false">Read</button>
+                    </div>
+
+                    <div id="notificationList"></div>
+                    <div id="notificationEmpty"></div>
+                </section>
+
+                <!-- Rules -->
+                <section class="app-view" id="viewRules" data-view="rules" hidden aria-label="Rules">
+                    <div class="view-head">
+                        <div>
+                            <p>Published rules for your active team’s competition category.</p>
+                        </div>
+                        <div class="view-head-actions">
+                            <a class="btn btn-dark-outline btn-sm" href="/tournament-rules/">Read the rules</a>
+                        </div>
+                    </div>
+
+                    <div id="rulesContent"></div>
+
+                    <div id="ackPanel"></div>
+
+                    <div id="rulesNotice"></div>
+                </section>
+
+                <!-- Help -->
+                <section class="app-view" id="viewHelp" data-view="help" hidden aria-label="Help">
+                    <div class="view-head">
+                        <div>
+                            <p>Contact the competition team directly for help with your team or registration.</p>
+                        </div>
+                        <div class="view-head-actions">
+                            <a class="btn btn-dark-outline btn-sm" href="/faqs/">Frequently asked questions</a>
+                        </div>
+                    </div>
+
+                    <div class="panel help-contact-panel">
+                        <div class="panel-head">
+                            <h3>Contact details</h3>
+                        </div>
+                        <div class="panel-body">
+                            <p class="help-contact-intro">Choose the contact method that works best for you.</p>
+                            <div class="help-contact-grid">
+                                <a class="help-contact-item" href="tel:+254707119367">
+                                    <span class="help-contact-icon" aria-hidden="true">
+                                        <span data-nav-icon="phone"></span>
+                                    </span>
+                                    <span class="help-contact-copy">
+                                        <span class="help-contact-label">Phone</span>
+                                        <strong>0707 119 367</strong>
+                                        <small>Call the competitions office</small>
+                                    </span>
+                                </a>
+                                <a class="help-contact-item" href="https://wa.me/254707119367"
+                                    target="_blank" rel="noopener noreferrer">
+                                    <span class="help-contact-icon" aria-hidden="true">
+                                        <span data-nav-icon="phone"></span>
+                                    </span>
+                                    <span class="help-contact-copy">
+                                        <span class="help-contact-label">WhatsApp</span>
+                                        <strong>0707 119 367</strong>
+                                        <small>Message the competitions office</small>
+                                    </span>
+                                </a>
+                                <a class="help-contact-item" href="mailto:angutsachampionship@gmail.com">
+                                    <span class="help-contact-icon" aria-hidden="true">
+                                        <span data-nav-icon="mail"></span>
+                                    </span>
+                                    <span class="help-contact-copy">
+                                        <span class="help-contact-label">Email</span>
+                                        <strong>angutsachampionship@gmail.com</strong>
+                                        <small>Email the competitions office</small>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- My profile -->
+                <section class="app-view" id="viewProfile" data-view="profile" hidden aria-label="Profile">
+                    <div class="view-head">
+                        <div>
+                            <p>Your contact details for the competitions office.</p>
+                        </div>
+                    </div>
+
+                    <div class="split-layout">
+                        <div class="panel">
+                            <div class="panel-head">
+                                <h3>Manager details</h3>
+                                <span class="badge badge-gold">Preview</span>
+                            </div>
+                            <div class="panel-body">
+                                <form id="profileForm" novalidate>
+                                    <div id="profileAlert"></div>
+
+                                    <div class="form-grid">
+                                        <div class="form-field form-field-full">
+                                            <label class="form-label" for="profileName">
+                                                Full name <span class="required">*</span>
+                                            </label>
+                                            <input class="form-control" type="text" id="profileName"
+                                                   autocomplete="name">
+                                            <p class="form-error" role="alert"></p>
+                                        </div>
+
+                                        <div class="form-field is-disabled">
+                                            <label class="form-label" for="profileEmail">
+                                                Email address
+                                            </label>
+                                            <input class="form-control" type="email" id="profileEmail"
+                                                   autocomplete="email" spellcheck="false" readonly
+                                                   aria-readonly="true">
+                                            <p class="form-hint">This email is linked to your sign-in account and cannot be changed.</p>
+                                        </div>
+
+                                        <div class="form-field">
+                                            <label class="form-label" for="profilePhone">
+                                                Mobile number <span class="required">*</span>
+                                            </label>
+                                            <input class="form-control" type="tel" id="profilePhone"
+                                                   autocomplete="tel">
+                                            <p class="form-error" role="alert"></p>
+                                            <p class="form-hint">Used only by the competitions office.</p>
+                                        </div>
+
+                                        <div class="form-field form-field-full">
+                                            <label class="form-label" for="profileRole">Role on account</label>
+                                            <input class="form-control" type="text" id="profileRole" disabled>
+                                            <p class="form-hint">
+                                                Roles are assigned by the competitions office and cannot be changed
+                                                here.
+                                            </p>
+                                        </div>
+
+                                        <div class="form-field form-field-full">
+                                            <label class="check">
+                                                <input type="checkbox" id="profilePublic">
+                                                <span>
+                                                    Publish my display name in the public team directory
+                                                    <strong>Contact details are never published.</strong>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary" id="profileSave">
+                                        Save changes
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="stack" id="profileSide"></div>
+                    </div>
+                </section>
+
+
+
+
+
+
+
+            </main>
+
+            <!-- Footer -->
+            <footer class="app-footer">
+                <p>&copy; <span id="currentYear"></span> The Angutsa Football Championship ·
+                    Team manager dashboard</p>
+
+                <nav class="footer-legal" aria-label="Legal">
+                    <a href="/privacy/">Privacy Policy</a>
+                    <a href="/terms/">Terms &amp; Conditions</a>
+                </nav>
+
+                <p class="powered-by">
+                    <a href="/">Public website</a>
+                    <span aria-hidden="true">·</span>
+                    <a href="/faqs/">FAQs</a>
+                    <span aria-hidden="true">·</span>
+                    <a href="/contact/">Contact</a>
+                    <span aria-hidden="true">·</span>
+                    Powered by
+                    <a href="https://princealex.digital/" target="_blank" rel="noopener noreferrer">
+                        Prince Alex Digital
+                    </a>
+                </p>
+            </footer>
+
+        </div>
+
+    </div>
+
+    <main class="pending-approval-page" id="pendingApprovalView" hidden>
+        <a class="skip-link" href="#pendingApprovalHeading">Skip to approval status</a>
+        <section class="pending-approval-card" aria-labelledby="pendingApprovalHeading">
+            <span class="badge badge-gold">Approval pending</span>
+            <h1 id="pendingApprovalHeading">Your team-manager account is awaiting approval.</h1>
+            <p>
+                Please pay the registration fee and send the payment confirmation to the competitions
+                office on <a id="pendingOfficeContact" href="https://wa.me/254707119367"
+                            target="_blank" rel="noopener noreferrer">0707 119 367</a>.
+                The competitions office may approve your team while a balance remains due. Once approved,
+                you can sign in to add or update your team players; please clear any outstanding balance
+                as soon as possible.
+            </p>
+            <p id="pendingRegistrationBalance" class="pending-registration-balance" aria-live="polite">
+                Checking outstanding balance...
+            </p>
+            <p id="pendingManagerName" class="pending-manager-name"></p>
+            <div class="pending-approval-actions">
+                <button type="button" class="btn btn-primary" id="pendingPaymentButton"
+                        aria-expanded="false" aria-controls="pendingPaymentInstructions">
+                    Payment instructions
+                </button>
+                <button type="button" class="btn btn-dark-outline" id="pendingSignOut">
+                    Sign out
+                </button>
+            </div>
+            <div id="pendingPaymentInstructions" class="pending-payment-instructions" hidden></div>
+            <div id="pendingActionError" aria-live="polite"></div>
+        </section>
+    </main>
+
+    <!-- Generic modal host: contents are built by team-manager-dashboard.js -->
+    <div class="modal" id="appModal" hidden aria-labelledby="appModalTitle">
+        <div class="modal-dialog" id="appModalDialog">
+            <div class="modal-header">
+                <div>
+                    <h3 id="appModalTitle">Details</h3>
+                    <p id="appModalSubtitle"></p>
+                </div>
+                <button type="button" class="modal-close" data-modal-close aria-label="Close dialog">&times;</button>
+            </div>
+            <div class="modal-body" id="appModalBody"></div>
+            <div class="modal-footer" id="appModalFooter"></div>
+        </div>
+    </div>
+
+</body>
+</html>

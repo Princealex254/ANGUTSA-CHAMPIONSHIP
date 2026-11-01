@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10152E">
+    <meta name="description" content="Register a team for an Angutsa Football Championship competition: choose the tournament and category, submit team and squad details, review fees and submit.">
+
+    <title>Register a Team | The Angutsa Football Championship</title>
+
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/team-registration.css">
+
+    <script src="/js/data.js" defer></script>
+    <script src="/js/common.js" defer></script>
+    <script src="/js/platform-config.js" defer></script>
+    <script src="/js/turnstile.js" defer></script>
+    <script src="/js/platform-loader.js" defer></script>
+    <script src="/js/team-registration.js" defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+</head>
+
+<body>
+
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <header class="site-header" id="top">
+        <div class="container nav-container">
+
+            <a href="/" class="brand" aria-label="Angutsa Championship homepage">
+                <img class="brand-logo" src="/images/logo.png" alt="The Angutsa Football Championship logo">
+            </a>
+
+            <button class="menu-toggle" id="menuToggle"
+                    aria-label="Open navigation menu"
+                    aria-expanded="false"
+                    aria-controls="mainNav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/tournaments/" class="nav-link">Tournaments</a>
+
+                <div class="nav-group">
+                    <button type="button" class="nav-link nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+                        Fixtures &amp; Results <span class="nav-caret" aria-hidden="true">&#9662;</span>
+                    </button>
+                    <div class="nav-dropdown">
+                        <a href="/fixtures/" class="nav-dropdown-link">Fixtures</a>
+                        <a href="/results/" class="nav-dropdown-link">Results</a>
+                        <a href="/standings/" class="nav-dropdown-link">Standings</a>
+                    </div>
+                </div>
+
+                <a href="/teams/" class="nav-link">Teams</a>
+                <a href="/media/" class="nav-link">Media</a>
+                <a href="/contact/" class="nav-link">Contact</a>
+                <a href="/about/" class="nav-link">About</a>
+
+                <a href="/login/" class="nav-login">Sign In</a>
+                <a href="/tournaments/?status=registration-open" class="btn btn-gold nav-cta">Register a Team <span aria-hidden="true">&#8599;</span></a>
+            </nav>
+
+        </div>
+    </header>
+
+    <main id="main">
+
+        <section class="section team-registration-section">
+            <div class="container">
+
+                <header class="registration-heading">
+                    <nav class="breadcrumbs is-light" aria-label="Breadcrumb">
+                        <a href="/">Home</a>
+                        <span class="breadcrumbs-sep" aria-hidden="true">/</span>
+                        <span aria-current="page">Register a Team</span>
+                    </nav>
+                    <h1>Register your team</h1>
+                    <p>
+                        Complete each step and press Move Next to continue. Required details are checked before the next step opens.
+                        <a href="/tournaments/">View tournaments</a>
+                        <span aria-hidden="true">&middot;</span>
+                        <a href="/tournament-rules/">Read the rules</a>
+                    </p>
+                </header>
+
+                <div id="wizardAlert" aria-live="polite"></div>
+
+                <div class="wizard-layout">
+
+                    <div class="wizard-main">
+
+                        <ol class="wizard-steps" id="wizardSteps" aria-label="Registration steps">
+                            <li>
+                                <button type="button" class="wizard-step is-active" data-step-target="1" aria-controls="registrationStep1" aria-current="step">
+                                    <span class="wizard-step-number">1</span>
+                                    <span class="wizard-step-label">Tournament</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="wizard-step" data-step-target="2" aria-controls="registrationStep2" disabled>
+                                    <span class="wizard-step-number">2</span>
+                                    <span class="wizard-step-label">Team</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="wizard-step" data-step-target="3" aria-controls="registrationStep3" disabled>
+                                    <span class="wizard-step-number">3</span>
+                                    <span class="wizard-step-label">Manager</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="wizard-step" data-step-target="4" aria-controls="registrationStep4" disabled>
+                                    <span class="wizard-step-number">4</span>
+                                    <span class="wizard-step-label">Logo</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="wizard-step" data-step-target="5" aria-controls="registrationStep5" disabled>
+                                    <span class="wizard-step-number">5</span>
+                                    <span class="wizard-step-label">Fees</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="wizard-step" data-step-target="6" aria-controls="registrationStep6" disabled>
+                                    <span class="wizard-step-number">6</span>
+                                    <span class="wizard-step-label">Review</span>
+                                </button>
+                            </li>
+                        </ol>
+
+                        <form class="wizard-form" id="teamRegistrationForm" method="post" novalidate>
+
+                            <!-- Step 1: tournament -->
+                            <section class="wizard-panel" data-step="1" id="registrationStep1">
+                                <header class="wizard-panel-head">
+                                    <span class="wizard-eyebrow">Step 1 of 6</span>
+                                    <h2>Choose the competition</h2>
+                                    <p>
+                                        Only competitions with open registration can be selected. Deadlines are
+                                        enforced by the competitions office.
+                                    </p>
+                                </header>
+
+                                <div class="form-field">
+                                    <label class="form-label" for="regTournament">
+                                        Tournament <span class="required">*</span>
+                                    </label>
+                                    <select class="form-select" id="regTournament" name="regTournament"></select>
+                                    <p class="form-error" role="alert"></p>
+                                </div>
+
+                                <div id="tournamentInfo"></div>
+                            </section>
+
+                            <!-- Step 2: team details -->
+                            <section class="wizard-panel" data-step="2" id="registrationStep2" hidden>
+                                <header class="wizard-panel-head">
+                                    <span class="wizard-eyebrow">Step 2 of 6</span>
+                                    <h2>Team details</h2>
+                                    <p>
+                                        Use the name the team is known by. If it is very similar to a team already
+                                        in the directory, the competitions office will ask for clarification before
+                                        approval.
+                                    </p>
+                                </header>
+
+                                <div class="form-grid">
+                                    <div class="form-field">
+                                        <label class="form-label" for="teamName">
+                                            Team name <span class="required">*</span>
+                                        </label>
+                                        <input class="form-control" type="text" id="teamName" name="teamName"
+                                               placeholder="e.g. Kiserian Rangers">
+                                        <p class="form-error" role="alert"></p>
+                                    </div>
+
+                                    <div class="form-field">
+                                        <label class="form-label" for="teamShortName">
+                                            Team short code
+                                        </label>
+                                        <input class="form-control" type="text" id="teamShortName" name="teamShortName"
+                                               maxlength="4" placeholder="Generated from team name" readonly
+                                               aria-describedby="teamShortCodeHint" aria-readonly="true">
+                                        <p class="form-error" role="alert"></p>
+                                        <p class="form-hint" id="teamShortCodeHint">
+                                            Generated automatically from the team name for fixtures and tables.
+                                        </p>
+                                    </div>
+
+                                    <div class="form-field">
+                                        <label class="form-label" for="teamLocation">
+                                            Home area <span class="required">*</span>
+                                        </label>
+                                        <input class="form-control" type="text" id="teamLocation" name="teamLocation"
+                                               placeholder="e.g. Kiserian">
+                                        <p class="form-error" role="alert"></p>
+                                    </div>
+
+                                </div>
+
+                                <div id="teamDuplicateNote"></div>
+                                <div class="notice-bar" role="note">
+                                    <span>
+                                        Player registration takes place later in your manager dashboard, after your
+                                        team is approved. Any outstanding entry-fee balance should be cleared as soon as possible.
+                                    </span>
+                                </div>
+                            </section>
+
+                            <!-- Step 3: manager profile -->
+                            <section class="wizard-panel" data-step="3" id="registrationStep3" hidden>
+                                <header class="wizard-panel-head">
+                                    <span class="wizard-eyebrow">Step 3 of 6</span>
+                                    <h2>Team Manager account</h2>
+                                    <p>
+                                        Sign in with your Team Manager account or create one here. A new account
+                                        remains pending until the full registration fee is confirmed or the owner
+                                        approves your account. Contact details are never published on the public website.
+                                    </p>
+                                </header>
+
+                                <div class="form-grid">
+                                    <div class="form-field">
+                                        <label class="form-label" for="managerName">Manager full name</label>
+                                        <input class="form-control" type="text" id="managerName" name="managerName"
+                                               autocomplete="name">
+                                        <p class="form-error" role="alert"></p>
+                                    </div>
+
+                                    <div class="form-field">
+                                        <label class="form-label" for="managerRole">Role</label>
+                                        <input class="form-control" type="text" id="managerRole" name="managerRole"
+                                               value="Team Manager" readonly>
+                                    </div>
+
+                                    <div class="form-field">
+                                        <label class="form-label" for="managerEmail">Manager email</label>
+                                        <input class="form-control" type="email" id="managerEmail" name="managerEmail"
+                                               autocomplete="email" spellcheck="false">
+                                        <p class="form-error" role="alert"></p>
+                                    </div>
+
+                                    <div class="form-field">
+                                        <label class="form-label" for="managerPhone">Manager mobile</label>
+                                        <input class="form-control" type="tel" id="managerPhone" name="managerPhone"
+                                               autocomplete="tel">
+                                        <p class="form-error" role="alert"></p>
+                                    </div>
+
+                                    <div class="form-field" id="managerPasswordField" hidden>
+                                        <label class="form-label" for="managerPassword">
+                                            Password <span class="required">*</span>
+                                        </label>
+                                        <div class="input-group has-action">
+                                            <input class="form-control" type="password" id="managerPassword"
+                                                   name="managerPassword" autocomplete="new-password"
+                                                   minlength="6" placeholder="Choose a password">
+                                            <button type="button" class="input-action"
+                                                    data-toggle-password="managerPassword"
+                                                    aria-pressed="false" aria-label="Show password">Show</button>
+                                        </div>
+                                        <p class="form-hint">Use at least 6 characters.</p>
+                                        <p class="form-error" role="alert"></p>
+                                    </div>
+
+                                    <div class="form-field" id="managerPasswordConfirmField" hidden>
+                                        <label class="form-label" for="managerPasswordConfirm">
+                                            Confirm password <span class="required">*</span>
+                                        </label>
+                                        <div class="input-group has-action">
+                                            <input class="form-control" type="password" id="managerPasswordConfirm"
+                                                   name="managerPasswordConfirm" autocomplete="new-password"
+                                                   placeholder="Repeat your password">
+                                            <button type="button" class="input-action"
+                                                    data-toggle-password="managerPasswordConfirm"
+                                                    aria-pressed="false" aria-label="Show password">Show</button>
+                                        </div>
+                                        <p class="form-error" role="alert"></p>
+                                    </div>
+
+                                    <div class="form-field form-field-full">
+                                        <p class="form-hint" id="managerAccountHint">
+                                            Sign in with your approved account to use your saved details.
+                                        </p>
+                                    </div>
+
+                                    <div class="form-field form-field-full">
+                                        <label class="check">
+                                            <input type="checkbox" id="managerPublic" name="managerPublic" checked>
+                                            <span>
+                                                Publish my display name in the public team directory
+                                                <strong>Contact details are never published.</strong>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Step 4: team logo -->
+                            <section class="wizard-panel" data-step="4" id="registrationStep4" hidden>
+                                <header class="wizard-panel-head">
+                                    <span class="wizard-eyebrow">Step 4 of 6</span>
+                                    <h2>Team logo</h2>
+                                    <p>Upload your team logo if you have one. If not, continue to the next step.</p>
+                                </header>
+
+                                <div class="form-field form-field-full">
+                                    <label class="form-label" for="teamLogoFile">Team logo (optional)</label>
+                                    <input class="form-control" type="file" id="teamLogoFile" name="teamLogoFile"
+                                           accept="image/png,image/jpeg,image/webp">
+                                    <p class="form-hint" id="teamLogoHint">
+                                        PNG, JPEG or WebP, up to 5 MB. If you do not have a logo, continue.
+                                    </p>
+                                </div>
+                            </section>
+
+                            <!-- Step 5: fees -->
+                            <section class="wizard-panel" data-step="5" id="registrationStep5" hidden>
+                                <header class="wizard-panel-head">
+                                    <span class="wizard-eyebrow">Step 5 of 6</span>
+                                    <h2>Entry fees and payment</h2>
+                                    <p>Pay the registration fee by M-Pesa after submitting.</p>
+                                </header>
+
+                                <div id="feeSummary"></div>
+
+                                <div class="terms-block">
+                                    <div class="form-field checkbox-field">
+                                        <label class="check">
+                                            <input type="checkbox" id="acknowledgeFees" name="acknowledgeFees"
+                                                   aria-describedby="feeAcknowledgmentError">
+                                            <span>I understand that payment is made separately by M-Pesa.</span>
+                                        </label>
+                                        <p class="form-error" id="feeAcknowledgmentError" role="alert"></p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Step 6: review -->
+                            <section class="wizard-panel" data-step="6" id="registrationStep6" hidden>
+                                <header class="wizard-panel-head">
+                                    <span class="wizard-eyebrow">Step 6 of 6</span>
+                                    <h2>Review and submit</h2>
+                                    <p>Review your details and confirm the declarations before submitting.</p>
+                                </header>
+
+                                <div id="reviewSummary"></div>
+
+                                <div class="terms-block">
+                                    <div class="form-field checkbox-field">
+                                        <label class="check">
+                                            <input type="checkbox" id="confirmDeclaration" name="confirmDeclaration"
+                                                   aria-describedby="declarationError">
+                                            <span>
+                                                I confirm the information provided is accurate and complete, and I am
+                                                authorised to register this team.
+                                            </span>
+                                        </label>
+                                        <p class="form-error" id="declarationError" role="alert"></p>
+                                    </div>
+
+                                    <div class="form-field checkbox-field">
+                                        <label class="check">
+                                            <input type="checkbox" id="acceptLegal" name="acceptLegal"
+                                                   aria-describedby="legalAcceptanceError">
+                                            <span>
+                                                I accept the <a href="/terms/">Terms &amp; Conditions</a> and acknowledge
+                                                that the <a href="/privacy/">Privacy Policy</a> applies to the
+                                                information provided in this registration.
+                                            </span>
+                                        </label>
+                                        <p class="form-error" id="legalAcceptanceError" role="alert"></p>
+                                    </div>
+                                </div>
+
+                                <div class="form-field">
+                                    <p class="form-hint">Complete the security check when prompted. A fresh check is required for each protected submission.</p>
+                                    <div id="teamRegistrationTurnstile" aria-label="Security check"></div>
+                                </div>
+
+                            </section>
+
+                            <!-- Registration submission -->
+                            <div class="wizard-nav">
+                                <button type="button" class="btn btn-dark-outline" id="wizardPrevious" disabled>
+                                    Previous
+                                </button>
+                                <div class="wizard-nav-actions">
+                                    <p class="wizard-nav-error" id="wizardNavError"
+                                       role="alert" aria-live="assertive" tabindex="-1" hidden></p>
+                                    <button type="button" class="btn btn-primary" id="wizardNext">
+                                        Move Next <span class="btn-arrow" aria-hidden="true">&#8594;</span>
+                                    </button>
+                                    <button type="submit" class="btn btn-primary" id="teamRegistrationSubmit" hidden>
+                                        <span id="teamRegistrationSubmitLabel">Submit registration</span>
+                                        <span class="btn-arrow" aria-hidden="true">&#10003;</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Submitted confirmation -->
+                            <div id="wizardConfirmation" hidden></div>
+
+
+
+
+
+
+
+                        </form>
+
+                    </div>
+
+                    <aside class="wizard-side" aria-label="Registration summary">
+                        <div class="panel registration-summary-panel">
+                            <div class="panel-head">
+                                <h3>Progress</h3>
+                                <span class="badge" id="sideProgressLabel">Step 1 of 6</span>
+                            </div>
+                            <div class="panel-body">
+                                <div class="progress-track is-thin">
+                                    <div class="progress-fill" id="sideProgressBar" style="width:16.7%"></div>
+                                </div>
+                                <h4 class="registration-summary-title">Registration summary</h4>
+                                <ul class="summary-list" id="sideSummary">
+                                    <li><span>Tournament</span><span>-</span></li>
+                                    <li><span>Category</span><span>-</span></li>
+                                    <li><span>Team</span><span>-</span></li>
+                                    <li><span>Manager</span><span>-</span></li>
+                                </ul>
+
+                                <h4 class="registration-summary-title">Entry fee</h4>
+                                <div class="fee-total">
+                                    <span>Amount to pay</span>
+                                    <strong id="sideFee">-</strong>
+                                </div>
+                                <p class="form-note registration-payment-note">
+                                    Pay by M-Pesa after submitting. Keep the M-Pesa message as proof of payment.
+                                </p>
+
+                                <p class="registration-help">
+                                    Need help? <a href="/faqs/">FAQs</a> or
+                                    <a href="/contact/">contact the competitions office</a>.
+                                </p>
+                            </div>
+                        </div>
+
+                    </aside>
+
+
+                </div>
+
+            </div>
+        </section>
+
+
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-main">
+
+            <div class="footer-brand">
+                <a href="/" class="brand">
+                    <img class="brand-logo" src="/images/logo.png" alt="The Angutsa Football Championship logo">
+                </a>
+
+                <p>More than a tournament. A community united by football.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4>Championship</h4>
+                <a href="/about/">About Us</a>
+                <a href="/tournaments/">Tournaments</a>
+                <a href="/fixtures/">Fixtures &amp; Results</a>
+                <a href="/teams/">Teams</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Explore</h4>
+                <a href="/media/">Media</a>
+                <a href="/faqs/">FAQs</a>
+                <a href="/tournament-rules/">Rules &amp; Regulations</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Get Involved</h4>
+                <a href="/tournaments/?status=registration-open">Register a Team</a>
+                <a href="/login/">Team Manager Login</a>
+                <a href="/contact/">Contact Us</a>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container footer-bottom-inner">
+                <p>&copy; <span id="currentYear"></span> The Angutsa Football Championship. All rights reserved.</p>
+
+                <nav class="footer-legal" aria-label="Legal">
+                    <a href="/privacy/">Privacy Policy</a>
+                    <a href="/terms/">Terms &amp; Conditions</a>
+                </nav>
+
+                <p class="powered-by">Powered by
+                    <a href="https://princealex.digital/" target="_blank" rel="noopener noreferrer">
+                        Prince Alex Digital
+                    </a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="#top" class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</a>
+
+</body>
+</html>
