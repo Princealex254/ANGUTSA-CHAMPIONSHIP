@@ -1,0 +1,591 @@
+/* =========================================
+   ANGUTSA CHAMPIONSHIP — TOURNAMENT DETAILS
+   Page-specific styles for tournament-details.html.
+   Shared components live in css/base.css and css/components.css.
+
+   This page has no dark hero: the competition title, actions, key facts and
+   banner image sit at the top of the page on the normal light background.
+   ========================================= */
+
+/* -------------------------
+   Page head
+   ------------------------- */
+
+.detail-head {
+    padding-bottom: 0;
+}
+
+.detail-head-main {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 18px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+}
+
+.detail-head-text {
+    max-width: 700px;
+}
+
+.detail-head h1 {
+    font-size: clamp(1.8rem, 3.4vw, 2.5rem);
+}
+
+.detail-head p {
+    margin-top: 12px;
+    font-size: 13.5px;
+    line-height: 1.9;
+}
+
+.detail-head .detail-hero-actions {
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+/* The action buttons are built for the page background, so the light-outline
+   variant used on dark heroes is restyled for this light page head. */
+.detail-head .btn-outline-light {
+    color: var(--navy);
+    border-color: var(--border-strong);
+    background: transparent;
+}
+
+.detail-head .btn-outline-light:hover {
+    color: var(--purple);
+    border-color: var(--purple);
+    background: var(--surface);
+}
+
+/* Key facts strip (category, format, teams, match dates) */
+
+.detail-head .detail-hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+    padding-top: 0;
+    border-top: 0;
+}
+
+.detail-head .detail-hero-stats > div {
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+}
+
+.detail-head .detail-hero-stats > div strong {
+    color: var(--navy);
+    font-size: 15px;
+}
+
+.detail-head .detail-hero-stats > div span {
+    color: var(--muted);
+}
+
+/* Banner image. The page script inserts the competition banner into this
+   empty box, so the image is only shown when the competition has one. */
+.detail-cover {
+    margin-top: 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface-muted);
+    overflow: hidden;
+    aspect-ratio: 16 / 6;
+}
+
+.detail-cover:empty {
+    display: none;
+}
+
+.detail-cover .detail-hero-cover {
+    position: static;
+    z-index: auto;
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    object-fit: cover;
+}
+
+/* Two column layout: content plus a sticky summary column */
+
+.detail-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 28px;
+}
+
+.detail-main {
+    min-width: 0;
+    display: grid;
+    gap: 20px;
+}
+
+.detail-side {
+    top: 104px;
+}
+
+/* Tab panels */
+
+.tab-panels {
+    display: grid;
+    gap: 22px;
+}
+
+.tab-panel {
+    display: grid;
+    gap: 22px;
+}
+
+.tab-panel[hidden] {
+    display: none;
+}
+
+.detail-main .tabs {
+    overflow-x: auto;
+}
+
+/* Content blocks inside the overview panel */
+
+.detail-block h2,
+.detail-block h3 {
+    font-size: 1.05rem;
+}
+
+.detail-block p {
+    margin-top: 12px;
+    font-size: 12.5px;
+    line-height: 1.9;
+}
+
+.detail-block p:first-of-type {
+    margin-top: 0;
+}
+
+.detail-block + .detail-block {
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.season-outcome {
+    overflow: hidden;
+    padding: clamp(18px, 3vw, 28px);
+    border: 1px solid #C99D3A;
+    border-radius: var(--radius);
+    background:
+        radial-gradient(circle at 90% 0, rgba(232, 209, 156, 0.3), transparent 42%),
+        linear-gradient(135deg, #FFF9E8, #FFFFFF 58%, #F4F7FA);
+    box-shadow: 0 14px 34px rgba(116, 83, 11, 0.14);
+}
+
+.season-outcome-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.season-outcome-icon {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid rgba(126, 87, 16, 0.3);
+    border-radius: 14px;
+    background: linear-gradient(135deg, #E7C46E, #FFF0BB 55%, #D5A63D);
+    color: #80570D;
+}
+
+.season-outcome-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.season-outcome-heading > div > span {
+    color: #80570D;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.season-outcome-heading h3 {
+    margin: 2px 0 0;
+    color: var(--navy);
+    font-size: clamp(1.1rem, 2.5vw, 1.45rem);
+}
+
+.season-outcome-match {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 18px;
+}
+
+.season-outcome-team {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.82);
+}
+
+.season-outcome-team.is-champion {
+    border-color: rgba(201, 157, 58, 0.75);
+    background: linear-gradient(125deg, #FFF2C8, #FFFFFF);
+    box-shadow: 0 8px 20px rgba(116, 83, 11, 0.12);
+}
+
+.season-outcome-team.is-champion .crest {
+    border: 2px solid #C99D3A;
+    box-shadow: 0 0 0 3px rgba(215, 181, 109, 0.2);
+}
+
+.season-outcome-team > div {
+    min-width: 0;
+}
+
+.season-outcome-team strong {
+    display: block;
+    color: var(--navy);
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.season-outcome-role {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--muted);
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.season-outcome-team.is-champion .season-outcome-role {
+    color: #80570D;
+}
+
+.season-outcome-score {
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+    color: var(--muted);
+    text-align: center;
+}
+
+.season-outcome-score > span {
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.season-outcome-score strong {
+    color: var(--navy);
+    font-family: "Manrope", sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+}
+
+.season-outcome-score small {
+    max-width: 190px;
+    font-size: 8px;
+    line-height: 1.5;
+}
+
+/* Requirement and rule lists */
+
+.requirement-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 14px;
+    list-style: none;
+}
+
+.requirement-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    color: var(--muted-strong);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.requirement-list strong {
+    display: block;
+    color: var(--navy);
+    font-size: 12.5px;
+}
+
+/* Prize information */
+
+.prize-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.prize-row > div {
+    flex: 1 1 150px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-muted);
+}
+
+.prize-row strong {
+    display: block;
+    font-family: "Manrope", sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    white-space: pre-line;
+}
+
+.prize-row span {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+/* Participating team list */
+
+.participant-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.participant {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+}
+
+.participant-text {
+    min-width: 0;
+}
+
+.participant-text strong {
+    display: block;
+    font-size: 12px;
+}
+
+.participant-text span {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+/* Fixture and result rows inside the detail page */
+
+.detail-fixture-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+/* Tournament scorer table */
+
+.top-scorer-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+    padding: 0;
+    list-style: none;
+}
+
+.top-scorer-row {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+}
+
+.top-scorer-rank {
+    color: var(--muted);
+    font-family: "Manrope", sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.top-scorer-player strong,
+.top-scorer-player small {
+    display: block;
+}
+
+.top-scorer-player strong {
+    font-size: 12px;
+}
+
+.top-scorer-player small {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.top-scorer-goals {
+    color: var(--purple);
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.detail-block .top-scorer-note {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+/* News links */
+
+.related-news {
+    display: grid;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.related-news a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    font-size: 12px;
+    font-weight: 700;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.related-news a:hover {
+    border-color: #D9D2F5;
+    background: var(--purple-soft);
+}
+
+.related-news span {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+/* Side column summary styling */
+
+#sideStatus {
+    flex-shrink: 0;
+}
+
+#sideRegistration .meta-value {
+    font-size: 11.5px;
+}
+
+.detail-side .card-actions {
+    margin-top: 16px;
+}
+
+.detail-side .form-note {
+    margin-top: 12px;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+    .detail-head-main {
+        align-items: flex-start;
+        gap: 18px;
+    }
+
+    .detail-head-text {
+        max-width: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .detail-head .detail-hero-actions {
+        width: 100%;
+    }
+
+    .detail-head .detail-hero-actions .btn {
+        flex: 1 1 100%;
+        justify-content: center;
+    }
+
+    .detail-cover {
+        aspect-ratio: 16 / 9;
+    }
+
+    .top-scorer-row {
+        grid-template-columns: 28px minmax(0, 1fr) auto;
+        gap: 8px;
+    }
+
+    .top-scorer-row .link-btn {
+        grid-column: 2 / 4;
+        justify-self: start;
+    }
+}
+
+@media (max-width: 1100px) {
+    .detail-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .detail-side {
+        position: static;
+        top: auto;
+    }
+
+    .season-outcome-match {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .season-outcome-score {
+        order: 1;
+    }
+
+    .season-outcome.has-champion .season-outcome-team.is-champion {
+        order: 0;
+    }
+
+    .season-outcome.has-champion .season-outcome-team:not(.is-champion) {
+        order: 2;
+    }
+
+    .season-outcome:not(.has-champion) .season-outcome-team:last-child {
+        order: 2;
+    }
+
+    .participant-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .tab-panel {
+        gap: 18px;
+    }
+
+    .prize-row > div {
+        flex: 1 1 100%;
+    }
+}

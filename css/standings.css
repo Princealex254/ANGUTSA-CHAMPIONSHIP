@@ -1,0 +1,143 @@
+/* =========================================
+   ANGUTSA CHAMPIONSHIP — STANDINGS
+   Page-specific styles for standings.html.
+   Shared components live in css/base.css and css/components.css.
+   ========================================= */
+
+/* Summary strip above the table */
+
+.standings-summary {
+    margin-top: 6px;
+    margin-bottom: 22px;
+}
+
+/* League table */
+
+.standings-table-groups {
+    display: grid;
+    gap: 16px;
+}
+
+.standings-table {
+    min-width: 860px;
+}
+
+.standings-table th,
+.standings-table td {
+    padding-inline: 14px;
+}
+
+.standings-table .team-cell {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+}
+
+.standings-table .team-cell strong {
+    font-size: 12.5px;
+    white-space: nowrap;
+}
+
+.standings-table .team-cell span {
+    color: var(--muted);
+    font-size: 9.5px;
+}
+
+.standings-table td:nth-child(10) {
+    color: var(--navy);
+    font-family: "Manrope", sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.standings-table .position-cell span {
+    color: var(--muted);
+    font-size: 11.5px;
+    font-weight: 800;
+}
+
+.standings-table tbody tr.is-qualify {
+    background: #FCFBFE;
+}
+
+.standings-table tbody tr.is-playoff {
+    background: #FEFCF7;
+}
+
+.standings-legend {
+    padding: 16px 20px 20px;
+}
+
+/* Tie-break rules list */
+
+.rules-list {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-left: 20px;
+    color: var(--muted-strong);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.rules-list li::marker {
+    color: var(--purple);
+    font-weight: 800;
+}
+
+/* Table meta line */
+
+#tableMeta {
+    margin-bottom: 18px;
+}
+
+#tableMeta .badge {
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 10px;
+}
+
+/* Empty state spacing */
+
+#standingsEmpty:not(:empty) {
+    margin-top: 4px;
+}
+
+/* Standings notice spacing */
+
+#standingsNotice:not(:empty) {
+    margin-bottom: 18px;
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .standings-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 720px) {
+    .standings-table td:nth-child(10) {
+        font-size: 12px;
+    }
+
+    .standings-legend {
+        padding-inline: 16px;
+    }
+}
+
+@media print {
+    .standings-legend,
+    .standings-summary,
+    #tableMeta,
+    #standingsFilters,
+    .toolbar-actions {
+        display: none !important;
+    }
+
+    .standings-table .position-marker {
+        display: none;
+    }
+}

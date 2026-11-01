@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10152E">
+    <meta name="description" content="The Angutsa Football Championship fixture centre: filter by tournament, category, group, round and venue, or browse the calendar view.">
+
+    <title>Fixtures | The Angutsa Football Championship</title>
+
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/fixtures.css">
+
+    <script src="/js/data.js" defer></script>
+    <script src="/js/platform-config.js" defer></script>
+    <script src="/js/platform-loader.js" defer></script>
+    <script src="/js/public-data-loader.js" defer></script>
+    <script src="/js/common.js" defer></script>
+    <script src="/js/fixtures.js" defer></script>
+</head>
+
+<body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <!-- Navigation -->
+    <header class="site-header" id="top">
+        <div class="container nav-container">
+
+            <a href="/" class="brand" aria-label="Angutsa Championship homepage">
+                <img class="brand-logo" src="/images/logo.png" alt="The Angutsa Football Championship logo">
+            </a>
+
+            <button class="menu-toggle" id="menuToggle"
+                    aria-label="Open navigation menu"
+                    aria-expanded="false"
+                    aria-controls="mainNav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/tournaments/" class="nav-link">Tournaments</a>
+
+                <div class="nav-group">
+                    <button type="button" class="nav-link nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+                        Fixtures &amp; Results <span class="nav-caret" aria-hidden="true">&#9662;</span>
+                    </button>
+                    <div class="nav-dropdown">
+                        <a href="/fixtures/" class="nav-dropdown-link">Fixtures</a>
+                        <a href="/results/" class="nav-dropdown-link">Results</a>
+                        <a href="/standings/" class="nav-dropdown-link">Standings</a>
+                    </div>
+                </div>
+
+                <a href="/teams/" class="nav-link">Teams</a>
+                <a href="/media/" class="nav-link">Media</a>
+                <a href="/contact/" class="nav-link">Contact</a>
+                <a href="/about/" class="nav-link">About</a>
+
+                <a href="/login/" class="nav-login">Sign In</a>
+                <a href="/tournaments/?status=registration-open" class="btn btn-gold nav-cta">Register a Team <span aria-hidden="true">&#8599;</span></a>
+            </nav>
+
+        </div>
+    </header>
+
+    <main id="main">
+        <!-- Page head and fixture centre -->
+        <section class="section section-tight">
+            <div class="container">
+                <nav class="breadcrumbs is-light" aria-label="Breadcrumb">
+                    <a href="/">Home</a>
+                    <span class="breadcrumbs-sep" aria-hidden="true">/</span>
+                    <span aria-current="page">Fixtures</span>
+                </nav>
+
+                <div class="list-head">
+                    <div class="list-head-text">
+                        <div class="eyebrow">
+                            <span class="eyebrow-line"></span>
+                            FIXTURE CENTRE
+                        </div>
+                        <h1>Match <span class="accent">Fixtures</span></h1>
+
+                    </div>
+
+                    <div class="list-head-actions">
+                        <a href="/results/" class="btn btn-primary">
+                            View Results <span class="btn-arrow" aria-hidden="true">&#8594;</span>
+                        </a>
+                        <a href="/standings/" class="btn btn-dark-outline">
+                            League Tables <span class="btn-arrow" aria-hidden="true">&#8594;</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="dataNotice"></div>
+                <div id="liveNotice"></div>
+
+                <!-- View switch -->
+                <div class="view-switch" role="group" aria-label="Fixture view">
+                    <span class="view-switch-label">View as</span>
+                    <button type="button" class="chip is-active" data-view="list" aria-pressed="true">List view</button>
+                    <button type="button" class="chip" data-view="calendar" aria-pressed="false">Calendar view</button>
+                    <span class="view-switch-meta" id="viewMeta" aria-live="polite"></span>
+                </div>
+
+                <!-- Quick filters -->
+                <div class="chip-row filter-chips" role="group" aria-label="Quick fixture filters">
+                    <button type="button" class="chip is-active" data-quick="all" aria-pressed="true">All fixtures</button>
+                    <button type="button" class="chip" data-quick="upcoming" aria-pressed="false">Upcoming</button>
+                    <button type="button" class="chip" data-quick="today" aria-pressed="false">Today</button>
+                    <button type="button" class="chip" data-quick="week" aria-pressed="false">Next 7 days</button>
+                    <button type="button" class="chip" data-quick="completed" aria-pressed="false">Completed</button>
+                    <button type="button" class="chip" data-quick="live" aria-pressed="false">Live</button>
+                </div>
+
+
+                <div class="toolbar-meta" id="resultMeta" aria-live="polite"></div>
+
+                <!-- List view -->
+                <div id="listView">
+                    <div id="fixtureList"></div>
+                    <div id="listEmpty"></div>
+                </div>
+
+                <!-- Calendar view -->
+                <div id="calendarView" hidden>
+                    <div class="calendar">
+                        <div class="calendar-head">
+                            <div>
+                                <h3 id="calendarTitle">Calendar</h3>
+                                <p class="inline-note">Every published fixture for the current filters.</p>
+                            </div>
+                            <div class="calendar-nav">
+                                <button type="button" class="btn-icon" id="calendarPrev" aria-label="Previous month">&#8592;</button>
+                                <button type="button" class="btn-icon" id="calendarToday" aria-label="Jump to the current month">&#9679;</button>
+                                <button type="button" class="btn-icon" id="calendarNext" aria-label="Next month">&#8594;</button>
+                            </div>
+                        </div>
+                        <div class="calendar-weekdays" aria-hidden="true">
+                            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span>
+                            <span>Fri</span><span>Sat</span><span>Sun</span>
+                        </div>
+                        <div class="calendar-grid" id="calendarGrid" role="grid" aria-label="Fixture calendar"></div>
+                        <div class="calendar-legend">
+                            <span><i class="is-scheduled"></i> Scheduled</span>
+                            <span><i class="is-completed"></i> Completed</span>
+                            <span><i></i> Other status</span>
+                        </div>
+                    </div>
+                    <div id="calendarEmpty"></div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-main">
+
+            <div class="footer-brand">
+                <a href="/" class="brand">
+                    <img class="brand-logo" src="/images/logo.png" alt="The Angutsa Football Championship logo">
+                </a>
+
+                <p>More than a tournament. A community united by football.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4>Championship</h4>
+                <a href="/about/">About Us</a>
+                <a href="/tournaments/">Tournaments</a>
+                <a href="/fixtures/">Fixtures &amp; Results</a>
+                <a href="/teams/">Teams</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Explore</h4>
+                <a href="/media/">Media</a>
+                <a href="/faqs/">FAQs</a>
+                <a href="/tournament-rules/">Rules &amp; Regulations</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Get Involved</h4>
+                <a href="/tournaments/?status=registration-open">Register a Team</a>
+                <a href="/login/">Team Manager Login</a>
+                <a href="/contact/">Contact Us</a>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container footer-bottom-inner">
+                <p>&copy; <span id="currentYear"></span> The Angutsa Football Championship. All rights reserved.</p>
+
+                <nav class="footer-legal" aria-label="Legal">
+                    <a href="/privacy/">Privacy Policy</a>
+                    <a href="/terms/">Terms and Conditions</a>
+                </nav>
+
+                <p class="powered-by">Powered by
+                    <a href="https://princealex.digital/" target="_blank" rel="noopener noreferrer">
+                        Prince Alex Digital
+                    </a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="#top" class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</a>
+
+</body>
+</html>

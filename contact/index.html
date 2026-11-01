@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10152E">
+    <meta name="description" content="Contact The Angutsa Football Championship by phone, WhatsApp or email.">
+
+    <title>Contact Us | The Angutsa Football Championship</title>
+
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/contact.css">
+    <script src="/js/common.js" defer></script>
+    <script src="/js/contact.js" defer></script>
+</head>
+
+<body>
+    <a class="skip-link" href="#mainContent">Skip to content</a>
+
+    <header class="site-header" id="top">
+        <div class="container nav-container">
+            <a href="/" class="brand" aria-label="Angutsa Championship homepage">
+                <img class="brand-logo" src="/images/logo.png" alt="The Angutsa Football Championship logo">
+            </a>
+
+            <button class="menu-toggle" id="menuToggle" type="button"
+                    aria-label="Open navigation menu" aria-expanded="false" aria-controls="mainNav">
+                <span></span><span></span><span></span>
+            </button>
+
+            <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/tournaments/" class="nav-link">Tournaments</a>
+                <a href="/fixtures/" class="nav-link">Fixtures &amp; Results</a>
+                <a href="/teams/" class="nav-link">Teams</a>
+                <a href="/media/" class="nav-link">Media</a>
+                <a href="/about/" class="nav-link">About</a>
+                <a href="/contact/" class="nav-link active" aria-current="page">Contact</a>
+                <a href="/login/" class="nav-login">Sign In</a>
+                <a href="/tournaments/?status=registration-open" class="btn btn-gold nav-cta">Register a Team <span>↗</span></a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="mainContent">
+        <section class="contact-hero" aria-labelledby="contactTitle">
+            <div class="container contact-hero-inner">
+                <p class="contact-eyebrow">WE’RE HERE TO HELP</p>
+                <h1 id="contactTitle">Contact the Championship</h1>
+                <p>Questions about registrations, fixtures, payments, or the competition? Call us, email us, or send a message on WhatsApp.</p>
+            </div>
+        </section>
+
+        <section class="contact-content container" aria-label="Contact information and message form">
+            <div class="contact-details">
+                <p class="contact-kicker">GET IN TOUCH</p>
+                <h2>Talk to our team</h2>
+                <p class="contact-intro">Choose the contact option that works best for you. We’ll be glad to help. Many answers are already in our <a href="/faqs/">FAQs</a>.</p>
+
+                <a class="contact-method" href="tel:+254707119367">
+                    <span class="contact-method-icon" aria-hidden="true">☎</span>
+                    <span><small>Call us</small><strong>0707 119 367</strong></span>
+                </a>
+                <a class="contact-method" href="https://wa.me/254707119367"
+                   target="_blank" rel="noopener noreferrer">
+                    <span class="contact-method-icon contact-whatsapp-icon" aria-hidden="true">↗</span>
+                    <span><small>WhatsApp</small><strong>0707 119 367</strong></span>
+                </a>
+                <a class="contact-method contact-email" href="mailto:angutsachampionship@gmail.com">
+                    <span class="contact-method-icon" aria-hidden="true">@</span>
+                    <span><small>Email</small><strong>angutsachampionship@gmail.com</strong></span>
+                </a>
+
+            </div>
+
+            <div class="contact-form-card">
+                <h2>Send us a message</h2>
+                <p class="contact-form-intro">Your message will be handed off to WhatsApp. It is not submitted to or stored by this website.</p>
+                <form id="contactForm">
+                    <div class="contact-field">
+                        <label for="contactName">Your name <span aria-hidden="true">*</span></label>
+                        <input id="contactName" name="name" type="text" autocomplete="name"
+                               maxlength="80" required>
+                    </div>
+                    <div class="contact-field">
+                        <label for="contactPhone">Your phone number <span class="optional-label">(optional)</span></label>
+                        <input id="contactPhone" name="phone" type="tel" autocomplete="tel"
+                               maxlength="30">
+                    </div>
+                    <div class="contact-field">
+                        <label for="contactSubject">What is this about? <span class="optional-label">(optional)</span></label>
+                        <select id="contactSubject" name="subject">
+                            <option value="">Choose a topic</option>
+                            <option value="Team registration">Team registration</option>
+                            <option value="Player registration">Player registration</option>
+                            <option value="Fees and payments">Fees and payments</option>
+                            <option value="Fixtures and results">Fixtures and results</option>
+                            <option value="Other question">Other question</option>
+                        </select>
+                    </div>
+                    <div class="contact-field">
+                        <label for="contactMessage">Your message <span aria-hidden="true">*</span></label>
+                        <textarea id="contactMessage" name="message" rows="5" maxlength="1500"
+                                  required></textarea>
+                    </div>
+                    <p class="contact-form-error" id="contactFormError" role="alert" hidden></p>
+                    <button class="btn btn-primary contact-submit" type="submit">
+                        Continue to WhatsApp <span aria-hidden="true">↗</span>
+                    </button>
+                    <p class="contact-privacy-note">
+                        By continuing, WhatsApp will receive the message details you choose to send.
+                        See our <a href="/privacy/">Privacy Policy</a>.
+                    </p>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-main">
+            <div class="footer-brand">
+                <a href="/" class="brand" aria-label="Angutsa Championship homepage">
+                    <img class="brand-logo" src="/images/logo.png" alt="The Angutsa Football Championship logo">
+                </a>
+                <p>More than a tournament. A community united by football.</p>
+            </div>
+            <div class="footer-column">
+                <h4>Championship</h4>
+                <a href="/about/">About Us</a>
+                <a href="/tournaments/">Tournaments</a>
+                <a href="/fixtures/">Fixtures &amp; Results</a>
+                <a href="/teams/">Teams</a>
+            </div>
+            <div class="footer-column">
+                <h4>Explore</h4>
+                <a href="/media/">Media</a>
+                <a href="/tournament-rules/">Rules &amp; Regulations</a>
+            </div>
+            <div class="footer-column">
+                <h4>Get Involved</h4>
+                <a href="/tournaments/?status=registration-open">Register a Team</a>
+                <a href="/login/">Team Manager Login</a>
+                <a href="/contact/" aria-current="page">Contact Us</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container footer-bottom-inner">
+                <p>© <span id="currentYear"></span> The Angutsa Football Championship. All rights reserved.</p>
+                <nav class="footer-legal" aria-label="Legal">
+                    <a href="/privacy/">Privacy Policy</a>
+                    <a href="/terms/">Terms &amp; Conditions</a>
+                </nav>
+                <p class="powered-by">Powered by
+                    <a href="https://princealex.digital/" target="_blank" rel="noopener noreferrer">Prince Alex Digital</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="#top" class="back-to-top" id="backToTop" aria-label="Back to top">↑</a>
+</body>
+</html>

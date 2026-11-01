@@ -1,0 +1,246 @@
+/* =========================================
+   ANGUTSA CHAMPIONSHIP — TEAM DIRECTORY
+   Page-specific styles for teams.html.
+   Shared buttons, forms, cards and crests live in css/base.css
+   and css/components.css.
+   ========================================= */
+
+/* Consistent card heights so rows line up in the grid */
+
+.team-directory-section {
+    padding: 30px 0 40px;
+}
+
+.team-directory-section .list-head {
+    gap: 18px;
+    margin: 16px 0 18px;
+    padding-bottom: 18px;
+}
+
+.team-directory-section .list-head h1 {
+    margin-top: 8px;
+}
+
+.team-directory-section .list-head p {
+    margin-top: 7px;
+}
+
+.team-directory-section .list-head-actions {
+    align-self: center;
+}
+
+#teamGrid .team-card {
+    padding: 20px;
+    min-height: 100%;
+}
+
+#teamGrid .team-card-head {
+    align-items: center;
+}
+
+/* Identity block */
+
+.team-identity {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-width: 0;
+}
+
+.team-identity-text {
+    min-width: 0;
+}
+
+.team-identity-text strong {
+    display: block;
+    color: var(--navy);
+    font-family: "Manrope", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.35;
+}
+
+.team-identity-text span {
+    display: block;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+/* Participation line: category, group and tournament */
+
+.team-participation {
+    display: grid;
+    gap: 8px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+}
+
+.team-participation > div {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--muted-strong);
+    font-size: 10.5px;
+    font-weight: 600;
+}
+
+.team-participation svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--purple);
+}
+
+/* Manager line */
+
+.team-official {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 12px;
+    border-radius: 9px;
+    background: var(--surface-muted);
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--muted-strong);
+}
+
+.team-official svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--muted);
+}
+
+.team-official strong {
+    font-size: 11px;
+}
+
+.team-official.is-private {
+    color: var(--muted);
+    font-weight: 600;
+}
+
+/* Card footer actions */
+
+#teamGrid .card-actions {
+    margin-top: auto;
+    padding-top: 16px;
+}
+
+#teamGrid .card-actions .btn {
+    width: 100%;
+}
+
+/* Result summary line */
+
+#resultMeta {
+    margin: 12px 0;
+}
+
+#resultMeta .badge {
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 10px;
+}
+
+@media (max-width: 1100px) {
+    #teamGrid .team-card {
+        padding: 18px;
+    }
+}
+
+.team-directory-section .filter-chips {
+    padding: 10px 14px;
+    margin-bottom: 12px;
+}
+
+.team-directory-section .toolbar {
+    padding: 14px;
+}
+
+.team-grid-empty {
+    grid-column: 1 / -1;
+}
+
+.team-grid-empty .empty-state {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 14px;
+    row-gap: 4px;
+    padding: 16px 20px;
+    text-align: left;
+}
+
+.team-grid-empty .empty-state-icon {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+}
+
+.team-grid-empty .empty-state-icon svg {
+    width: 21px;
+    height: 21px;
+}
+
+.team-grid-empty .empty-state h3,
+.team-grid-empty .empty-state p {
+    grid-column: 2;
+}
+
+.team-grid-empty .empty-state h3 {
+    grid-row: 1;
+}
+
+.team-grid-empty .empty-state p {
+    grid-row: 2;
+    max-width: none;
+}
+
+.team-grid-empty .empty-state .btn-row {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    margin: 0 0 0 8px;
+}
+
+@media (max-width: 640px) {
+    .team-directory-section {
+        padding: 24px 0 32px;
+    }
+
+    .team-directory-section .list-head {
+        margin: 14px 0 16px;
+        padding-bottom: 16px;
+    }
+
+    .team-directory-section .list-head-actions {
+        align-self: stretch;
+    }
+
+    .team-directory-section .filter-chips {
+        margin-bottom: 10px;
+    }
+
+    .team-grid-empty .empty-state {
+        grid-template-columns: 38px minmax(0, 1fr);
+        padding: 16px;
+    }
+
+    .team-grid-empty .empty-state-icon {
+        grid-row: 1 / span 2;
+        width: 38px;
+        height: 38px;
+    }
+
+    .team-grid-empty .empty-state .btn-row {
+        grid-column: 2;
+        grid-row: 3;
+        margin: 8px 0 0;
+    }
+}

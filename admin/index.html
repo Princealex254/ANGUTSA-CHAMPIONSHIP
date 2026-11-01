@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10152E">
+    <meta name="description" content="Administration dashboard for The Angutsa Football Championship.">
+    <meta name="robots" content="noindex, nofollow">
+
+    <title>Administration Dashboard | The Angutsa Football Championship</title>
+
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/rich-text.css">
+    <script src="/js/rules-format.js" defer></script>
+    <script src="/js/rules-data.js" defer></script>
+    <script src="/js/standings-engine.js" defer></script>
+    <script src="/js/media-data.js" defer></script>
+    <script src="/js/platform-config.js" defer></script>
+    <script src="/js/platform-loader.js" defer></script>
+    <script src="/js/action-loading.js" defer></script>
+    <script src="/js/eat-time.js" defer></script>
+    <script src="/js/admin.js" defer></script>
+</head>
+
+<body class="app-page">
+
+    <div class="admin-boot-screen" id="adminBootScreen" role="status" aria-live="polite">
+        <div class="admin-boot-card">
+            <span class="admin-boot-mark" aria-hidden="true">
+                <img src="/images/logo.png" alt="">
+                <span class="admin-boot-spinner"></span>
+            </span>
+            <strong>Preparing your dashboard</strong>
+            <p>Verifying access and loading administration data.</p>
+        </div>
+    </div>
+
+    <a class="skip-link" href="#appMain">Skip to dashboard content</a>
+
+    <!-- Mobile drawer scrim -->
+    <div class="app-scrim" id="appScrim" hidden></div>
+
+    <div class="app-shell" id="appShell">
+
+        <!-- ============================
+             Sidebar navigation
+             ============================ -->
+        <aside class="app-sidebar" id="appSidebar" aria-label="Administration navigation">
+
+            <div class="app-sidebar-head">
+                <a class="app-brand" href="/" aria-label="The Angutsa Football Championship homepage">
+                    <img class="app-brand-logo" src="/images/logo.png" alt="">
+                    <span class="app-brand-text">
+                        <strong>The Angutsa Football Championship</strong>
+                        <span>Administration</span>
+                    </span>
+                </a>
+
+                <button type="button" class="app-sidebar-close" id="sidebarClose" aria-label="Close navigation">
+                    <span data-icon="close" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <nav class="app-nav" id="appNav" aria-label="Administration sections" data-app-nav></nav>
+
+            <div class="app-sidebar-foot">
+                <div class="app-sidebar-user">
+                    <span class="profile-avatar" data-admin-initials>AD</span>
+                    <span class="app-sidebar-user-text">
+                        <strong data-admin-name>Administrator</strong>
+                        <span data-admin-role>Administrator</span>
+                    </span>
+                </div>
+
+                <p class="app-sidebar-note">
+                    Live competition records are loaded from championship services.
+                </p>
+            </div>
+        </aside>
+
+        <div class="app-body">
+
+            <!-- ============================
+                 Top bar
+                 ============================ -->
+            <header class="app-topbar">
+                <div class="app-topbar-row">
+
+                    <button type="button" class="app-menu-button" id="menuButton"
+                            aria-label="Open navigation menu" aria-expanded="false" aria-controls="appSidebar">
+                        <span class="app-menu-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+                    </button>
+
+                    <button type="button" class="app-rail-toggle" id="railToggle"
+                            aria-label="Collapse sidebar" aria-pressed="false">
+                        <span data-icon="chevronLeft" aria-hidden="true"></span>
+                    </button>
+
+                    <div class="app-topbar-title">
+                        <nav class="app-breadcrumb" aria-label="Breadcrumb">
+                            <a href="#/dashboard">Administration</a>
+                            <span class="breadcrumbs-sep" aria-hidden="true">/</span>
+                            <span id="appCrumb" aria-current="page">Dashboard</span>
+                        </nav>
+                        <h1 class="app-page-title" id="appTitle">Dashboard</h1>
+                    </div>
+
+                    <div class="app-topbar-actions">
+                        <div class="app-search" id="appSearch">
+                            <label class="visually-hidden" for="globalSearch">Search modules, teams, players and fixtures</label>
+                            <span class="app-search-icon" data-icon="search" aria-hidden="true"></span>
+                            <input type="search" id="globalSearch" class="app-search-input"
+                                   placeholder="Search the dashboard" autocomplete="off">
+                            <button type="button" class="app-search-clear" id="globalSearchClear"
+                                    aria-label="Clear search" hidden><span data-icon="close" aria-hidden="true"></span></button>
+                            <div class="app-search-panel" id="globalSearchPanel" hidden></div>
+                            <p class="visually-hidden" id="globalSearchStatus" role="status"></p>
+                        </div>
+
+                        <div class="app-menu" data-menu="notifications">
+                            <button type="button" class="icon-button" id="bellButton"
+                                    aria-label="Notifications" aria-expanded="false" aria-haspopup="true"
+                                    aria-controls="notificationMenu">
+                                <span data-icon="bell" aria-hidden="true"></span>
+                                <span class="icon-button-count" id="bellCount" hidden>0</span>
+                            </button>
+
+                            <div class="app-menu-panel" id="notificationMenu" role="dialog"
+                                 aria-label="Recent notifications" hidden>
+                                <div class="app-menu-head">
+                                    <strong>Notifications</strong>
+                                    <button type="button" class="link-btn" data-action="mark-all-read">Mark all as read</button>
+                                </div>
+                                <div class="app-menu-body" id="menuNotificationList"></div>
+                            </div>
+                        </div>
+
+
+                        <div class="app-menu" data-menu="profile">
+                            <button type="button" class="profile-button" id="profileButton"
+                                    aria-expanded="false" aria-haspopup="true" aria-controls="profileMenu">
+                                <span class="profile-avatar" data-admin-initials>AD</span>
+                                <span class="profile-button-text">
+                                    <strong data-admin-name>Administrator</strong>
+                                    <span data-admin-role>Administrator</span>
+                                </span>
+                                <span class="nav-caret" data-icon="chevron" aria-hidden="true"></span>
+                            </button>
+
+                            <div class="app-menu-panel is-right" id="profileMenu" role="dialog"
+                                 aria-label="Account menu" hidden>
+                                <div class="app-menu-head is-stacked">
+                                    <strong data-admin-name>Administrator</strong>
+                                    <span data-admin-email></span>
+                                    <span class="badge badge-purple" data-admin-role>Administrator</span>
+                                </div>
+                                <button type="button" class="menu-item" data-view-link="settings">
+                                    <span data-icon="user" aria-hidden="true"></span> My Profile
+                                </button>
+                                <button type="button" class="menu-item" data-view-link="settings">
+                                    <span data-icon="settings" aria-hidden="true"></span> Account Settings
+                                </button>
+                                <a class="menu-item" href="/">
+                                    <span data-icon="external" aria-hidden="true"></span> View public website
+                                </a>
+                                <button type="button" class="menu-item is-danger" data-action="sign-out">
+                                    <span data-icon="logout" aria-hidden="true"></span> Sign Out
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ============================
+                 Workspace — every module renders here
+                 ============================ -->
+            <main class="app-main" id="appMain" tabindex="-1">
+                <div class="app-view" id="appView" aria-live="polite"></div>
+            </main>
+
+            <footer class="app-footer">
+                <p>© <span id="appYear">2026</span> The Angutsa Football Championship · Administration dashboard</p>
+
+                <p class="powered-by">Powered by
+                    <a href="https://princealex.digital/" target="_blank" rel="noopener noreferrer">Prince Alex Digital</a>
+                </p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Modal host -->
+    <div id="modalHost"></div>
+
+    <!-- Toast region -->
+    <div class="toast-region" id="toastRegion" role="status" aria-live="polite"></div>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+﻿C:\Users\Alex\Desktop\Angutsa Tournament\filelist.txt
+C:\Users\Alex\Desktop\Angutsa Tournament\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\PROJECT-GUIDE.md
+C:\Users\Alex\Desktop\Angutsa Tournament\strip-blank.ps1
+C:\Users\Alex\Desktop\Angutsa Tournament\_lines124-153.txt
+C:\Users\Alex\Desktop\Angutsa Tournament\_redirects
+C:\Users\Alex\Desktop\Angutsa Tournament\.vscode\settings.json
+C:\Users\Alex\Desktop\Angutsa Tournament\about\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\admin\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\D1-OPTIMIZATION-AUDIT.md
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\worker.js
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\migrations\0001_create_afc_schema.sql
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\migrations\0002_deleted_manager_email_blocklist.sql
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\migrations\0003_media_gallery.sql
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\migrations\0004_auto_approve_fully_paid_registrations.sql
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\migrations\0005_granular_admin_permissions.sql
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\migrations\0006_assign_pending_team_manager_roles.sql
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\migrations\0007_tournament_format_progression.sql
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\migrations\0008_knockout_tiebreak_results.sql
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\migrations\0009_manual_stage_fixtures.sql
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\migrations\0010_optimize_read_indexes.sql
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\migrations\0011_optimize_stage_standings.sql
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\migrations\0012_live_match_clock.sql
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\migrations\0013_automatic_match_clock.sql
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\tests\account-approval.test.mjs
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\tests\d1-optimization.test.mjs
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\tests\email-template.test.mjs
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\tests\firebase-auth.test.mjs
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\tests\granular-permissions.test.mjs
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\tests\password-reset.test.mjs
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\tests\registration-window.test.mjs
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\tests\tournament-format.test.mjs
+C:\Users\Alex\Desktop\Angutsa Tournament\cloudflare\tests\turnstile.test.mjs
+C:\Users\Alex\Desktop\Angutsa Tournament\contact\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\css\about.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\admin.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\base.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\components.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\contact.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\faqs.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\fixtures.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\index.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\login.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\match-center.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\media.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\news-details.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\privacy.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\registration.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\results.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\rich-text.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\standings.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\team-details.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\team-manager-dashboard.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\team-registration.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\teams.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\terms.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\tournament-details.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\tournament-rules.css
+C:\Users\Alex\Desktop\Angutsa Tournament\css\tournaments.css
+C:\Users\Alex\Desktop\Angutsa Tournament\faqs\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\fixtures\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\forgot-password\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\images\hero.png
+C:\Users\Alex\Desktop\Angutsa Tournament\images\hero1.jpg
+C:\Users\Alex\Desktop\Angutsa Tournament\images\hero2.jpg
+C:\Users\Alex\Desktop\Angutsa Tournament\images\image 1.jpeg
+C:\Users\Alex\Desktop\Angutsa Tournament\images\Image 10.jpeg
+C:\Users\Alex\Desktop\Angutsa Tournament\images\image 11.jpeg
+C:\Users\Alex\Desktop\Angutsa Tournament\images\image 12.jpeg
+C:\Users\Alex\Desktop\Angutsa Tournament\images\Image 13.jpeg
+C:\Users\Alex\Desktop\Angutsa Tournament\images\image 2.jpeg
+C:\Users\Alex\Desktop\Angutsa Tournament\images\image 3.jpeg
+C:\Users\Alex\Desktop\Angutsa Tournament\images\image 4.jpeg
+C:\Users\Alex\Desktop\Angutsa Tournament\images\image 5.jpeg
+C:\Users\Alex\Desktop\Angutsa Tournament\images\image 6.jpeg
+C:\Users\Alex\Desktop\Angutsa Tournament\images\image 7.jpeg
+C:\Users\Alex\Desktop\Angutsa Tournament\images\image 8.jpeg
+C:\Users\Alex\Desktop\Angutsa Tournament\images\image 9.jpeg
+C:\Users\Alex\Desktop\Angutsa Tournament\images\logo-original.png
+C:\Users\Alex\Desktop\Angutsa Tournament\images\logo.png
+C:\Users\Alex\Desktop\Angutsa Tournament\images\poster.png
+C:\Users\Alex\Desktop\Angutsa Tournament\js\about.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\action-loading.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\admin.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\auth.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\common.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\contact.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\data.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\eat-time.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\faqs.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\fixtures.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\index.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\match-center.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\media-data.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\media.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\news-details.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\platform-config.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\platform-loader.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\platform.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\privacy.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\public-data-loader.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\registration.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\results.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\rules-data.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\rules-format.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\standings-engine.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\standings.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\team-details.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\team-manager-dashboard.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\team-registration.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\teams.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\terms.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\tournament-details.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\tournament-rules.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\tournaments.js
+C:\Users\Alex\Desktop\Angutsa Tournament\js\turnstile.js
+C:\Users\Alex\Desktop\Angutsa Tournament\login\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\match-center\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\media\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\news\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\news-details\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\privacy\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\registration\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\reset-password\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\results\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\standings\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\team-details\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\team-manager-dashboard\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\team-registration\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\teams\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\terms\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\tournament-details\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\tournament-rules\index.html
+C:\Users\Alex\Desktop\Angutsa Tournament\tournaments\index.html

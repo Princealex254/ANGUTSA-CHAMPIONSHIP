@@ -1,0 +1,216 @@
+/* =========================================
+   ANGUTSA CHAMPIONSHIP — TEAM PROFILE
+   Page-specific styles for team-details.html.
+   Shared panels, tabs, crests and tables come from css/base.css and
+   css/components.css.
+   ========================================= */
+
+/* Crest shown in the team header */
+
+.team-hero-crest {
+    flex-shrink: 0;
+}
+
+.team-hero-crest .crest {
+    width: 92px;
+    height: 92px;
+    border-radius: 24px;
+    border-color: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.94);
+    font-size: 24px;
+    box-shadow: 0 18px 40px rgba(10, 14, 35, 0.35);
+}
+
+/* Squad list */
+
+.squad-list {
+    display: grid;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.squad-row {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1.6fr) minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.squad-row:hover {
+    border-color: #D9D2F5;
+    background: #FCFBFE;
+}
+
+.squad-number {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    color: var(--white);
+    background: var(--navy);
+    font-family: "Manrope", sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.squad-player {
+    min-width: 0;
+}
+
+.squad-player strong {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 800;
+}
+
+.squad-player span {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.squad-role {
+    color: var(--muted-strong);
+    font-size: 10.5px;
+    font-weight: 700;
+}
+
+.squad-stats {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.squad-stats strong {
+    color: var(--navy);
+    font-family: "Manrope", sans-serif;
+    font-size: 12px;
+}
+
+/* Record strip (played / won / drawn / lost) */
+
+.record-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.record-strip > div {
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-muted);
+    text-align: center;
+}
+
+.record-strip strong {
+    display: block;
+    color: var(--navy);
+    font-family: "Manrope", sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.record-strip span {
+    color: var(--muted);
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* Statistics table tweaks */
+
+#panelStatistics .data-table td:first-child {
+    font-weight: 700;
+    color: var(--navy);
+}
+
+/* Achievements list */
+
+.achievement-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 14px;
+    list-style: none;
+}
+
+.achievement-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    font-size: 12px;
+}
+
+.achievement-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    color: #A47C30;
+    background: var(--gold-soft);
+}
+
+.achievement-icon svg {
+    width: 17px;
+    height: 17px;
+}
+
+.achievement-list strong {
+    display: block;
+    font-size: 12.5px;
+}
+
+.achievement-list span {
+    color: var(--muted);
+    font-size: 10.5px;
+}
+
+/* Team notice spacing */
+
+#teamNotice:not(:empty) {
+    margin-bottom: 18px;
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .team-hero-crest .crest {
+        width: 74px;
+        height: 74px;
+        border-radius: 20px;
+        font-size: 19px;
+    }
+}
+
+@media (max-width: 720px) {
+    .squad-row {
+        grid-template-columns: 40px minmax(0, 1fr);
+        gap: 10px 12px;
+    }
+
+    .squad-stats {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+    }
+
+    .record-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

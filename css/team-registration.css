@@ -1,0 +1,699 @@
+/* =========================================
+   ANGUTSA CHAMPIONSHIP — TEAM REGISTRATION
+   Page-specific styles for team-registration.html.
+   Shared buttons, fields, panels and badges live in css/base.css and
+   css/components.css.
+   ========================================= */
+
+/* Page heading and wizard layout */
+
+.team-registration-section {
+    padding-top: 34px;
+}
+
+.registration-heading {
+    margin-bottom: 24px;
+}
+
+.registration-heading .breadcrumbs {
+    margin-bottom: 12px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.registration-heading .breadcrumbs [aria-current="page"] {
+    color: var(--navy);
+}
+
+.registration-heading .breadcrumbs .breadcrumbs-sep {
+    color: var(--border-strong);
+}
+
+.registration-heading h1 {
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+}
+
+.registration-heading > p {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 7px;
+    margin-top: 7px;
+    font-size: 12px;
+}
+
+.registration-heading > p a,
+.registration-help a {
+    color: var(--purple);
+    font-weight: 700;
+}
+
+.wizard-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(270px, 0.85fr);
+    align-items: start;
+    gap: 24px;
+}
+
+.wizard-main {
+    min-width: 0;
+    display: grid;
+    gap: 22px;
+}
+
+.wizard-side {
+    position: sticky;
+    top: 104px;
+    display: grid;
+    gap: 18px;
+}
+
+.registration-summary-panel .panel-body {
+    display: grid;
+    gap: 0;
+}
+
+.registration-summary-title {
+    margin: 18px 0 10px;
+    color: var(--navy);
+    font-size: 11px;
+}
+
+.registration-summary-title:first-of-type {
+    margin-top: 0;
+}
+
+.registration-payment-note {
+    margin-top: 10px;
+}
+
+.registration-help {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.7;
+}
+
+/* Step indicator */
+
+.wizard-steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+    box-shadow: var(--shadow-soft);
+    list-style: none;
+}
+
+.wizard-steps > li {
+    display: flex;
+}
+
+.wizard-step {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    color: var(--muted-strong);
+    font-size: 10.5px;
+    font-weight: 800;
+    white-space: nowrap;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease;
+}
+
+.wizard-step:disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+}
+
+.wizard-step-number {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    background: var(--neutral-soft);
+    color: var(--neutral-text);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.wizard-step.is-active {
+    background: var(--navy);
+    color: var(--white);
+}
+
+.wizard-step.is-active .wizard-step-number {
+    background: var(--gold);
+    color: var(--navy);
+}
+
+.wizard-step.is-complete {
+    color: var(--green-text);
+}
+
+.wizard-step.is-complete .wizard-step-number {
+    background: var(--green-soft);
+    color: var(--green-text);
+}
+
+/* Panels */
+
+.wizard-form {
+    display: grid;
+    gap: 14px;
+}
+
+.wizard-panel {
+    padding: 28px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-soft);
+    scroll-margin-top: 24px;
+}
+
+.wizard-panel[hidden] {
+    display: none;
+}
+
+.wizard-panel-head {
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.wizard-eyebrow {
+    color: var(--purple);
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.wizard-panel-head h2 {
+    margin-top: 10px;
+    font-size: 1.2rem;
+}
+
+.wizard-panel-head p {
+    margin-top: 9px;
+    font-size: 12px;
+    line-height: 1.85;
+}
+
+/* Summary blocks inside panels */
+
+.summary-block {
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-muted);
+}
+
+.summary-block + .summary-block {
+    margin-top: 12px;
+}
+
+.summary-block h4 {
+    font-size: 11.5px;
+    margin-bottom: 10px;
+}
+
+.summary-list {
+    display: grid;
+    gap: 9px;
+    list-style: none;
+}
+
+.summary-list li {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+    color: var(--muted-strong);
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.summary-list li span:last-child {
+    color: var(--navy);
+    font-weight: 700;
+    text-align: right;
+}
+
+.summary-list li.is-missing span:last-child {
+    color: var(--red-text);
+}
+
+/* Radio cards for category selection */
+
+.radio-cards {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.radio-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+    cursor: pointer;
+    transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.radio-card:hover {
+    border-color: #D9D2F5;
+    background: var(--surface-muted);
+}
+
+.radio-card.is-selected,
+.radio-card:has(input:checked) {
+    border-color: var(--purple);
+    background: var(--purple-soft);
+    box-shadow: 0 0 0 1px rgba(91, 75, 189, 0.18);
+}
+
+.radio-card input {
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.radio-card-body {
+    min-width: 0;
+    flex: 1;
+}
+
+.radio-card-body strong {
+    display: block;
+    color: var(--navy);
+    font-size: 12.5px;
+    font-weight: 800;
+}
+
+.radio-card-body span {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.7;
+}
+
+.radio-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+/* Player rows */
+
+.player-rows {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.player-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) 96px 84px minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-muted);
+}
+
+.player-row .form-field {
+    margin-bottom: 0;
+}
+
+.player-row .check {
+    grid-column: 1 / -1;
+    margin-top: 4px;
+}
+
+.player-row .row-remove {
+    align-self: center;
+}
+
+.row-index {
+    grid-column: 1 / -1;
+    color: var(--muted);
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* Upload placeholders */
+
+.upload-slot {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface-muted);
+}
+
+.upload-slot + .upload-slot {
+    margin-top: 12px;
+}
+
+.upload-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    color: var(--purple);
+    background: var(--purple-soft);
+}
+
+.upload-icon svg {
+    width: 19px;
+    height: 19px;
+}
+
+.upload-text {
+    min-width: 0;
+    flex: 1;
+}
+
+.upload-text strong {
+    display: block;
+    font-size: 12px;
+}
+
+.upload-text span {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.7;
+}
+
+/* Fee summary */
+
+.fee-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 16px 18px;
+    border: 1px solid #D9D2F5;
+    border-radius: var(--radius-sm);
+    background: var(--purple-soft);
+}
+
+.fee-total strong {
+    font-family: "Manrope", sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.fee-total span {
+    color: var(--purple-dark);
+    font-size: 10.5px;
+    font-weight: 700;
+}
+
+/* Wizard navigation */
+
+.wizard-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.wizard-nav-meta {
+    color: var(--muted);
+    font-size: 10.5px;
+    font-weight: 700;
+}
+
+.wizard-nav-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.wizard-nav-error {
+    flex: 1 0 100%;
+    margin: 0;
+    color: var(--red-text);
+    font-size: 11px;
+    font-weight: 700;
+    text-align: right;
+}
+
+.checkbox-field {
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+}
+
+.checkbox-field.has-error {
+    border-color: var(--red);
+    background: var(--red-soft);
+}
+
+.checkbox-field.has-error .check {
+    color: var(--red-text);
+}
+
+.checkbox-field.has-error .check input {
+    border-color: var(--red);
+}
+
+.wizard-nav [hidden] {
+    display: none;
+}
+
+.wizard-nav button.is-loading .btn-arrow {
+    display: none;
+}
+
+/* Sidebar summary */
+
+.progress-track.is-thin {
+    height: 5px;
+    margin-top: 12px;
+}
+
+.side-step-list {
+    display: grid;
+    gap: 9px;
+    list-style: none;
+}
+
+.side-step-list li {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--muted);
+    font-size: 10.5px;
+    font-weight: 600;
+}
+
+.side-step-list li.is-done {
+    color: var(--green-text);
+}
+
+.side-step-list li.is-current {
+    color: var(--navy);
+    font-weight: 800;
+}
+
+.side-step-icon {
+    display: grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    background: var(--neutral-soft);
+    color: var(--neutral-text);
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.side-step-list li.is-done .side-step-icon {
+    background: var(--green-soft);
+    color: var(--green-text);
+}
+
+.side-step-list li.is-current .side-step-icon {
+    background: var(--navy);
+    color: var(--white);
+}
+
+/* Confirmation panel after submission */
+
+.confirmation-icon {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    color: var(--white);
+    background: var(--green);
+}
+
+.confirmation-icon svg {
+    width: 26px;
+    height: 26px;
+}
+
+.wizard-confirmation h3 {
+    font-size: 1rem;
+}
+
+/* Rule and requirement lists used inside the wizard panels */
+
+.requirement-list {
+    display: grid;
+    gap: 12px;
+    list-style: none;
+}
+
+.requirement-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    color: var(--muted-strong);
+    font-size: 11.5px;
+    line-height: 1.75;
+}
+
+.requirement-list strong {
+    display: block;
+    color: var(--navy);
+}
+
+.wizard-confirmation {
+    display: grid;
+    gap: 18px;
+    padding: 30px;
+    border: 1px solid #C7E8D8;
+    border-radius: var(--radius);
+    background: var(--green-soft);
+}
+
+.wizard-confirmation h2 {
+    font-size: 1.25rem;
+}
+
+.wizard-confirmation p {
+    color: var(--green-text);
+    font-size: 12.5px;
+    line-height: 1.85;
+}
+
+.confirmation-panel {
+    padding: 20px;
+    border: 1px solid #C7E8D8;
+    border-radius: var(--radius-sm);
+    background: var(--white);
+}
+
+/* Notice spacing */
+
+#wizardAlert:not(:empty) {
+    margin-bottom: 20px;
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .wizard-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .wizard-side {
+        position: static;
+        top: auto;
+    }
+
+    .player-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .team-registration-section {
+        padding-top: 24px;
+    }
+
+    .wizard-side {
+        display: none;
+    }
+
+    .registration-heading {
+        margin-bottom: 18px;
+    }
+
+    .wizard-steps {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scroll-snap-type: inline mandatory;
+    }
+
+    .wizard-steps > li {
+        flex: 0 0 auto;
+        scroll-snap-align: start;
+    }
+
+    .wizard-step {
+        flex: 0 0 auto;
+        padding: 7px 9px;
+    }
+
+    .wizard-panel {
+        padding: 18px;
+    }
+
+    .wizard-step-label {
+        display: inline;
+    }
+
+    .player-row {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .wizard-nav {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .wizard-nav-actions {
+        margin-left: 0;
+    }
+
+    .wizard-nav-actions .btn {
+        flex: 1 1 auto;
+    }
+}

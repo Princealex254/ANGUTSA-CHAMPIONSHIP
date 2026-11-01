@@ -1,0 +1,96 @@
+.tournament-rules-section {
+    min-height: 55vh;
+    padding-top: 30px;
+}
+
+.rules-page-heading {
+    margin: 28px 0 24px;
+}
+
+.rules-page-heading h1 {
+    margin-top: 8px;
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+}
+
+.rules-page-heading > p {
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+.rules-toolbar {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-soft);
+}
+
+.rules-toolbar .form-field {
+    width: min(100%, 460px);
+    margin: 0;
+}
+
+.rules-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 18px;
+    margin: 18px 0 12px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.rules-document,
+.rules-empty {
+    padding: clamp(20px, 4vw, 36px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-soft);
+}
+
+.rules-document h2,
+.rules-empty h2 {
+    margin-bottom: 20px;
+    font-size: clamp(1.2rem, 2.3vw, 1.6rem);
+}
+
+.rules-document-body {
+    color: var(--muted-strong);
+    font-size: 13px;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+}
+
+.rules-document-body.rich-text { font-size: 14px; line-height: 1.8; }
+
+.rules-empty p {
+    margin-bottom: 14px;
+}
+
+@media (max-width: 600px) {
+    .tournament-rules-section {
+        padding-top: 22px;
+    }
+
+    .rules-page-heading {
+        margin: 22px 0 18px;
+    }
+
+    .rules-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 14px;
+    }
+
+    .rules-toolbar .form-field,
+    .rules-toolbar .btn {
+        width: 100%;
+    }
+}

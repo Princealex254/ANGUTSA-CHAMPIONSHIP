@@ -1,0 +1,218 @@
+/* =========================================
+   ANGUTSA CHAMPIONSHIP — RESULTS
+   Page-specific styles for results.html.
+   Shared components live in css/base.css and css/components.css.
+   ========================================= */
+
+/* Featured result cards */
+
+.result-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 34px;
+}
+
+.result-grid .match-card-foot {
+    justify-content: space-between;
+}
+
+/* Featured score emphasis */
+
+.score-cell-wrap {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.result-grid .match-score {
+    font-size: 21px;
+}
+
+.result-grid .match-card.is-final-match {
+    border: 1px solid #C99D3A;
+    background:
+        radial-gradient(circle at 50% 0, rgba(232, 209, 156, 0.2), transparent 52%),
+        var(--surface);
+    box-shadow: 0 12px 30px rgba(116, 83, 11, 0.14);
+}
+
+.result-grid .match-card.is-champion-final {
+    border-color: #A9781E;
+    box-shadow: 0 18px 42px rgba(116, 83, 11, 0.24);
+}
+
+.result-grid .match-card.is-final-match .match-card-head {
+    border-bottom-color: rgba(201, 157, 58, 0.3);
+    background: linear-gradient(105deg, #FFF7DC, #FFFDF7 58%, #EEF5FA);
+}
+
+.result-grid .match-card.is-champion-final .match-team.is-season-champion .crest {
+    border: 2px solid #C99D3A;
+    box-shadow: 0 0 0 3px rgba(215, 181, 109, 0.2);
+}
+
+/* Result records table */
+
+.result-table-panel {
+    margin-bottom: 8px;
+}
+
+#resultTable .score-cell {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 11px;
+    border-radius: 9px;
+    background: var(--navy);
+    color: var(--white);
+    font-family: "Manrope", sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+#resultTable .score-cell.is-draw {
+    background: var(--neutral-soft);
+    color: var(--neutral-text);
+}
+
+#resultTable .team-cell {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+}
+
+#resultTable .team-cell strong {
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#resultTable tr.is-winner {
+    background: #FCFBFE;
+}
+
+#resultTable tr.is-winner .team-cell strong {
+    color: var(--purple-dark);
+}
+
+/* Winning margin hint */
+
+.margin-note {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 9.5px;
+    font-weight: 700;
+}
+
+/* Print button placement */
+
+.result-table-panel .panel-head .btn {
+    flex-shrink: 0;
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .result-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .result-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .result-grid .match-card-body {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        justify-items: stretch;
+        text-align: initial;
+        gap: 8px;
+    }
+
+    .result-grid .match-team,
+    .result-grid .match-team.is-away {
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        gap: 6px;
+    }
+
+    .result-grid .match-team-name {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    .result-grid .match-score {
+        padding: 8px 10px;
+    }
+}
+
+@media (max-width: 359px) {
+    .result-grid .match-card-body {
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: center;
+        text-align: center;
+    }
+
+    .result-grid .match-team,
+    .result-grid .match-team.is-away {
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 768px) {
+    #resultTable th:nth-child(1),
+    #resultTable th:nth-child(2),
+    #resultTable th:nth-child(6),
+    #resultTable th:nth-child(7),
+    #resultTable td:nth-child(1),
+    #resultTable td:nth-child(2),
+    #resultTable td:nth-child(6),
+    #resultTable td:nth-child(7) {
+        display: none !important;
+    }
+
+    #resultTable .team-cell strong {
+        font-size: 11px;
+    }
+
+    #resultTable .score-cell {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+
+    #resultTable .team-cell {
+        gap: 6px;
+    }
+
+    #resultTable .table-wrap {
+        overflow-x: auto;
+    }
+
+    #resultTable {
+        font-size: 12px;
+    }
+}
+
+@media print {
+    .result-grid,
+    #resultPagination,
+    .filter-chips,
+    #resultMeta {
+        display: none !important;
+    }
+
+    #resultTable .score-cell {
+        background: transparent;
+        color: var(--navy);
+        padding: 0;
+    }
+}

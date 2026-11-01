@@ -1,0 +1,115 @@
+/* =========================================
+   ANGUTSA CHAMPIONSHIP — TOURNAMENT DIRECTORY
+   Page-specific styles for tournaments.html.
+   Shared tokens, buttons, forms, tables and cards live in
+   css/base.css and css/components.css.
+
+   The page head (.list-head) is a shared component; only the spacing of
+   this page's own controls is tuned here.
+   ========================================= */
+
+/* -------------------------
+   Directory controls
+   ------------------------- */
+
+/* Status filters use the shared .filter-chips style from css/components.css
+   with a slightly tighter gap before the toolbar. */
+
+.filter-chips {
+    margin-bottom: 16px;
+}
+
+/* Tournament cards in the directory use a fixed media height so every
+   card in a row lines up. */
+
+#tournamentGrid .tournament-card-media {
+    min-height: 158px;
+}
+
+#tournamentGrid .card-body {
+    gap: 0;
+}
+
+#tournamentGrid .tournament-summary {
+    min-height: 62px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Registration progress block */
+
+.registration-progress {
+    margin-top: 16px;
+}
+
+.registration-progress .progress-meta strong {
+    color: var(--navy);
+}
+
+/* Card action row: the primary action fills the space, the secondary
+   action sits beside it. */
+
+#tournamentGrid .card-actions {
+    margin-top: auto;
+    padding-top: 18px;
+}
+
+#tournamentGrid .card-actions .btn {
+    flex: 1 1 46%;
+    min-width: 0;
+}
+
+/* Disabled action used when registration has not opened yet. */
+
+.btn-hint {
+    width: 100%;
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+/* Meta rows inside directory cards */
+
+#tournamentGrid .meta-list {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+#tournamentGrid .meta-list svg {
+    color: var(--purple);
+}
+
+/* Result summary line */
+
+#resultMeta {
+    margin: 0 0 18px;
+}
+
+#resultMeta .badge {
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 10px;
+}
+
+/* Pagination sits below the grid with a clear gap. */
+
+#tournamentPagination {
+    margin-top: 30px;
+}
+
+#tournamentPagination:empty {
+    margin-top: 0;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+    #tournamentGrid .tournament-summary {
+        min-height: auto;
+    }
+}

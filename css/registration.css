@@ -1,0 +1,113 @@
+/* =========================================
+   ANGUTSA CHAMPIONSHIP — ACCOUNT REGISTRATION
+   Page-specific styles for registration.html.
+   Loaded after css/login.css, which provides the shared auth shell
+   (.auth-shell, .auth-aside, .auth-card, .strength-meter, .password-rules).
+   ========================================= */
+
+/* Center the account form without the separate context panel. */
+
+.auth-section {
+    padding: 42px 0 56px;
+}
+
+.auth-shell.is-register-centered {
+    grid-template-columns: minmax(0, 760px);
+    justify-content: center;
+}
+
+.auth-shell.is-register-centered .auth-card {
+    position: relative;
+    overflow: hidden;
+    padding: 34px 38px;
+    border-color: rgba(91, 75, 189, 0.12);
+    box-shadow: 0 24px 70px rgba(16, 21, 46, 0.1);
+}
+
+.auth-shell.is-register-centered .auth-card::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--purple), var(--gold));
+}
+
+.auth-shell.is-register-centered .auth-panel {
+    width: 100%;
+}
+
+.signup-eyebrow {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: var(--purple);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+}
+
+.auth-shell.is-register-centered .auth-card-head h1 {
+    font-size: clamp(1.65rem, 2.6vw, 2.1rem);
+}
+
+.auth-shell.is-register-centered .auth-card-head p {
+    margin-top: 6px;
+}
+
+.auth-shell.is-register-centered .auth-card-head + .auth-form {
+    margin-top: 22px;
+}
+
+/* Two column form grid inside the card */
+
+.signup-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 16px;
+}
+
+.signup-grid .form-field-full {
+    grid-column: 1 / -1;
+}
+
+/* Terms block */
+
+.terms-block {
+    display: grid;
+    gap: 12px;
+    margin: 6px 0 22px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-muted);
+}
+
+.terms-block .check span {
+    font-size: 11px;
+}
+
+.auth-shell.is-register-centered .terms-block {
+    gap: 9px;
+    margin: 4px 0 16px;
+    padding: 13px 15px;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+    .signup-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .auth-section {
+        padding: 28px 0 36px;
+    }
+
+    .auth-shell.is-register-centered .auth-card {
+        padding: 27px 20px 22px;
+    }
+
+}

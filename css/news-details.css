@@ -1,0 +1,233 @@
+/* =========================================
+   ANGUTSA CHAMPIONSHIP — ARTICLE
+   Page-specific styles for news-details.html.
+   Shared panels, cards and share controls come from css/base.css and
+   css/components.css.
+   ========================================= */
+
+/* Article header band */
+
+.article-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 46px 0 40px;
+    background:
+        radial-gradient(circle at 85% 10%, rgba(91, 75, 189, 0.35), transparent 55%),
+        var(--navy);
+    color: var(--white);
+}
+
+.article-hero-inner {
+    max-width: 780px;
+}
+
+.article-hero h1 {
+    margin-top: 16px;
+    color: var(--white);
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+}
+
+.article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin-top: 18px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.article-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.article-meta svg {
+    width: 14px;
+    height: 14px;
+    color: var(--gold);
+}
+
+.article-share {
+    margin-top: 22px;
+}
+
+.article-share .btn {
+    border-color: rgba(255, 255, 255, 0.32);
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.article-share .btn:hover {
+    background: rgba(255, 255, 255, 0.16);
+}
+
+/* Two column reading layout */
+
+.article-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 28px;
+}
+
+.article-side {
+    top: 104px;
+}
+
+/* Article body typography */
+
+.article-body {
+    display: grid;
+    gap: 22px;
+}
+
+.article-cover {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--navy);
+    box-shadow: var(--shadow);
+}
+
+.article-cover img {
+    width: 100%;
+    min-height: 260px;
+    max-height: 420px;
+    object-fit: cover;
+}
+
+.article-copy p {
+    margin-top: 16px;
+    color: var(--muted-strong);
+    font-size: 13.5px;
+    line-height: 1.95;
+}
+
+.article-copy p:first-child {
+    margin-top: 0;
+}
+
+.article-copy p.is-lead {
+    color: var(--navy);
+    font-family: "Manrope", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.85;
+}
+
+.article-copy h2 {
+    margin-top: 26px;
+    font-size: 1.25rem;
+}
+
+.article-quote {
+    padding: 20px 22px;
+    border-left: 3px solid var(--gold);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    background: var(--surface-muted);
+    color: var(--navy);
+    font-family: "Manrope", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.8;
+}
+
+.article-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.article-share-block {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-soft);
+}
+
+.article-share-block p {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* Placeholder notice for demonstration article bodies */
+
+.article-placeholder {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface-muted);
+    color: var(--muted-strong);
+    font-size: 11px;
+    line-height: 1.75;
+}
+
+.article-placeholder svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--purple);
+}
+
+/* Related grid on the article page */
+
+#relatedGrid .card {
+    height: 100%;
+}
+
+#relatedGrid .news-excerpt {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Notice spacing */
+
+#articleNotice:not(:empty) {
+    margin-bottom: 18px;
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .article-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .article-side {
+        position: static;
+        top: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .article-cover img {
+        min-height: 200px;
+    }
+
+    .article-copy p {
+        font-size: 13px;
+    }
+
+    .article-share-block {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

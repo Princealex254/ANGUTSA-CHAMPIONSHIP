@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10152E">
+    <meta name="description" content="Read Angutsa Football Championship articles: match reports, announcements and competition news, with related stories and sharing controls.">
+
+    <title>Article | The Angutsa Football Championship</title>
+
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/news-details.css">
+
+    <script src="/js/data.js" defer></script>
+    <script src="/js/platform-config.js" defer></script>
+    <script src="/js/platform-loader.js" defer></script>
+    <script src="/js/public-data-loader.js" defer></script>
+    <script src="/js/common.js" defer></script>
+    <script src="/js/news-details.js" defer></script>
+</head>
+
+<body>
+
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <!-- Navigation -->
+    <header class="site-header" id="top">
+        <div class="container nav-container">
+
+            <a href="/" class="brand" aria-label="Angutsa Championship homepage">
+                <img class="brand-logo" src="/images/logo.png" alt="The Angutsa Football Championship logo">
+            </a>
+
+            <button class="menu-toggle" id="menuToggle"
+                   aria-label="Open navigation menu"
+                   aria-expanded="false"
+                   aria-controls="mainNav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/tournaments/" class="nav-link">Tournaments</a>
+
+                <div class="nav-group">
+                    <button type="button" class="nav-link nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+                        Fixtures &amp; Results <span class="nav-caret" aria-hidden="true">&#9662;</span>
+                    </button>
+                    <div class="nav-dropdown">
+                        <a href="/fixtures/" class="nav-dropdown-link">Fixtures</a>
+                        <a href="/results/" class="nav-dropdown-link">Results</a>
+                        <a href="/standings/" class="nav-dropdown-link">Standings</a>
+                    </div>
+                </div>
+
+                <a href="/teams/" class="nav-link">Teams</a>
+                <a href="/media/" class="nav-link active" aria-current="page">Media</a>
+                <a href="/contact/" class="nav-link">Contact</a>
+                <a href="/about/" class="nav-link">About</a>
+
+                <a href="/login/" class="nav-login">Sign In</a>
+                <a href="/tournaments/?status=registration-open" class="btn btn-gold nav-cta">Register a Team <span aria-hidden="true">&#8599;</span></a>
+            </nav>
+
+        </div>
+    </header>
+
+    <main id="main">
+
+        <!-- Article header (filled by JavaScript) -->
+        <section class="article-hero" id="articleHero">
+            <div class="container article-hero-inner">
+                <nav class="breadcrumbs is-light" aria-label="Breadcrumb">
+                    <a href="/">Home</a>
+                    <span class="breadcrumbs-sep" aria-hidden="true">/</span>
+                    <a href="/media/">Media</a>
+                    <span class="breadcrumbs-sep" aria-hidden="true">/</span>
+                    <span aria-current="page" id="heroBreadcrumb">Article</span>
+                </nav>
+
+                <span class="badge badge-gold" id="heroCategory">News</span>
+                <h1 id="heroTitle">Article</h1>
+
+                <div class="article-meta" id="heroMeta"></div>
+
+                <div class="share-row article-share">
+                    <span>Share</span>
+                    <button type="button" class="btn btn-dark-outline btn-sm" data-share
+                            data-share-title="The Angutsa Football Championship">
+                        Share article
+                    </button>
+                    <a class="btn btn-dark-outline btn-sm" href="/media/">Back to News</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Article -->
+        <section class="section">
+            <div class="container">
+
+                <div id="dataNotice"></div>
+                <div id="articleNotice"></div>
+
+                <div class="article-layout">
+
+                    <article class="article-body" id="articleBody"></article>
+
+                    <aside class="side-stack article-side" aria-label="Article details">
+
+                        <div class="panel">
+                            <div class="panel-head">
+                                <h3>Article details</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="meta-list is-compact" id="articleFacts"></div>
+                            </div>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel-head">
+                                <h3>Related articles</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="related-news" id="relatedList"></div>
+                            </div>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel-head">
+                                <h3>Follow the championship</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="meta-list is-compact">
+                                    <div><a class="link-btn" href="/fixtures/">Fixtures centre</a></div>
+                                    <div><a class="link-btn" href="/results/">Published results</a></div>
+                                    <div><a class="link-btn" href="/standings/">League tables</a></div>
+                                    <div><a class="link-btn" href="/teams/">Team directory</a></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </aside>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- More stories -->
+        <section class="section band-white">
+            <div class="container">
+
+                <div class="section-heading">
+                    <div>
+                        <div class="eyebrow">
+                            <span class="eyebrow-line"></span>
+                            KEEP READING
+                        </div>
+                        <h2>More from the <span>championship</span></h2>
+                        <p>Match reports, announcements and supporter information.</p>
+                    </div>
+                    <a class="btn btn-dark-outline" href="/media/">All news <span aria-hidden="true">&#8599;</span></a>
+                </div>
+
+                <div class="news-grid" id="relatedGrid"></div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-main">
+
+            <div class="footer-brand">
+                <a href="/" class="brand">
+                    <img class="brand-logo" src="/images/logo.png" alt="The Angutsa Football Championship logo">
+                </a>
+
+                <p>More than a tournament. A community united by football.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4>Championship</h4>
+                <a href="/about/">About Us</a>
+                <a href="/tournaments/">Tournaments</a>
+                <a href="/fixtures/">Fixtures &amp; Results</a>
+                <a href="/teams/">Teams</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Explore</h4>
+                <a href="/media/">Media</a>
+                <a href="/faqs/">FAQs</a>
+                <a href="/tournament-rules/">Rules &amp; Regulations</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Get Involved</h4>
+                <a href="/tournaments/?status=registration-open">Register a Team</a>
+                <a href="/login/">Team Manager Login</a>
+                <a href="/contact/">Contact Us</a>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container footer-bottom-inner">
+                <p>&copy; <span id="currentYear"></span> The Angutsa Football Championship. All rights reserved.</p>
+
+                <nav class="footer-legal" aria-label="Legal">
+                    <a href="/privacy/">Privacy Policy</a>
+                    <a href="/terms/">Terms and Conditions</a>
+                </nav>
+
+                <p class="powered-by">Powered by
+                    <a href="https://princealex.digital/" target="_blank" rel="noopener noreferrer">
+                        Prince Alex Digital
+                    </a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="#top" class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</a>
+
+</body>
+</html>

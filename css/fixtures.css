@@ -1,0 +1,370 @@
+/* =========================================
+   ANGUTSA CHAMPIONSHIP — FIXTURES
+   Page-specific styles for fixtures.html.
+   Shared components live in css/base.css and css/components.css.
+   ========================================= */
+
+/* View switch (list / calendar) */
+
+.view-switch {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.view-switch-label {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.view-switch-meta {
+    margin-left: auto;
+    color: var(--muted);
+    font-size: 10.5px;
+    font-weight: 700;
+}
+
+/* The quick filter chips row uses the shared .filter-chips style
+   defined in css/components.css. */
+
+/* Fixture list grouped by matchday */
+
+.fixture-day-group {
+    margin-bottom: 30px;
+}
+
+.fixture-day-group .match-card {
+    margin-bottom: 14px;
+}
+
+.fixture-day-group .match-card:last-child {
+    margin-bottom: 0;
+}
+
+.day-count {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+/* Placeholder shown when a knockout fixture has no confirmed teams yet */
+
+.match-team.is-pending .crest {
+    border-style: dashed;
+    color: var(--muted);
+}
+
+.match-team.is-pending .match-team-name {
+    color: var(--muted);
+    font-style: italic;
+    font-weight: 700;
+}
+
+/* A fixture note is rendered after the card footer, so it follows the card's
+   inner gutter instead of hugging the border. */
+
+.match-card .match-note {
+    padding: 0 18px 16px;
+}
+
+.match-card .match-card-body .match-score-wrap.is-live { gap: 7px; }
+.match-live-minute {
+    color: var(--red-text);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .08em;
+}
+.calendar-event.is-live {
+    border-left: 3px solid var(--red-text);
+    background: #fff1f1;
+    color: var(--red-text);
+    font-weight: 900;
+}
+
+.match-card.is-final-match {
+    border: 1px solid #C99D3A;
+    background:
+        radial-gradient(circle at 50% 0, rgba(232, 209, 156, 0.24), transparent 52%),
+        var(--surface);
+    box-shadow: 0 16px 38px rgba(116, 83, 11, 0.16);
+}
+
+.match-card.is-final-match::before {
+    content: "";
+    display: block;
+    height: 5px;
+    background: linear-gradient(90deg, #9C6A13, #E8D19C 28%, #FFF1BF 50%, #D7B56D 72%, #9C6A13);
+}
+
+.match-card.is-final-match:hover {
+    border-color: #A9781E;
+    box-shadow: 0 22px 48px rgba(116, 83, 11, 0.22);
+}
+
+.match-card-heading {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.final-match-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border: 1px solid rgba(126, 87, 16, 0.25);
+    border-radius: 999px;
+    background: linear-gradient(110deg, #E7C46E, #FFF0BB 55%, #D5A63D);
+    color: #263044;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.final-match-badge svg {
+    width: 13px;
+    height: 13px;
+    color: #80570D;
+}
+
+.match-card.is-final-match .match-card-head {
+    border-bottom-color: rgba(201, 157, 58, 0.3);
+    background: linear-gradient(105deg, #FFF7DC, #FFFDF7 58%, #EEF5FA);
+}
+
+.match-card.is-final-match .match-card-head .stage-label {
+    color: var(--navy);
+}
+
+.match-card.is-final-match .match-card-body {
+    background: radial-gradient(circle at center, rgba(232, 209, 156, 0.18), transparent 48%);
+}
+
+.match-card.is-final-match .match-team-name {
+    font-size: 14px;
+}
+
+.match-card.is-champion-final {
+    border-color: #A9781E;
+    box-shadow: 0 18px 42px rgba(116, 83, 11, 0.24);
+}
+
+.match-card.is-champion-final .match-team.is-season-champion .match-team-name {
+    color: #765819;
+}
+
+.match-card.is-champion-final .match-team.is-season-champion .crest {
+    border: 2px solid #C99D3A;
+    box-shadow: 0 0 0 3px rgba(215, 181, 109, 0.2);
+}
+
+.match-card.is-final-match .match-score:not(.is-pending) {
+    border: 1px solid rgba(215, 181, 109, 0.75);
+    background: linear-gradient(135deg, #11283E, #244C69);
+    box-shadow: 0 8px 22px rgba(17, 40, 62, 0.2);
+    font-size: 22px;
+}
+
+.calendar-event.is-final-match {
+    border-left: 3px solid #B78520;
+    background: linear-gradient(110deg, #F6E4AE, #FFF9E8);
+    box-shadow: 0 3px 10px rgba(116, 83, 11, 0.12);
+    color: var(--navy);
+    font-weight: 900;
+}
+
+.calendar-event.is-final-match:hover {
+    background: linear-gradient(110deg, #E8D19C, #FFF4D1);
+    color: var(--navy);
+}
+
+/* Calendar navigation */
+
+.calendar-nav {
+    display: flex;
+    gap: 6px;
+}
+
+.calendar-day .calendar-event {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.calendar-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.calendar-legend i {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    background: var(--purple);
+}
+
+.calendar-legend i.is-completed {
+    background: var(--green);
+}
+
+.calendar-legend i.is-scheduled {
+    background: var(--gold);
+}
+
+/* Result summary line */
+
+#resultMeta {
+    margin-bottom: 20px;
+}
+
+#resultMeta .badge {
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 10px;
+}
+
+/* Live data note */
+
+#liveNotice:not(:empty) {
+    margin-bottom: 18px;
+}
+
+/* -------------------------
+   Responsive
+   ------------------------- */
+
+@media (max-width: 900px) {
+    .view-switch-meta {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .calendar-nav {
+        margin-left: auto;
+    }
+}
+
+/* Phones.
+   The toolbar keeps its search box on its own row and pairs the remaining
+   selects two-up wherever the option text still fits, the match cards fall
+   back to the single centred column defined in css/components.css, and the
+   month grid scrolls sideways rather than squeezing seven days into two
+   columns with no weekday labels. */
+
+@media (max-width: 700px) {
+    .calendar {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .calendar-weekdays,
+    .calendar-grid {
+        grid-template-columns: repeat(7, minmax(104px, 1fr));
+        min-width: 728px;
+    }
+
+    .calendar-weekdays span:nth-child(n+3) {
+        display: block;
+    }
+
+    .calendar-day {
+        min-height: 96px;
+    }
+}
+
+@media (max-width: 640px) {
+    /* Higher specificity than .toolbar .form-field below so the search box
+       always keeps a row of its own. */
+    .toolbar .form-field.toolbar-search {
+        flex: 1 1 100%;
+    }
+
+    .toolbar .form-field {
+        flex: 1 1 calc(50% - 6px);
+        min-width: 132px;
+    }
+
+    .toolbar-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .fixture-day-group {
+        margin-bottom: 24px;
+    }
+
+    .fixture-day-group .match-card {
+        margin-bottom: 12px;
+    }
+
+    .fixture-day-group .match-card-head,
+    .fixture-day-group .match-card-body,
+    .fixture-day-group .match-card-foot {
+        padding-inline: 14px;
+    }
+
+    .fixture-day-group .match-card-body {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        justify-items: stretch;
+        text-align: initial;
+        gap: 8px;
+    }
+
+    .fixture-day-group .match-team,
+    .fixture-day-group .match-team.is-away {
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        gap: 6px;
+    }
+
+    .fixture-day-group .match-team-name {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+    }
+
+    .fixture-day-group .match-score {
+        padding: 8px 10px;
+    }
+
+    .fixture-day-group .match-card-foot .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .match-card .match-note {
+        padding: 0 14px 14px;
+    }
+}
+
+@media (max-width: 359px) {
+    .fixture-day-group .match-card-body {
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: center;
+        text-align: center;
+    }
+
+    .fixture-day-group .match-team,
+    .fixture-day-group .match-team.is-away {
+        flex-direction: row;
+    }
+}

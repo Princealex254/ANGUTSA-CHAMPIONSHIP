@@ -1,0 +1,435 @@
+/* =========================================
+   ANGUTSA CHAMPIONSHIP — AUTHENTICATION SHELL
+   Shared layout for the authentication and account screens:
+     login.html, forgot-password.html, reset-password.html and
+     registration.html (which also loads css/registration.css)
+
+   Keeping the shell in one file avoids duplicating the same layout
+   rules across four pages. Form primitives (fields, checks, buttons)
+   live in css/base.css.
+   ========================================= */
+
+body.auth-page {
+    background:
+        radial-gradient(circle at 85% 0%, rgba(91, 75, 189, 0.08), transparent 45%),
+        linear-gradient(rgba(246, 247, 251, 0.84), rgba(246, 247, 251, 0.84)),
+        url("../images/hero2.jpg") center / cover no-repeat,
+        var(--background);
+}
+
+.auth-section {
+    padding: 60px 0 72px;
+}
+
+/* Two column layout: context on the left, form on the right */
+
+.auth-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 460px);
+    align-items: start;
+    gap: 34px;
+}
+
+.auth-shell.is-wide {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 620px);
+}
+
+.auth-shell.is-centred {
+    grid-template-columns: minmax(0, 560px);
+    justify-content: center;
+}
+
+.auth-shell.is-login-centered {
+    grid-template-columns: minmax(0, 520px);
+    justify-content: center;
+}
+
+.auth-shell.is-login-centered .auth-card {
+    position: relative;
+    overflow: hidden;
+    padding: 34px 38px;
+    border-color: rgba(91, 75, 189, 0.12);
+    box-shadow: 0 24px 70px rgba(16, 21, 46, 0.1);
+}
+
+.auth-shell.is-login-centered .auth-card::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--purple), var(--gold));
+}
+
+.login-eyebrow {
+    display: inline-block;
+    margin-bottom: 8px;
+    color: var(--purple);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+}
+
+.auth-shell.is-login-centered .auth-card-head h1 {
+    font-size: clamp(1.65rem, 2.6vw, 2.1rem);
+}
+
+.auth-shell.is-login-centered .auth-card-head p {
+    margin-top: 6px;
+}
+
+.auth-shell.is-login-centered .auth-card-head + .auth-form {
+    margin-top: 22px;
+}
+
+.login-prototype-note {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+/* Context column */
+
+.auth-aside {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 34px;
+    border-radius: var(--radius-lg);
+    background:
+        radial-gradient(circle at 88% 8%, rgba(91, 75, 189, 0.42), transparent 55%),
+        var(--navy);
+    color: var(--white);
+    box-shadow: var(--shadow);
+}
+
+.auth-aside::after {
+    position: absolute;
+    content: "";
+    inset: 0;
+    z-index: -1;
+    opacity: 0.1;
+    background-image: radial-gradient(var(--gold) 0.7px, transparent 0.7px);
+    background-size: 22px 22px;
+    mask-image: linear-gradient(160deg, black, transparent 70%);
+}
+
+.auth-aside h2 {
+    margin-top: 16px;
+    color: var(--white);
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+}
+
+.auth-aside > p {
+    margin-top: 14px;
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 12.5px;
+    line-height: 1.9;
+}
+
+.auth-benefits {
+    display: grid;
+    gap: 13px;
+    margin-top: 24px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+    list-style: none;
+}
+
+.auth-benefits li {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.7;
+}
+
+.auth-aside-note {
+    margin-top: 26px;
+    padding: 14px 16px;
+    border: 1px solid rgba(215, 181, 109, 0.4);
+    border-radius: var(--radius-sm);
+    background: rgba(215, 181, 109, 0.12);
+    color: var(--gold-light);
+    font-size: 10.5px;
+    line-height: 1.75;
+}
+
+.auth-aside-note strong {
+    color: var(--white);
+}
+
+/* Form column */
+
+.auth-panel {
+    display: grid;
+    gap: 16px;
+}
+
+.auth-card {
+    padding: 30px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.auth-card-head h1 {
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+}
+
+.auth-card-head p {
+    margin-top: 9px;
+    font-size: 12.5px;
+}
+
+.auth-card-head + .auth-form {
+    margin-top: 24px;
+}
+
+.auth-footnote {
+    color: var(--muted);
+    font-size: 10.5px;
+    text-align: center;
+}
+
+.auth-footnote a {
+    color: var(--purple);
+    font-weight: 800;
+}
+
+/* Rows, dividers and alternative actions inside the form */
+
+.auth-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.auth-divider {
+    position: relative;
+    margin: 24px 0 18px;
+    text-align: center;
+}
+
+.auth-divider::before {
+    position: absolute;
+    content: "";
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: var(--border);
+}
+
+.auth-divider span {
+    position: relative;
+    padding: 0 12px;
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.auth-alt-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.auth-alt-actions .btn {
+    width: 100%;
+}
+
+/* Guidance list used by the reset and registration screens */
+
+.auth-steps {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+    padding-left: 20px;
+    color: var(--muted-strong);
+    font-size: 11.5px;
+    line-height: 1.8;
+}
+
+.auth-steps li::marker {
+    color: var(--purple);
+    font-weight: 800;
+}
+
+/* Password strength meter */
+
+.strength-meter {
+    margin-top: 10px;
+}
+
+.strength-bar {
+    height: 5px;
+    border-radius: 999px;
+    background: var(--neutral-soft);
+    overflow: hidden;
+}
+
+.strength-bar span {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--red);
+    transition: width 0.25s ease, background 0.25s ease;
+}
+
+.strength-meter[data-score="1"] .strength-bar span,
+.strength-meter[data-score="2"] .strength-bar span {
+    background: var(--amber);
+}
+
+.strength-meter[data-score="3"] .strength-bar span {
+    background: var(--gold);
+}
+
+.strength-meter[data-score="4"] .strength-bar span,
+.strength-meter[data-score="5"] .strength-bar span {
+    background: var(--green);
+}
+
+.strength-label {
+    display: block;
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+}
+
+/* Inline notices inside the auth cards */
+
+.auth-form .alert {
+    margin-bottom: 20px;
+}
+
+#authAlert:not(:empty) {
+    margin-bottom: 20px;
+}
+
+/* Password requirement checklist */
+
+.password-rules {
+    display: grid;
+    gap: 7px;
+    margin-top: 12px;
+    list-style: none;
+}
+
+.password-rules li {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--muted);
+    font-size: 10.5px;
+    font-weight: 600;
+}
+
+.password-rules li::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border-strong);
+}
+
+.password-rules li.is-met {
+    color: var(--green-text);
+}
+
+.password-rules li.is-met::before {
+    background: var(--green);
+}
+
+/* Confirmation panel shown after a form is submitted */
+
+.auth-confirmation {
+    display: grid;
+    gap: 16px;
+    padding: 26px;
+    border: 1px solid #C7E8D8;
+    border-radius: var(--radius);
+    background: var(--green-soft);
+    text-align: center;
+}
+
+.auth-confirmation-icon {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    margin-inline: auto;
+    border-radius: 16px;
+    color: var(--white);
+    background: var(--green);
+}
+
+.auth-confirmation-icon svg {
+    width: 26px;
+    height: 26px;
+}
+
+.auth-confirmation h2 {
+    font-size: 1.15rem;
+}
+
+.auth-confirmation p {
+    color: var(--green-text);
+    font-size: 12px;
+    line-height: 1.85;
+}
+
+.auth-confirmation .btn-row {
+    justify-content: center;
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .auth-shell,
+    .auth-shell.is-wide {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .auth-aside {
+        padding: 28px;
+    }
+}
+
+@media (max-width: 600px) {
+    .auth-section {
+        padding: 40px 0 54px;
+    }
+
+    .auth-card {
+        padding: 22px;
+    }
+
+    .auth-shell.is-login-centered .auth-card {
+        padding: 27px 20px 22px;
+    }
+
+    .auth-alt-actions {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .auth-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

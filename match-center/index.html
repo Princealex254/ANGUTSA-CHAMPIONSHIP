@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10152E">
+    <meta name="description" content="Match details, score and fixture information from The Angutsa Football Championship.">
+
+    <title>Match Centre | The Angutsa Football Championship</title>
+
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/match-center.css">
+
+    <script src="/js/data.js" defer></script>
+    <script src="/js/platform-config.js" defer></script>
+    <script src="/js/platform-loader.js" defer></script>
+    <script src="/js/public-data-loader.js" defer></script>
+    <script src="/js/common.js" defer></script>
+    <script src="/js/match-center.js" defer></script>
+</head>
+
+<body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <header class="site-header" id="top">
+        <div class="container nav-container">
+            <a href="/" class="brand" aria-label="Angutsa Championship homepage">
+                <img class="brand-logo" src="/images/logo.png" alt="The Angutsa Football Championship logo">
+            </a>
+
+            <button class="menu-toggle" id="menuToggle"
+                    aria-label="Open navigation menu"
+                    aria-expanded="false"
+                    aria-controls="mainNav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/tournaments/" class="nav-link">Tournaments</a>
+
+                <div class="nav-group">
+                    <button type="button" class="nav-link nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+                        Fixtures &amp; Results <span class="nav-caret" aria-hidden="true">&#9662;</span>
+                    </button>
+                    <div class="nav-dropdown">
+                        <a href="/fixtures/" class="nav-dropdown-link">Fixtures</a>
+                        <a href="/results/" class="nav-dropdown-link">Results</a>
+                        <a href="/standings/" class="nav-dropdown-link">Standings</a>
+                    </div>
+                </div>
+
+                <a href="/teams/" class="nav-link">Teams</a>
+                <a href="/media/" class="nav-link">Media</a>
+                <a href="/contact/" class="nav-link">Contact</a>
+                <a href="/about/" class="nav-link">About</a>
+                <a href="/login/" class="nav-login">Sign In</a>
+                <a href="/tournaments/?status=registration-open" class="btn btn-gold nav-cta">Register a Team <span aria-hidden="true">&#8599;</span></a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="section section-tight">
+            <div class="container">
+                <nav class="breadcrumbs is-light" aria-label="Breadcrumb">
+                    <a href="/">Home</a>
+                    <span class="breadcrumbs-sep" aria-hidden="true">/</span>
+                    <a href="/fixtures/">Fixtures</a>
+                    <span class="breadcrumbs-sep" aria-hidden="true">/</span>
+                    <span aria-current="page">Match Centre</span>
+                </nav>
+
+                <div id="dataNotice"></div>
+                <div id="matchNotice" aria-live="polite"></div>
+                <div id="matchDetails" aria-live="polite"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-main">
+            <div class="footer-brand">
+                <a href="/" class="brand">
+                    <img class="brand-logo" src="/images/logo.png" alt="The Angutsa Football Championship logo">
+                </a>
+                <p>More than a tournament. A community united by football.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4>Championship</h4>
+                <a href="/about/">About Us</a>
+                <a href="/tournaments/">Tournaments</a>
+                <a href="/fixtures/">Fixtures &amp; Results</a>
+                <a href="/teams/">Teams</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Explore</h4>
+                <a href="/media/">Media</a>
+                <a href="/faqs/">FAQs</a>
+                <a href="/tournament-rules/">Rules &amp; Regulations</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Get Involved</h4>
+                <a href="/tournaments/?status=registration-open">Register a Team</a>
+                <a href="/login/">Team Manager Login</a>
+                <a href="/contact/">Contact Us</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container footer-bottom-inner">
+                <p>&copy; <span id="currentYear"></span> The Angutsa Football Championship. All rights reserved.</p>
+                <nav class="footer-legal" aria-label="Legal">
+                    <a href="/privacy/">Privacy Policy</a>
+                    <a href="/terms/">Terms and Conditions</a>
+                </nav>
+                <p class="powered-by">Powered by
+                    <a href="https://princealex.digital/" target="_blank" rel="noopener noreferrer">
+                        Prince Alex Digital
+                    </a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="#top" class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</a>
+</body>
+</html>

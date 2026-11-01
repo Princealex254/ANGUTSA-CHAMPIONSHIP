@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10152E">
+    <meta name="description" content="Create an Angutsa Football Championship account to register a team, manage a squad and follow the competition.">
+
+    <title>Create Account | The Angutsa Football Championship</title>
+
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/css/registration.css">
+
+    <script src="/js/data.js" defer></script>
+    <script src="/js/common.js" defer></script>
+    <script src="/js/platform-config.js" defer></script>
+    <script src="/js/turnstile.js" defer></script>
+    <script src="/js/platform-loader.js" defer></script>
+    <script src="/js/registration.js" defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+</head>
+
+<body class="auth-page">
+
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <header class="site-header" id="top">
+        <div class="container nav-container">
+
+            <a href="/" class="brand" aria-label="Angutsa Championship homepage">
+                <img class="brand-logo" src="/images/logo.png" alt="The Angutsa Football Championship logo">
+            </a>
+
+            <button class="menu-toggle" id="menuToggle"
+                    aria-label="Open navigation menu"
+                    aria-expanded="false"
+                    aria-controls="mainNav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/tournaments/" class="nav-link">Tournaments</a>
+
+                <div class="nav-group">
+                    <button type="button" class="nav-link nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+                        Fixtures &amp; Results <span class="nav-caret" aria-hidden="true">&#9662;</span>
+                    </button>
+                    <div class="nav-dropdown">
+                        <a href="/fixtures/" class="nav-dropdown-link">Fixtures</a>
+                        <a href="/results/" class="nav-dropdown-link">Results</a>
+                        <a href="/standings/" class="nav-dropdown-link">Standings</a>
+                    </div>
+                </div>
+
+                <a href="/teams/" class="nav-link">Teams</a>
+                <a href="/media/" class="nav-link">Media</a>
+                <a href="/contact/" class="nav-link">Contact</a>
+                <a href="/about/" class="nav-link">About</a>
+
+                <a href="/login/" class="nav-login">Sign In</a>
+                <a href="/tournaments/?status=registration-open" class="btn btn-gold nav-cta">Register a Team <span aria-hidden="true">&#8599;</span></a>
+            </nav>
+
+        </div>
+    </header>
+
+    <main id="main">
+
+        <section class="auth-section">
+            <div class="container auth-shell is-register-centered">
+
+                <div class="auth-panel">
+                    <div class="auth-card">
+                        <header class="auth-card-head">
+                            <span class="signup-eyebrow">ANGUTSA CHAMPIONSHIP</span>
+                            <h1>Create an account</h1>
+                            <p>Create a Team Manager account. The competition owner must approve it before you can register a team.</p>
+                        </header>
+
+                        <form class="auth-form" id="registrationForm" novalidate>
+
+                            <div id="authAlert" aria-live="polite"></div>
+
+                            <div class="signup-grid">
+
+                                <div class="form-field form-field-full">
+                                    <label class="form-label" for="regName">
+                                        Full name <span class="required">*</span>
+                                    </label>
+                                    <input class="form-control" type="text" id="regName" name="regName"
+                                           autocomplete="name" placeholder="e.g. Peter Mwaura">
+                                    <p class="form-error" role="alert"></p>
+                                </div>
+
+                                <div class="form-field">
+                                    <label class="form-label" for="regEmail">
+                                        Email address <span class="required">*</span>
+                                    </label>
+                                    <input class="form-control" type="email" id="regEmail" name="regEmail"
+                                           autocomplete="email" spellcheck="false" placeholder="you@example.com">
+                                    <p class="form-error" role="alert"></p>
+                                </div>
+
+                                <div class="form-field">
+                                    <label class="form-label" for="regPhone">
+                                        Mobile number <span class="required">*</span>
+                                    </label>
+                                    <input class="form-control" type="tel" id="regPhone" name="regPhone"
+                                           autocomplete="tel" placeholder="0712 345 678">
+                                    <p class="form-error" role="alert"></p>
+                                </div>
+
+                                <div class="form-field form-field-full">
+                                    <span class="form-label">Account type</span>
+                                    <p class="form-note">Team Manager</p>
+                                    <input type="hidden" id="accountType" name="accountType" value="team-manager">
+                                </div>
+
+                                <div class="form-field">
+                                    <label class="form-label" for="regPassword">
+                                        Password <span class="required">*</span>
+                                    </label>
+                                    <div class="input-group has-action">
+                                        <input class="form-control" type="password" id="regPassword"
+                                               name="regPassword" autocomplete="new-password"
+                                               minlength="6"
+                                               placeholder="Choose a password">
+                                        <button type="button" class="input-action" data-toggle-password="regPassword"
+                                                aria-pressed="false" aria-label="Show password">Show</button>
+                                    </div>
+                                    <p class="form-hint">Use at least 6 characters.</p>
+                                    <p class="form-error" role="alert"></p>
+                                </div>
+
+                                <div class="form-field">
+                                    <label class="form-label" for="regConfirm">
+                                        Confirm password <span class="required">*</span>
+                                    </label>
+                                    <div class="input-group has-action">
+                                        <input class="form-control" type="password" id="regConfirm"
+                                               name="regConfirm" autocomplete="new-password"
+                                               placeholder="Repeat your password">
+                                        <button type="button" class="input-action" data-toggle-password="regConfirm"
+                                                aria-pressed="false" aria-label="Show password">Show</button>
+                                    </div>
+                                    <p class="form-error" role="alert"></p>
+                                </div>
+
+                                <div class="form-field form-field-full">
+                                    <div class="terms-block">
+                                        <label class="check">
+                                            <input type="checkbox" id="acceptTerms" name="acceptTerms">
+                                            <span>
+                                                I accept the <a href="/terms/">terms and conditions</a>
+                                                and acknowledge the <a href="/privacy/">privacy policy</a>.
+                                            </span>
+                                        </label>
+                                        <p class="form-error" role="alert"></p>
+
+                                        <label class="check">
+                                            <input type="checkbox" id="acceptUpdates" name="acceptUpdates">
+                                            <span>Send me championship updates and fixtures by email (optional).</span>
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="form-field form-field-full">
+                                <div id="accountRegistrationTurnstile" aria-label="Security check"></div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-large btn-block" id="regSubmit">
+                                Create account
+                            </button>
+
+                            <div class="auth-divider"><span>Already registered?</span></div>
+
+                            <div class="auth-alt-actions">
+                                <a class="btn btn-dark-outline" href="/login/">Sign in</a>
+                                <a class="btn btn-dark-outline" href="/tournaments/?status=registration-open">Register a team</a>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <p class="auth-footnote">
+                        Need help? <a href="/contact/">Contact the competitions office</a>.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-main">
+
+            <div class="footer-brand">
+                <a href="/" class="brand">
+                    <img class="brand-logo" src="/images/logo.png" alt="The Angutsa Football Championship logo">
+                </a>
+
+                <p>More than a tournament. A community united by football.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4>Championship</h4>
+                <a href="/about/">About Us</a>
+                <a href="/tournaments/">Tournaments</a>
+                <a href="/fixtures/">Fixtures &amp; Results</a>
+                <a href="/teams/">Teams</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Explore</h4>
+                <a href="/media/">Media</a>
+                <a href="/faqs/">FAQs</a>
+                <a href="/tournament-rules/">Rules &amp; Regulations</a>
+            </div>
+
+            <div class="footer-column">
+                <h4>Get Involved</h4>
+                <a href="/tournaments/?status=registration-open">Register a Team</a>
+                <a href="/login/">Team Manager Login</a>
+                <a href="/contact/">Contact Us</a>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container footer-bottom-inner">
+                <p>&copy; <span id="currentYear"></span> The Angutsa Football Championship. All rights reserved.</p>
+
+                <nav class="footer-legal" aria-label="Legal">
+                    <a href="/privacy/">Privacy Policy</a>
+                    <a href="/terms/">Terms &amp; Conditions</a>
+                </nav>
+
+                <p class="powered-by">Powered by
+                    <a href="https://princealex.digital/" target="_blank" rel="noopener noreferrer">
+                        Prince Alex Digital
+                    </a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="#top" class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</a>
+
+
+
+
+
+</body>
+</html>
