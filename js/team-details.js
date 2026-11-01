@@ -150,9 +150,7 @@
 
         var privacy = manager && manager.public !== false
             ? "<p><strong>" + U.escapeHtml(manager.role) + ":</strong> " +
-              U.escapeHtml(manager.name) + "</p>" +
-              '<p class="form-note">Only the display name is published. Contact details are held by the ' +
-              "competitions office and are never shown publicly.</p>"
+              U.escapeHtml(manager.name) + "</p>"
             : "<p>Team official details are not published for this team.</p>" +
               '<p class="form-note">Managers choose whether their display name appears in the directory.</p>';
 
