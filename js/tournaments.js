@@ -297,19 +297,9 @@
                     other.setAttribute("aria-pressed", String(isActive));
                 });
 
-                var mobileStatus = document.getElementById("mobileStatusFilter");
-                if (mobileStatus) mobileStatus.value = state.status;
                 render();
             });
         });
-
-        var mobileStatus = document.getElementById("mobileStatusFilter");
-        if (mobileStatus) {
-            U.on(mobileStatus, "change", function () {
-                var selectedChip = document.querySelector('[data-status="' + mobileStatus.value + '"]');
-                if (selectedChip) selectedChip.click();
-            });
-        }
     }
 
     function resetFilters() {
@@ -326,9 +316,6 @@
             chip.classList.toggle("is-active", isAll);
             chip.setAttribute("aria-pressed", String(isAll));
         });
-
-        var mobileStatus = document.getElementById("mobileStatusFilter");
-        if (mobileStatus) mobileStatus.value = "all";
 
         U.$$("[data-filter]", els.scope || document).forEach(function (control) {
             control.value = control.defaultValue || "";
@@ -356,8 +343,6 @@
                     other.classList.toggle("is-active", isActive);
                     other.setAttribute("aria-pressed", String(isActive));
                 });
-                var mobileStatus = document.getElementById("mobileStatusFilter");
-                if (mobileStatus) mobileStatus.value = state.status;
             }
         }
 

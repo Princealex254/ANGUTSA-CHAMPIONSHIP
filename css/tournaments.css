@@ -19,14 +19,6 @@
     margin-bottom: 16px;
 }
 
-.mobile-status-filter {
-    display: none;
-}
-
-.mobile-status-filter .form-control {
-    width: 100%;
-}
-
 /* Tournament cards in the directory use a fixed media height so every
    card in a row lines up. */
 
@@ -119,68 +111,5 @@
 @media (max-width: 900px) {
     #tournamentGrid .tournament-summary {
         min-height: auto;
-    }
-}
-
-@media (max-width: 600px) {
-    .tournament-directory-section {
-        padding: 22px 0 34px;
-    }
-
-    .tournament-directory-section .breadcrumbs {
-        margin-bottom: 10px;
-    }
-
-    .tournament-directory-section .list-head {
-        gap: 0;
-        margin: 8px 0 14px;
-        padding-bottom: 14px;
-    }
-
-    .tournament-directory-section .list-head h1 {
-        margin-top: 8px;
-    }
-
-    .tournament-directory-section .list-head p {
-        margin-top: 7px;
-        line-height: 1.65;
-    }
-
-    .tournament-directory-section .filter-chips {
-        display: none;
-    }
-
-    .mobile-status-filter {
-        display: block;
-        margin-bottom: 12px;
-    }
-
-    #resultMeta {
-        margin-bottom: 12px;
-    }
-
-    #tournamentGrid {
-        gap: 14px;
-    }
-
-    #tournamentGrid .tournament-card-media {
-        min-height: 128px;
-    }
-
-    #tournamentGrid .card-body {
-        padding: 16px;
-    }
-
-    #tournamentGrid .meta-list {
-        margin-top: 12px;
-        padding-top: 12px;
-    }
-
-    #tournamentGrid .card-actions {
-        padding-top: 12px;
-    }
-
-    #tournamentPagination {
-        margin-top: 18px;
     }
 }
