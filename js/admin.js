@@ -1256,6 +1256,8 @@ window.AngutsaAdmin = (function () {
         reportTo: "2026-12-31",
         financeTournament: "all",
         rulesCategory: "CAT-01",
+        rulesAcknowledgments: { ruleId: "", loading: false, data: null, error: "" },
+        ruleReminderSending: false,
         searchQuery: "",
         managementTournament: "TRN-01",
         managementStage: "groups",
@@ -6948,9 +6950,16 @@ window.AngutsaAdmin = (function () {
         });
     }
 
+    function publishedRulesFor(categoryId) {
+        return rulesFor(categoryId).filter(function (rule) {
+            return rule.state === "published";
+        });
+    }
+
     function renderRules() {
         var rules = rulesFor(state.rulesCategory);
         var current = rules.length ? rules[0] : null;
+        var publishedRule = publishedRulesFor(state.rulesCategory)[0] || null;
 
         var editor = current
             ? '<form class="form" id="rulesForm" novalidate>' +
@@ -6995,10 +7004,16 @@ window.AngutsaAdmin = (function () {
                 badge("Last updated " + formatDate(current.updated), "purple") +
                 badge("Category: " + categoryName(current.categoryId)) + "</div>"
             : "";
+        var acknowledgmentPanel = "";
+        if (publishedRule) {
+            if (state.rulesAcknowledgments.ruleId !== publishedRule.id) {
+                loadRuleAcknowledgments(publishedRule.id);
+            }
+            acknowledgmentPanel = renderRuleAcknowledgments(publishedRule);
+        }
 
         return '<div class="page-head"><div>' +
-            "<p>Draft the rules and regulations per competition category, preview them and control " +
-            "when they are published.</p></div>" +
+            "<p>Draft and publish competition rules, then track manager acknowledgments and send reminders.</p></div>" +
             '<div class="page-head-actions">' +
             '<button type="button" class="btn btn-primary" data-action="create" data-module="rules">' +
             icon("plus") + "New rules document</button></div></div>" +
@@ -7006,7 +7021,102 @@ window.AngutsaAdmin = (function () {
             statusLine +
             card("Rules editor", editor, {
                 subtitle: current ? current.title : "No document selected for this category"
-            });
+            }) + acknowledgmentPanel;
+    }
+
+    function renderRuleAcknowledgments(rule) {
+        var report = state.rulesAcknowledgments;
+        var canSendReminders = hasAdminPermission("rules.edit");
+        var refreshButton = '<button type="button" class="btn btn-outline btn-sm" data-action="refresh-rule-acknowledgments"' +
+            (report.loading ? " disabled" : "") + ">Refresh</button>";
+        var headerActions = '<div class="page-head-actions">' + refreshButton + "</div>";
+
+        if (report.loading || report.ruleId !== rule.id) {
+            return '<section class="section-block"><div class="page-head"><div><h2>Manager acknowledgments</h2>' +
+                "<p>Loading manager acknowledgment records...</p></div>" + headerActions + "</div></section>";
+        }
+        if (report.error) {
+            return '<section class="section-block"><div class="page-head"><div><h2>Manager acknowledgments</h2>' +
+                '<p class="form-error">' + esc(report.error) + "</p></div>" +
+                '<div class="page-head-actions"><button type="button" class="btn btn-outline btn-sm" ' +
+                'data-action="refresh-rule-acknowledgments">Try again</button></div></div></section>';
+        }
+
+        var rows = report.data && Array.isArray(report.data.acknowledgments)
+            ? report.data.acknowledgments : [];
+        var acknowledgedCount = rows.filter(function (row) { return Boolean(row.acknowledged_at); }).length;
+        var pendingRows = rows.filter(function (row) { return !row.acknowledged_at; });
+        var reminderRecipients = Object.create(null);
+        pendingRows.forEach(function (row) {
+            if (row.manager_status === "active" && row.manager_role === "team_manager") {
+                reminderRecipients[row.manager_uid] = true;
+            }
+        });
+        var reminderEligibleCount = Object.keys(reminderRecipients).length;
+        var body = rows.length ? rows.map(function (row) {
+            return "<tr><td>" + esc(row.manager_name || "Manager") +
+                '<div class="small muted">' + esc(row.manager_email || "Email unavailable") + "</div></td>" +
+                "<td>" + esc(row.team_name) + "</td><td>" + esc(row.tournament_name) + "</td><td>" +
+                (row.acknowledged_at
+                    ? '<span class="badge badge-green">Acknowledged</span><div class="small muted">' +
+                        esc(formatDateTime(row.acknowledged_at)) + "</div>"
+                    : '<span class="badge badge-gold">Awaiting acknowledgment</span>') +
+                "</td></tr>";
+        }).join("") : '<tr><td colspan="4" class="muted">No approved team registrations were found for this category.</td></tr>';
+
+        return '<section class="section-block"><div class="page-head"><div><h2>Manager acknowledgments</h2>' +
+            '<p>Published document: <strong>' + esc(rule.title) + "</strong>. " + acknowledgedCount + " of " + rows.length +
+            " approved team registrations have acknowledged these rules.</p></div>" +
+            '<div class="page-head-actions">' +
+            (canSendReminders
+                ? '<button type="button" class="btn btn-primary" data-action="send-rule-reminders"' +
+                    (reminderEligibleCount === 0 || state.ruleReminderSending ? " disabled" : "") + ">" +
+                    (state.ruleReminderSending ? "Sending reminders..." :
+                        "Remind outstanding managers (" + reminderEligibleCount + ")") + "</button>"
+                : "") + refreshButton + "</div></div>" +
+            tableWrap("Manager rules acknowledgment status",
+                "<th>Manager</th><th>Team</th><th>Tournament</th><th>Status</th>", body) +
+            "</section>";
+    }
+
+    async function loadRuleAcknowledgments(ruleId) {
+        var report = { ruleId: ruleId, loading: true, data: null, error: "" };
+        state.rulesAcknowledgments = report;
+        try {
+            report.data = await window.AngutsaPlatform.request(
+                "/admin/rules/" + encodeURIComponent(ruleId) + "/acknowledgments");
+            report.loading = false;
+        } catch (error) {
+            report.loading = false;
+            report.error = error && error.message
+                ? error.message : "Manager acknowledgments could not be loaded.";
+        }
+        if (state.rulesAcknowledgments === report && state.view === "rules") renderView();
+    }
+
+    async function sendRuleAcknowledgmentReminders(ruleId) {
+        if (!hasAdminPermission("rules.edit") || state.ruleReminderSending) return;
+        state.ruleReminderSending = true;
+        renderView();
+        try {
+            var result = await window.AngutsaPlatform.request(
+                "/admin/rules/" + encodeURIComponent(ruleId) + "/reminders",
+                { method: "POST" });
+            var sent = Number(result.notificationsSent || 0);
+            var failedEmails = Number(result.emailStatusCounts && result.emailStatusCounts.failed || 0);
+            toast(sent
+                ? "Reminder notifications sent to " + sent + (sent === 1 ? " manager." : " managers.") +
+                    (failedEmails ? " Email delivery failed for " + failedEmails +
+                        (failedEmails === 1 ? " manager." : " managers.") : "")
+                : "There are no active managers awaiting acknowledgment.",
+            sent ? (failedEmails ? "warning" : "success") : "info");
+        } catch (error) {
+            toast(error && error.message
+                ? error.message : "The reminders could not be sent. Please try again.", "error");
+        } finally {
+            state.ruleReminderSending = false;
+            if (state.view === "rules") renderView();
+        }
     }
 
     /* -------------------------
@@ -11002,6 +11112,8 @@ window.AngutsaAdmin = (function () {
         if (action === "live-clock-control") return "results.edit";
         if (action === "finish-live-match") return "results.publish";
         if (action === "confirm-payment") return "payments.review";
+        if (action === "refresh-rule-acknowledgments") return "rules.view";
+        if (action === "send-rule-reminders") return "rules.edit";
         if (action === "set-player-roster-change-permission") return "registrations.edit";
         if (action === "toggle-featured") return "tournaments.edit";
         if (action === "start-match" || action === "postpone-match") return "fixtures.edit";
@@ -11284,6 +11396,26 @@ window.AngutsaAdmin = (function () {
             break;
         case "publish-rules":
             actionSaveRules(true);
+            break;
+        case "refresh-rule-acknowledgments":
+            var selectedPublishedRules = publishedRulesFor(state.rulesCategory);
+            if (selectedPublishedRules.length) {
+                loadRuleAcknowledgments(selectedPublishedRules[0].id);
+            }
+            break;
+        case "send-rule-reminders":
+            var publishedRuleForReminder = publishedRulesFor(state.rulesCategory)[0] || null;
+            if (!publishedRuleForReminder) {
+                toast("Publish the rules before sending acknowledgment reminders.", "info");
+                break;
+            }
+            confirmDialog({
+                title: "Remind managers to acknowledge?",
+                message: "A reminder will be sent to every active team manager who has not acknowledged these published rules.",
+                confirmLabel: "Send reminders"
+            }).then(function (confirmed) {
+                if (confirmed) sendRuleAcknowledgmentReminders(publishedRuleForReminder.id);
+            });
             break;
         case "save-settings":
             actionSaveSettings();
