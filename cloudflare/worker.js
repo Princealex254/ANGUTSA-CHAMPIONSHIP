@@ -5245,6 +5245,9 @@ async function saveRule(request, actor, rulesId) {
             statements.push(actor.db.prepare(
                 "DELETE FROM afc_rules_acknowledgements WHERE rules_id = ?"
             ).bind(rulesId));
+            statements.push(actor.db.prepare(
+                "DELETE FROM afc_rules_acknowledgment_reminders WHERE rules_id = ?"
+            ).bind(rulesId));
         }
         await actor.db.batch(statements);
         await logAudit(actor.db, actor.user.firebase_uid, "update_rules", "rules", rulesId);
@@ -7119,16 +7122,21 @@ async function loadRuleAcknowledgments(actor, rulesId) {
         "SELECT reg.id AS registration_id, reg.tournament_id, tm.name AS team_name, " +
         "t.name AS tournament_name, u.firebase_uid AS manager_uid, u.full_name AS manager_name, " +
         "u.email AS manager_email, u.status AS manager_status, u.role AS manager_role, " +
-        "a.acknowledged_at " +
+        "a.acknowledged_at, reminders.last_reminded_at " +
         "FROM afc_team_registrations reg " +
         "JOIN afc_teams tm ON tm.id = reg.team_id " +
         "JOIN afc_tournaments t ON t.id = reg.tournament_id " +
         "JOIN afc_users u ON u.firebase_uid = reg.manager_uid " +
         "LEFT JOIN afc_rules_acknowledgements a " +
         "ON a.registration_id = reg.id AND a.rules_id = ? " +
+        "LEFT JOIN (SELECT manager_uid, MAX(sent_at) AS last_reminded_at " +
+        "FROM afc_rules_acknowledgment_reminders WHERE rules_id = ? GROUP BY manager_uid) reminders " +
+        "ON reminders.manager_uid = reg.manager_uid " +
         "WHERE reg.category_id = ? AND reg.status = 'approved'" + scopeFilter +
         " ORDER BY u.full_name, tm.name, t.name",
-        [rulesId, rule.category_id].concat(actor.user.role === "platform_owner" ? [] : scopes)
+        [rulesId, rulesId, rule.category_id].concat(
+            actor.user.role === "platform_owner" ? [] : scopes
+        )
     ).all();
     return {
         rule: rule,
@@ -7176,6 +7184,17 @@ async function sendRuleAcknowledgmentReminders(actor, rulesId) {
                 " in the Team Manager Dashboard.",
             "/team-manager-dashboard/#/rules"
         );
+    });
+    reminderRows.forEach(function (recipient) {
+        statements.push(actor.db.prepare(
+            "INSERT INTO afc_rules_acknowledgment_reminders(id, rules_id, manager_uid, sent_by) " +
+            "VALUES(?, ?, ?, ?)"
+        ).bind(
+            newId("RMD-"),
+            rulesId,
+            recipient.uid,
+            actor.user.firebase_uid
+        ));
     });
     statements.push(actor.db.prepare(
         "INSERT INTO afc_audit_log(id, actor_uid, action, entity_type, entity_id) " +

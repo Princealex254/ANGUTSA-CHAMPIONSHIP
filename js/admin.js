@@ -7061,8 +7061,10 @@ window.AngutsaAdmin = (function () {
                     ? '<span class="badge badge-green">Acknowledged</span><div class="small muted">' +
                         esc(formatDateTime(row.acknowledged_at)) + "</div>"
                     : '<span class="badge badge-gold">Awaiting acknowledgment</span>') +
+                "</td><td>" + (row.last_reminded_at
+                    ? esc(formatDateTime(row.last_reminded_at)) : "Not reminded") +
                 "</td></tr>";
-        }).join("") : '<tr><td colspan="4" class="muted">No approved team registrations were found for this category.</td></tr>';
+        }).join("") : '<tr><td colspan="5" class="muted">No approved team registrations were found for this category.</td></tr>';
 
         return '<section class="section-block"><div class="page-head"><div><h2>Manager acknowledgments</h2>' +
             '<p>Published document: <strong>' + esc(rule.title) + "</strong>. " + acknowledgedCount + " of " + rows.length +
@@ -7075,7 +7077,7 @@ window.AngutsaAdmin = (function () {
                         "Remind outstanding managers (" + reminderEligibleCount + ")") + "</button>"
                 : "") + refreshButton + "</div></div>" +
             tableWrap("Manager rules acknowledgment status",
-                "<th>Manager</th><th>Team</th><th>Tournament</th><th>Status</th>", body) +
+                "<th>Manager</th><th>Team</th><th>Tournament</th><th>Status</th><th>Last reminder</th>", body) +
             "</section>";
     }
 
