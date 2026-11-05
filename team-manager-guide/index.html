@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#10152E">
+    <meta name="description" content="A step-by-step guide to registering a team and managing your squad in the Angutsa Championship Team Manager Dashboard.">
+
+    <title>Team Manager Guide | The Angutsa Football Championship</title>
+
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/team-manager-guide.css">
+
+    <script src="/js/common.js" defer></script>
+</head>
+
+<body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <header class="site-header" id="top">
+        <div class="container nav-container">
+            <a href="/" class="brand" aria-label="Angutsa Championship homepage">
+                <img class="brand-logo" src="/images/logo.png" alt="The Angutsa Football Championship logo">
+            </a>
+            <button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu"
+                    aria-expanded="false" aria-controls="mainNav">
+                <span></span><span></span><span></span>
+            </button>
+            <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/tournaments/" class="nav-link">Tournaments</a>
+                <div class="nav-group">
+                    <button type="button" class="nav-link nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+                        Fixtures &amp; Results <span class="nav-caret" aria-hidden="true">&#9662;</span>
+                    </button>
+                    <div class="nav-dropdown">
+                        <a href="/fixtures/" class="nav-dropdown-link">Fixtures</a>
+                        <a href="/results/" class="nav-dropdown-link">Results</a>
+                        <a href="/standings/" class="nav-dropdown-link">Standings</a>
+                    </div>
+                </div>
+                <a href="/teams/" class="nav-link">Teams</a>
+                <a href="/media/" class="nav-link">Media</a>
+                <a href="/contact/" class="nav-link">Contact</a>
+                <a href="/about/" class="nav-link">About</a>
+                <a href="/login/" class="nav-login">Sign In</a>
+                <a href="/tournaments/?status=registration-open" class="btn btn-gold nav-cta">Register a Team <span aria-hidden="true">&#8599;</span></a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main">
+        <section class="guide-hero">
+            <div class="container guide-hero-inner">
+                <nav class="breadcrumbs" aria-label="Breadcrumb">
+                    <a href="/">Home</a>
+                    <span class="breadcrumbs-sep" aria-hidden="true">/</span>
+                    <span aria-current="page">Team Manager Guide</span>
+                </nav>
+                <div class="guide-hero-copy">
+                    <span class="guide-eyebrow">YOUR TEAM, STEP BY STEP</span>
+                    <h1>Team Manager Guide</h1>
+                    <p>Register your team, keep your squad records up to date, and follow your competition from one dashboard.</p>
+                    <div class="guide-hero-actions">
+                        <a class="btn btn-primary" href="/login/">Open Team Manager Dashboard</a>
+                        <a class="guide-text-link" href="#dashboard">Explore the dashboard <span aria-hidden="true">↓</span></a>
+                    </div>
+                </div>
+                <aside class="guide-route" aria-label="Guide overview">
+                    <span class="guide-route-label">THE MANAGER JOURNEY</span>
+                    <ol>
+                        <li><span>01</span> Create your manager account</li>
+                        <li><span>02</span> Register your team</li>
+                        <li><span>03</span> Complete review and payment</li>
+                        <li><span>04</span> Manage your squad and season</li>
+                    </ol>
+                </aside>
+            </div>
+        </section>
+
+        <section class="guide-section" id="getting-started">
+            <div class="container">
+                <header class="guide-section-heading">
+                    <span class="guide-kicker">GETTING STARTED</span>
+                    <h2>Register your team</h2>
+                    <p>Start from a tournament that is accepting entries. Team registration and player registration happen at different stages.</p>
+                </header>
+
+                <div class="guide-steps">
+                    <article class="guide-step-card">
+                        <span class="guide-step-number">01</span>
+                        <div>
+                            <h3>Create your manager account</h3>
+                            <p>Choose an open tournament and select <strong>Register a Team</strong>. Sign in with your existing Team Manager account or create one during registration. Use an email and mobile number you can access for updates.</p>
+                            <p>New manager accounts may remain pending until the competition owner approves the account or the full registration fee is confirmed.</p>
+                        </div>
+                    </article>
+                    <article class="guide-step-card">
+                        <span class="guide-step-number">02</span>
+                        <div>
+                            <h3>Enter your team details</h3>
+                            <p>Work through the registration form: choose the competition, enter the team name and home area, add your manager details, and upload an optional team logo. The short code is generated from the team name.</p>
+                            <p>Check that your team name and contact details are correct before continuing.</p>
+                        </div>
+                    </article>
+                    <article class="guide-step-card">
+                        <span class="guide-step-number">03</span>
+                        <div>
+                            <h3>Review, submit, and pay</h3>
+                            <p>Review the entry fee and your information, accept the declarations, then submit the registration. Pay the fee separately using the payment instructions shown after submission.</p>
+                            <p>Keep your payment confirmation. The competitions office reviews registrations and payment records; submission does not mean the team is already approved.</p>
+                        </div>
+                    </article>
+                    <article class="guide-step-card">
+                        <span class="guide-step-number">04</span>
+                        <div>
+                            <h3>Wait for approval, then add players</h3>
+                            <p>Sign in to the dashboard and check <strong>Registrations</strong> for progress or any requested action. Player registration becomes available after team approval, and changes can be restricted when a roster is locked.</p>
+                            <p>Register players under the correct team and competition category. Youth records require guardian consent; follow the published rules for eligibility and squad limits.</p>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="guide-callout">
+                    <span class="guide-callout-icon" aria-hidden="true">i</span>
+                    <p><strong>Already have a manager account?</strong> Sign in first, then use <strong>Create a team</strong> in the dashboard. Select an open competition and complete the team registration there.</p>
+                    <a href="/tournaments/?status=registration-open">Browse open tournaments</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="guide-dashboard-section" id="dashboard">
+            <div class="container">
+                <header class="guide-section-heading">
+                    <span class="guide-kicker">MANAGER DASHBOARD</span>
+                    <h2>Manage your team through the season</h2>
+                    <p>Sign in with the manager account you used to register. Use the dashboard navigation to open each area.</p>
+                </header>
+                <div class="guide-dashboard-grid">
+                    <article class="guide-feature-card guide-feature-primary">
+                        <span class="guide-feature-tag">TEAM</span>
+                        <h3>Teams</h3>
+                        <p>Review your teams and their current status. If you manage more than one, choose the team you want to work on using the team selector.</p>
+                        <a href="/team-manager-dashboard/">Open Teams in the dashboard <span aria-hidden="true">→</span></a>
+                    </article>
+                    <article class="guide-feature-card">
+                        <span class="guide-feature-tag">SQUAD</span>
+                        <h3>Keep player records current</h3>
+                        <p>Open <strong>Squad</strong> and choose <strong>Add a player</strong> to enter a roster record. Use edit actions to correct details, review roster status and consent, and use <strong>Show incomplete records</strong> to find missing information.</p>
+                    </article>
+                    <article class="guide-feature-card">
+                        <span class="guide-feature-tag">COMPETITION</span>
+                        <h3>Track registrations</h3>
+                        <p>Open <strong>Registrations</strong> to check review status and see if anything needs your attention. Read any messages carefully and follow up with the competitions office when requested.</p>
+                    </article>
+                    <article class="guide-feature-card">
+                        <span class="guide-feature-tag">FINANCE</span>
+                        <h3>Check payment records</h3>
+                        <p>Open <strong>Payments</strong> to view the fee status and payment history. Payment records are read-only; the finance office issues receipts after reviewing the payment.</p>
+                    </article>
+                    <article class="guide-feature-card">
+                        <span class="guide-feature-tag">MATCH DAY</span>
+                        <h3>Follow fixtures and results</h3>
+                        <p>Open <strong>Fixtures</strong> for confirmed matches and recent results. Check the dashboard and your notifications regularly for competition updates.</p>
+                    </article>
+                    <article class="guide-feature-card">
+                        <span class="guide-feature-tag">ACCOUNT</span>
+                        <h3>Review rules and profile</h3>
+                        <p>Use <strong>Rules</strong> to read the published requirements for your team's category. Keep your manager contact details current in <strong>Profile</strong>, and sign out when using a shared device.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="guide-section guide-finish">
+            <div class="container guide-finish-inner">
+                <div>
+                    <span class="guide-kicker">NEED A HAND?</span>
+                    <h2>We’re here to help.</h2>
+                    <p>For registration, account, or dashboard questions, contact the competitions office. Check the published rules before submitting player records.</p>
+                </div>
+                <div class="guide-finish-actions">
+                    <a class="btn btn-primary" href="/contact/">Contact the competitions office</a>
+                    <a class="btn btn-dark-outline" href="/tournament-rules/">Read the rules</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-main">
+            <div class="footer-brand">
+                <a href="/" class="brand">
+                    <img class="brand-logo" src="/images/logo.png" alt="The Angutsa Football Championship logo">
+                </a>
+                <p>More than a tournament. A community united by football.</p>
+            </div>
+            <div class="footer-column">
+                <h4>Championship</h4>
+                <a href="/about/">About Us</a>
+                <a href="/tournaments/">Tournaments</a>
+                <a href="/fixtures/">Fixtures &amp; Results</a>
+                <a href="/teams/">Teams</a>
+            </div>
+            <div class="footer-column">
+                <h4>Explore</h4>
+                <a href="/media/">Media</a>
+                <a href="/faqs/">FAQs</a>
+                <a href="/tournament-rules/">Rules &amp; Regulations</a>
+            </div>
+            <div class="footer-column">
+                <h4>Get Involved</h4>
+                <a href="/tournaments/?status=registration-open">Register a Team</a>
+                <a href="/login/">Team Manager Login</a>
+                <a href="/team-manager-guide/" aria-current="page">Team Manager Guide</a>
+                <a href="/contact/">Contact Us</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container footer-bottom-inner">
+                <p>&copy; <span id="currentYear"></span> The Angutsa Football Championship. All rights reserved.</p>
+                <nav class="footer-legal" aria-label="Legal">
+                    <a href="/privacy/">Privacy Policy</a>
+                    <a href="/terms/">Terms &amp; Conditions</a>
+                </nav>
+                <p class="powered-by">Powered by
+                    <a href="https://princealex.digital/" target="_blank" rel="noopener noreferrer">Prince Alex Digital</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <a href="#top" class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</a>
+</body>
+</html>
