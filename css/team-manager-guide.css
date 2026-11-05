@@ -24,7 +24,7 @@
     max-width: 760px;
 }
 
-.guide-hero h1 {
+#main .guide-hero h1 {
     margin-bottom: 12px;
     color: #FFFFFF;
     font-family: "Manrope", sans-serif;
@@ -275,12 +275,15 @@
         margin-bottom: 32px;
     }
 
-    .guide-hero h1 {
-        font-size: 39px;
+    #main .guide-hero h1 {
+        color: #FFFFFF;
+        font-size: clamp(32px, 9vw, 38px);
+        line-height: 1.12;
     }
 
     .guide-hero-copy > p {
         font-size: 15px;
+        line-height: 1.65;
     }
 
     .guide-hero-actions,
@@ -291,22 +294,75 @@
 
     .guide-section,
     .guide-dashboard-section {
-        padding: 52px 0;
+        padding: 44px 0;
+    }
+
+    .guide-section-heading {
+        margin-bottom: 22px;
+    }
+
+    .guide-section-heading h2,
+    .guide-finish h2 {
+        font-size: clamp(24px, 7vw, 30px);
+        line-height: 1.2;
+    }
+
+    .guide-section-heading > p,
+    .guide-finish p {
+        font-size: 14px;
+        line-height: 1.65;
     }
 
     .guide-paths,
     .guide-form-steps,
     .guide-dashboard-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
-    .guide-path-card {
-        padding: 22px;
+    .guide-path-card,
+    .guide-feature-card {
+        padding: 19px;
+    }
+
+    .guide-path-card h3,
+    .guide-form-step h3,
+    .guide-feature-card h3 {
+        font-size: 17px;
+    }
+
+    .guide-path-card ol {
+        gap: 9px;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .guide-path-note,
+    .guide-form-step p,
+    .guide-feature-card p,
+    .guide-callout p {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .guide-form-step {
+        grid-template-columns: 34px minmax(0, 1fr);
+        gap: 12px;
+        padding: 18px;
     }
 
     .guide-callout {
         grid-template-columns: 1fr;
         gap: 6px;
         padding: 18px;
+    }
+
+    .guide-finish-actions {
+        width: 100%;
+    }
+
+    .guide-finish-actions .btn {
+        width: 100%;
+        justify-content: center;
     }
 }
