@@ -5441,6 +5441,9 @@ async function permanentlyDeleteManager(actor, uid) {
             registrations
         ).bind(uid),
         actor.db.prepare(
+            "DELETE FROM afc_rules_acknowledgment_reminders WHERE manager_uid = ? OR sent_by = ?"
+        ).bind(uid, uid),
+        actor.db.prepare(
             "DELETE FROM afc_rules WHERE updated_by = ?"
         ).bind(uid),
         actor.db.prepare(
