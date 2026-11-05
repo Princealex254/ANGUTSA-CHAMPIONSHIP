@@ -26,6 +26,7 @@
 
 .guide-hero h1 {
     margin-bottom: 12px;
+    color: #FFFFFF;
     font-family: "Manrope", sans-serif;
     font-size: clamp(38px, 5vw, 58px);
     font-weight: 800;
