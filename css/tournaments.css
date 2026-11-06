@@ -19,6 +19,10 @@
     margin-bottom: 16px;
 }
 
+.tournament-status-select {
+    display: none;
+}
+
 /* Tournament cards in the directory use a fixed media height so every
    card in a row lines up. */
 
@@ -111,5 +115,16 @@
 @media (max-width: 900px) {
     #tournamentGrid .tournament-summary {
         min-height: auto;
+    }
+}
+
+@media (max-width: 640px) {
+    .filter-chips > [data-status] {
+        display: none;
+    }
+
+    .tournament-status-select {
+        display: block;
+        flex: 1 1 100%;
     }
 }
