@@ -122,6 +122,13 @@ a.contact-method:hover {
     background: #E8F6EF;
 }
 
+.contact-whatsapp-icon svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
 .contact-method small,
 .contact-method strong {
     display: block;
@@ -202,6 +209,14 @@ a.contact-method:hover {
     width: 100%;
     justify-content: center;
     margin-top: 22px;
+    color: #fff;
+    background: #16865B;
+    box-shadow: 0 8px 24px rgba(22, 134, 91, 0.18);
+}
+
+.contact-submit:hover {
+    background: #116F4A;
+    box-shadow: 0 12px 28px rgba(22, 134, 91, 0.26);
 }
 
 .contact-privacy-note {
