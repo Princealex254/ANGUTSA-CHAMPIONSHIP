@@ -288,41 +288,34 @@
     function bindStatusChips() {
         U.$$("[data-status]").forEach(function (chip) {
             U.on(chip, "click", function () {
-                setStatus(chip.getAttribute("data-status"));
+                state.status = chip.getAttribute("data-status");
+                state.page = 1;
+
+                U.$$("[data-status]").forEach(function (other) {
+                    var isActive = other === chip;
+                    other.classList.toggle("is-active", isActive);
+                    other.setAttribute("aria-pressed", String(isActive));
+                });
+
                 render();
             });
         });
-
-        var statusSelect = document.getElementById("tournamentStatusFilter");
-        if (statusSelect) {
-            U.on(statusSelect, "change", function () {
-                setStatus(statusSelect.value);
-                render();
-            });
-        }
-    }
-
-    function setStatus(status) {
-        state.status = status;
-        state.page = 1;
-
-        U.$$("[data-status]").forEach(function (chip) {
-            var isActive = chip.getAttribute("data-status") === status;
-            chip.classList.toggle("is-active", isActive);
-            chip.setAttribute("aria-pressed", String(isActive));
-        });
-
-        var statusSelect = document.getElementById("tournamentStatusFilter");
-        if (statusSelect) statusSelect.value = status;
     }
 
     function resetFilters() {
-        setStatus("all");
+        state.status = "all";
         state.query = "";
         state.categoryId = "";
         state.format = "";
         state.season = "";
         state.sort = "start-asc";
+        state.page = 1;
+
+        U.$$("[data-status]").forEach(function (chip) {
+            var isAll = chip.getAttribute("data-status") === "all";
+            chip.classList.toggle("is-active", isAll);
+            chip.setAttribute("aria-pressed", String(isAll));
+        });
 
         U.$$("[data-filter]", els.scope || document).forEach(function (control) {
             control.value = control.defaultValue || "";
@@ -344,7 +337,12 @@
         if (status) {
             var chip = document.querySelector('[data-status="' + status + '"]');
             if (chip) {
-                setStatus(status);
+                state.status = status;
+                U.$$("[data-status]").forEach(function (other) {
+                    var isActive = other === chip;
+                    other.classList.toggle("is-active", isActive);
+                    other.setAttribute("aria-pressed", String(isActive));
+                });
             }
         }
 
