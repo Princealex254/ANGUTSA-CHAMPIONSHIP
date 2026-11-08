@@ -966,6 +966,7 @@ const ADMIN_PERMISSION_CATALOG = Object.freeze([
     ["teams.view", "teams", "Teams", "view", "View teams"],
     ["teams.create", "teams", "Teams", "create", "Create teams"],
     ["teams.edit", "teams", "Teams", "edit", "Edit teams"],
+    ["teams.archive", "teams", "Teams", "archive", "Archive teams"],
     ["teams.delete", "teams", "Teams", "delete", "Delete teams"],
     ["players.view", "players", "Players", "view", "View player records"],
     ["players.edit", "players", "Players", "edit", "Change player public-profile settings"],
@@ -1015,7 +1016,7 @@ const ADMIN_PERMISSION_CATALOG = Object.freeze([
 }));
 
 const PLATFORM_OWNER_ONLY_PERMISSIONS = new Set([
-    "teams.create",
+    "teams.create", "teams.archive",
     "categories.create", "categories.edit", "categories.archive",
     "tournaments.create", "tournaments.archive",
     "media.view", "media.create", "media.edit", "media.delete",
@@ -1129,6 +1130,9 @@ export function adminPermissionForRequest(path, method) {
     if (/^\/api\/v1\/admin\/rules\/[A-Za-z0-9_-]+\/reminders$/.test(path) &&
         method === "POST") return "rules.edit";
     if (path === API_PREFIX + "/admin/teams" && method === "POST") return "teams.create";
+    if (/^\/api\/v1\/admin\/teams\/[A-Za-z0-9_-]+\/archive$/.test(path) && method === "PATCH") {
+        return "teams.archive";
+    }
     if (path === API_PREFIX + "/admin/media/items" && method === "GET") return "media.view";
     if (path === API_PREFIX + "/admin/media/items" && method === "POST") return "media.create";
     if (path === API_PREFIX + "/admin/media/uploads" && method === "POST") return "media.create";
@@ -4390,6 +4394,16 @@ async function archiveAdminResource(actor, resource, id) {
     if (!result.meta || result.meta.changes !== 1) fail(404, "NOT_FOUND", "The record was not found.");
     await logAudit(actor.db, actor.user.firebase_uid, "archive_" + resource, resource, id);
     return success({ id: id, status: config.status });
+}
+
+async function archiveAdminTeam(actor, id) {
+    const result = await actor.db.prepare(
+        "UPDATE afc_teams SET archived_at = COALESCE(archived_at, CURRENT_TIMESTAMP), " +
+        "updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+    ).bind(id).run();
+    if (!result.meta || result.meta.changes !== 1) fail(404, "NOT_FOUND", "The team was not found.");
+    await logAudit(actor.db, actor.user.firebase_uid, "archive_team", "team", id);
+    return success({ id: id, archived: true });
 }
 
 function validKickoff(value) {
@@ -7690,6 +7704,13 @@ async function route(request, env, context, url) {
     if (path === API_PREFIX + "/admin/teams" && method === "POST") {
         const admin = await requireRole(request, env, ["platform_owner"]);
         return createAdminTeamRegistration(request, admin);
+    }
+    const adminTeamArchiveMatch = path.match(
+        /^\/api\/v1\/admin\/teams\/([A-Za-z0-9_-]+)\/archive$/
+    );
+    if (adminTeamArchiveMatch && method === "PATCH") {
+        const admin = await requireRole(request, env, ["platform_owner"]);
+        return archiveAdminTeam(admin, adminTeamArchiveMatch[1]);
     }
     if (path === API_PREFIX + "/admin/media/items" && method === "GET") {
         const admin = await requireRole(request, env, ["platform_owner"]);

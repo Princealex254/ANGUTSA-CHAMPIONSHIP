@@ -3607,6 +3607,29 @@ window.AngutsaAdmin = (function () {
         renderNotificationMenu();
     }
 
+    async function archiveTeam(id) {
+        var team = byId(DEMO.teams, id);
+        if (!team) {
+            toast("That team could not be found.", "error");
+            return;
+        }
+        var confirmed = await confirmDialog({
+            title: "Archive team?",
+            message: team.name + " will be hidden from the Teams tab. Its team record and registration history will remain in the database.",
+            confirmLabel: "Archive team",
+            tone: "warning"
+        });
+        if (!confirmed) return;
+        try {
+            await window.AngutsaPlatform.request("/admin/teams/" +
+                encodeURIComponent(id) + "/archive", { method: "PATCH" });
+            await refreshLiveAdminData();
+            toast(team.name + " was archived.", "success");
+        } catch (error) {
+            toast(error && error.message ? error.message : "We couldn't archive this team. Please try again.", "error");
+        }
+    }
+
     async function updateTournament(tournament, changes, message) {
         try {
             var body = {
@@ -5637,7 +5660,9 @@ window.AngutsaAdmin = (function () {
                 : "";
         },
         caption: "Registered teams",
-        records: function () { return DEMO.teams; },
+        records: function () {
+            return DEMO.teams.filter(function (team) { return !team.archived; });
+        },
         search: ["name", "shortName", "manager", "location"],
         filters: [
             { name: "registrationStatus", label: "Status", options: statusOptionsFrom("teams") },
@@ -5697,7 +5722,9 @@ window.AngutsaAdmin = (function () {
                     ? "" : approveAction("teams", record.id)) +
                 editAction("teams", record.id) +
                 rejectAction("teams", record.id) +
-                deleteAction("teams", record.id);
+                (hasAdminPermission("teams.archive")
+                    ? actionButton("archive", record.id, "teams", "Archive team", "archive")
+                    : "");
         },
         csv: function () {
             return [
@@ -11124,6 +11151,7 @@ window.AngutsaAdmin = (function () {
             return moduleKey === "rules" ? "rules.edit" : moduleKey + ".edit";
         }
         if (action === "archive") {
+            if (moduleKey === "teams") return "teams.archive";
             return moduleKey === "categories" || moduleKey === "tournaments"
                 ? moduleKey + ".archive"
                 : moduleKey === "rules" ? "rules.delete" : "";
@@ -11271,6 +11299,10 @@ window.AngutsaAdmin = (function () {
             toast("Unpublishing this record is not connected to the live backend yet.", "info");
             break;
         case "archive":
+            if (moduleKey === "teams") {
+                archiveTeam(id);
+                break;
+            }
             if (["categories", "tournaments", "rules"].indexOf(moduleKey) !== -1) {
                 deleteRecord(moduleKey, id, recordLabel(moduleKey, id));
                 break;
@@ -12743,7 +12775,8 @@ window.AngutsaAdmin = (function () {
                 rosterChangesExpiresAt: row.roster_changes_expires_at || null,
                 location: row.location, logo: row.logo_key, manager: row.manager_name,
                 contact: row.manager_email, phone: row.manager_phone,
-                registrationStatus: row.registration_status, group: row.group_name || ""
+                registrationStatus: row.registration_status, group: row.group_name || "",
+                archived: Boolean(row.archived_at)
                 };
                 teamsById[row.id] = team;
             }

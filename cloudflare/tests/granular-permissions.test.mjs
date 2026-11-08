@@ -150,4 +150,7 @@ test("admin API routes resolve to their action permission or fail closed", () =>
     assert.equal(workerModule.adminPermissionForRequest(
         "/api/v1/admin/unknown", "POST"
     ), null);
+    assert.equal(workerModule.adminPermissionForRequest(
+        "/api/v1/admin/teams/TEAM-1/archive", "PATCH"
+    ), "teams.archive");
 });
