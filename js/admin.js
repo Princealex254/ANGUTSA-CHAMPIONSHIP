@@ -6433,7 +6433,12 @@ window.AngutsaAdmin = (function () {
             ];
         },
         actions: function (record) {
-            return actionButton("receipt", record.id, "payment-records", "Receipt preview", "receipt");
+            return actionButton("receipt", record.id, "payment-records", "Receipt preview", "receipt") +
+                (record.status === "confirmed" || record.status === "partial"
+                    ? '<button type="button" class="btn btn-outline btn-sm" data-action="download-receipt" ' +
+                        'data-id="' + esc(record.id) + '" title="Download PDF receipt">' +
+                        icon("download") + "Download receipt</button>"
+                    : "");
         },
         csv: function () {
             return [
@@ -8629,13 +8634,14 @@ window.AngutsaAdmin = (function () {
                 detailItemText("Date", formatDate(record.date)),
                 detailItemText("Receipt", record.receipt || "Not issued")
             ]) + receiptPreview({
+                id: record.id,
                 reference: record.reference,
                 amount: record.amount,
                 currency: "KES",
                 status: record.status,
                 paidOn: record.date,
-                method: related.method || "Not recorded",
-                teamId: related.teamId,
+                method: record.method || related.method || "Not recorded",
+                teamId: record.teamId || related.teamId,
                 receipt: record.receipt
             });
         }
@@ -8733,13 +8739,48 @@ window.AngutsaAdmin = (function () {
             detailGrid([
                 detailItemText("Receipt reference", payment.receipt || "Not issued"),
                 detailItemText("Payment reference", payment.reference),
-                detailItemText("Payer", teamName(payment.teamId)),
+                detailItemText("Team", teamName(payment.teamId)),
                 detailItemText("Method", payment.method),
                 detailItemText("Date", formatDate(payment.paidOn))
             ]) +
             '<div class="receipt-total"><span>Total</span><strong>' +
             esc(formatMoney(payment.amount)) + "</strong></div>" +
-            '<p class="small muted">Receipt preview from the backend payment record. This preview is not proof of settlement.</p></div>';
+            '<p class="small muted">Receipt preview from the backend payment record.</p>' +
+            (payment.id && (payment.status === "confirmed" || payment.status === "partial")
+                ? '<button type="button" class="btn btn-outline btn-sm" data-action="download-receipt" ' +
+                    'data-id="' + esc(payment.id) + '">' + icon("download") +
+                    "Download PDF receipt</button>"
+                : "") + "</div>";
+    }
+
+    async function downloadPaymentReceipt(paymentId) {
+        var platform = window.AngutsaPlatform;
+        if (!platform) {
+            toast("The secure receipt service is unavailable. Reload and try again.", "error");
+            return;
+        }
+        try {
+            var result = await platform.request(
+                "/admin/payments/" + encodeURIComponent(paymentId) + "/receipt"
+            );
+            var binary = window.atob(result.content);
+            var bytes = new Uint8Array(binary.length);
+            for (var index = 0; index < binary.length; index += 1) {
+                bytes[index] = binary.charCodeAt(index);
+            }
+            var url = URL.createObjectURL(new Blob([bytes], { type: result.contentType }));
+            var link = document.createElement("a");
+            link.href = url;
+            link.download = result.fileName;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+        } catch (error) {
+            toast(error && error.message
+                ? error.message
+                : "The PDF receipt could not be downloaded.", "error");
+        }
     }
 
     function openDetails(moduleKey, id) {
@@ -11232,6 +11273,9 @@ window.AngutsaAdmin = (function () {
         case "receipt":
             openDetails(moduleKey, id);
             break;
+        case "download-receipt":
+            downloadPaymentReceipt(id);
+            break;
         case "edit-player-public-profile":
             openAdminPlayerProfileModal(id);
             break;
@@ -12953,6 +12997,8 @@ window.AngutsaAdmin = (function () {
                 id: payment.id, reference: payment.reference,
                 registrationId: payment.registrationId, amount: payment.amount,
                 status: payment.status, date: payment.recordedAt,
+                teamId: payment.teamId, tournamentId: payment.tournamentId,
+                method: payment.method,
                 receipt: payment.reference || ""
             };
         });

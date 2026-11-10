@@ -222,6 +222,78 @@ test("partial payment email shows the balance and explains that approval opens p
     assert.match(content.textContent, /if your registration is approved before the full fee is cleared, you can still sign in and manage your team players/i);
 });
 
+test("payment confirmation emails include the same professional PDF receipt offered for download", () => {
+    assert.equal(
+        workerModule.adminPermissionForRequest(
+            "/api/v1/admin/payments/ANG-PAY-1234567890/receipt",
+            "GET"
+        ),
+        "payments.view"
+    );
+
+    const receipt = {
+        reference: "ANG-PAY-1234567890",
+        registration_reference: "TR-123",
+        team_name: "Town FC",
+        tournament_name: "Championship",
+        payer_name: "Manager",
+        payer_email: "manager@example.com",
+        method: "M-Pesa",
+        status: "confirmed",
+        recorded_at: "2026-11-10 19:00:00",
+        recorded_by: "Finance Admin",
+        amount: 1500
+    };
+    const content = workerModule.buildEmailContent("payment_status", {
+        recipientName: "Manager",
+        teamName: receipt.team_name,
+        tournamentName: receipt.tournament_name,
+        paymentReference: receipt.reference,
+        amount: "KES 1,500",
+        status: "confirmed",
+        paymentReceipt: receipt
+    });
+
+    assert.equal(content.attachments.length, 1);
+    assert.equal(content.attachments[0].name, "Angutsa-payment-receipt-ANG-PAY-1234567890.pdf");
+    const emailedPdf = Buffer.from(content.attachments[0].content, "base64").toString("ascii");
+    const downloadedPdf = Buffer.from(workerModule.buildPaymentReceiptPdf({
+        paymentReference: receipt.reference,
+        registrationReference: receipt.registration_reference,
+        teamName: receipt.team_name,
+        tournamentName: receipt.tournament_name,
+        payerName: receipt.payer_name,
+        payerEmail: receipt.payer_email,
+        method: receipt.method,
+        status: "Confirmed",
+        recordedAt: receipt.recorded_at,
+        recordedBy: receipt.recorded_by,
+        amount: receipt.amount
+    }), "base64").toString("ascii");
+
+    assert.match(emailedPdf, /^%PDF-1\.4/);
+    assert.match(emailedPdf, /ANGUTSA CHAMPIONSHIP/);
+    assert.match(emailedPdf, /Town FC/);
+    assert.match(emailedPdf, /TR-123/);
+    assert.match(emailedPdf, /KES 1,500/);
+    assert.equal(emailedPdf, downloadedPdf);
+    const xrefOffset = Number(emailedPdf.match(/startxref\n(\d+)\n%%EOF$/)[1]);
+    assert.equal(emailedPdf.slice(xrefOffset, xrefOffset + 5), "xref\n");
+});
+
+test("rejected payment emails do not attach a payment receipt", () => {
+    const content = workerModule.buildEmailContent("payment_status", {
+        recipientName: "Manager",
+        status: "rejected",
+        paymentReceipt: {
+            reference: "PAY-123",
+            status: "rejected",
+            amount: 1500
+        }
+    });
+    assert.deepEqual(content.attachments, []);
+});
+
 test("approved registration with a balance due opens player registration and requests payment", () => {
     const content = workerModule.buildEmailContent("team_registration_decision", {
         recipientName: "Manager",
