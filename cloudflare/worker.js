@@ -2226,65 +2226,75 @@ function pdfBase64(value) {
 export function buildPaymentReceiptPdf(data) {
     const amount = "KES " + Number(data.amount || 0).toLocaleString("en-KE");
     const entries = [
-        ["Payment reference", data.paymentReference],
         ["Registration reference", data.registrationReference],
         ["Team", data.teamName],
         ["Tournament", data.tournamentName],
-        ["Payer", data.payerName],
-        ["Payer email", data.payerEmail],
         ["Payment method", data.method],
         ["Payment status", data.status],
-        ["Recorded on", data.recordedAt],
-        ["Recorded by", data.recordedBy]
+        ["Date recorded", data.recordedAt]
     ].filter(function (entry) {
         return entry[1] !== null && entry[1] !== undefined && String(entry[1]) !== "";
+    }).map(function (entry) {
+        const lines = pdfWrappedLines(entry[1], 38);
+        return {
+            label: entry[0],
+            lines: lines,
+            height: Math.max(30, lines.length * 11 + 16)
+        };
     });
+    const pageWidth = 420;
+    const headerHeight = 138;
+    const detailsTop = 260;
+    const detailsHeight = entries.reduce(function (total, entry) {
+        return total + entry.height;
+    }, 0);
+    const pageHeight = detailsTop + detailsHeight + 60;
     const commands = [
-        "0.06 0.09 0.18 rg 0 640 612 202 re f",
+        "0.06 0.09 0.18 rg 0 " + (pageHeight - headerHeight) + " " +
+            pageWidth + " " + headerHeight + " re f",
         "1 1 1 rg",
-        "BT /F1 11 Tf 48 790 Td (ANGUTSA CHAMPIONSHIP) Tj ET",
-        "BT /F1 8 Tf 48 774 Td (OFFICIAL PAYMENT RECEIPT) Tj ET",
-        "BT /F1 24 Tf 48 724 Td (Payment receipt) Tj ET",
-        "BT /F1 10 Tf 48 700 Td (Receipt reference: " +
+        "BT /F1 10 Tf 28 " + (pageHeight - 34) + " Td (ANGUTSA CHAMPIONSHIP) Tj ET",
+        "BT /F1 8 Tf 28 " + (pageHeight - 50) + " Td (OFFICIAL PAYMENT RECEIPT) Tj ET",
+        "BT /F1 21 Tf 28 " + (pageHeight - 87) + " Td (Payment receipt) Tj ET",
+        "BT /F1 9 Tf 28 " + (pageHeight - 110) + " Td (Payment reference: " +
             pdfSafeText(data.paymentReference) + ") Tj ET",
-        "0.83 0.69 0.39 rg 48 678 516 2 re f",
+        "0.83 0.69 0.39 rg 28 " + (pageHeight - 128) + " 364 2 re f",
         "0.12 0.16 0.25 rg",
-        "BT /F1 10 Tf 48 646 Td (PAYMENT DETAILS) Tj ET"
+        "BT /F1 9 Tf 28 " + (pageHeight - 164) + " Td (PAYMENT SUMMARY) Tj ET",
+        "0.93 0.95 0.97 rg 28 " + (pageHeight - 242) + " 364 62 re f",
+        "0.38 0.42 0.49 rg",
+        "BT /F1 8 Tf 40 " + (pageHeight - 199) + " Td (AMOUNT RECEIVED) Tj ET",
+        "0.12 0.16 0.25 rg",
+        "BT /F1 18 Tf 40 " + (pageHeight - 228) + " Td (" +
+            pdfSafeText(amount) + ") Tj ET"
     ];
-    let y = 614;
+    let rowTop = detailsTop;
     entries.forEach(function (entry, index) {
-        const valueLines = pdfWrappedLines(entry[1], 48);
-        const rowHeight = Math.max(30, valueLines.length * 13 + 12);
-        const textY = y - Math.max(0, (rowHeight - 22) / 2);
+        const rowBottom = pageHeight - rowTop - entry.height;
         if (index % 2 === 0) {
-            commands.push("0.96 0.97 0.98 rg 48 " + (y - rowHeight + 8) +
-                " 516 " + rowHeight + " re f");
+            commands.push("0.96 0.97 0.98 rg 28 " + rowBottom +
+                " 364 " + entry.height + " re f");
         }
         commands.push("0.38 0.42 0.49 rg");
-        commands.push("BT /F1 9 Tf 60 " + textY + " Td (" + pdfSafeText(entry[0]) + ") Tj ET");
+        commands.push("BT /F1 8 Tf 40 " + (pageHeight - rowTop - 18) +
+            " Td (" + pdfSafeText(entry.label) + ") Tj ET");
         commands.push("0.12 0.16 0.25 rg");
-        valueLines.forEach(function (line, lineIndex) {
-            commands.push("BT /F1 10 Tf 300 " + (textY - lineIndex * 12) +
+        entry.lines.forEach(function (line, lineIndex) {
+            commands.push("BT /F1 9 Tf 170 " + (pageHeight - rowTop - 18 - lineIndex * 11) +
                 " Td (" + pdfSafeText(line) + ") Tj ET");
         });
-        y -= rowHeight;
+        rowTop += entry.height;
     });
-    const totalY = y - 10;
-    commands.push("0.93 0.95 0.97 rg 48 " + (totalY - 16) + " 516 48 re f");
     commands.push("0.38 0.42 0.49 rg");
-    commands.push("BT /F1 9 Tf 62 " + (totalY + 1) + " Td (AMOUNT RECEIVED) Tj ET");
-    commands.push("0.12 0.16 0.25 rg");
-    commands.push("BT /F1 18 Tf 300 " + (totalY - 2) + " Td (" +
-        pdfSafeText(amount) + ") Tj ET");
-    commands.push("0.38 0.42 0.49 rg");
-    commands.push("BT /F1 8 Tf 48 72 Td (Keep this receipt for your records. Please contact the competitions office if you have questions.) Tj ET");
-    commands.push("BT /F1 8 Tf 48 54 Td (Angutsa Championship | angutsachampionship@gmail.com) Tj ET");
+    commands.push("BT /F1 7 Tf 28 34 Td (Keep this receipt for your records.) Tj ET");
+    commands.push("BT /F1 7 Tf 28 22 Td (Angutsa Championship | angutsachampionship@gmail.com) Tj ET");
 
     const stream = commands.join("\n");
     const objects = [
         "<< /Type /Catalog /Pages 2 0 R >>",
         "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-        "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
+        "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + pageWidth + " " + pageHeight +
+            "] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
         "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
         "<< /Length " + stream.length + " >>\nstream\n" + stream + "\nendstream"
     ];
@@ -2308,13 +2318,10 @@ async function loadPaymentReceiptData(db, paymentId) {
     return db.prepare(
         "SELECT p.id, p.reference, p.amount, p.method, p.status, p.recorded_at, " +
         "p.tournament_id, r.public_reference AS registration_reference, tm.name AS team_name, " +
-        "t.name AS tournament_name, manager.full_name AS payer_name, manager.email AS payer_email, " +
-        "recorder.full_name AS recorded_by " +
+        "t.name AS tournament_name " +
         "FROM afc_payments p JOIN afc_team_registrations r ON r.id = p.registration_id " +
         "JOIN afc_teams tm ON tm.id = p.team_id " +
         "JOIN afc_tournaments t ON t.id = p.tournament_id " +
-        "JOIN afc_users manager ON manager.firebase_uid = r.manager_uid " +
-        "LEFT JOIN afc_users recorder ON recorder.firebase_uid = p.recorded_by " +
         "WHERE p.id = ?"
     ).bind(paymentId).first();
 }
@@ -2325,13 +2332,10 @@ function paymentReceiptPdf(receipt) {
         registrationReference: receipt.registration_reference,
         teamName: receipt.team_name,
         tournamentName: receipt.tournament_name,
-        payerName: receipt.payer_name,
-        payerEmail: receipt.payer_email,
         method: receipt.method,
         status: receipt.status === "confirmed" ? "Confirmed" :
             receipt.status === "partial" ? "Partially confirmed" : "Rejected",
         recordedAt: receipt.recorded_at,
-        recordedBy: receipt.recorded_by,
         amount: receipt.amount
     });
 }

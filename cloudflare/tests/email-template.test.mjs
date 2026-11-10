@@ -222,7 +222,7 @@ test("partial payment email shows the balance and explains that approval opens p
     assert.match(content.textContent, /if your registration is approved before the full fee is cleared, you can still sign in and manage your team players/i);
 });
 
-test("payment confirmation emails include the same professional PDF receipt offered for download", () => {
+test("payment confirmation emails include the same compact receipt PDF offered for download", () => {
     assert.equal(
         workerModule.adminPermissionForRequest(
             "/api/v1/admin/payments/ANG-PAY-1234567890/receipt",
@@ -236,8 +236,6 @@ test("payment confirmation emails include the same professional PDF receipt offe
         registration_reference: "TR-123",
         team_name: "Town FC",
         tournament_name: "Championship",
-        payer_name: "Manager",
-        payer_email: "manager@example.com",
         method: "M-Pesa",
         status: "confirmed",
         recorded_at: "2026-11-10 19:00:00",
@@ -262,12 +260,12 @@ test("payment confirmation emails include the same professional PDF receipt offe
         registrationReference: receipt.registration_reference,
         teamName: receipt.team_name,
         tournamentName: receipt.tournament_name,
-        payerName: receipt.payer_name,
-        payerEmail: receipt.payer_email,
+        payerName: "PRIVATE PAYER",
+        payerEmail: "private@example.com",
         method: receipt.method,
         status: "Confirmed",
         recordedAt: receipt.recorded_at,
-        recordedBy: receipt.recorded_by,
+        recordedBy: "PRIVATE ADMIN",
         amount: receipt.amount
     }), "base64").toString("ascii");
 
@@ -275,7 +273,12 @@ test("payment confirmation emails include the same professional PDF receipt offe
     assert.match(emailedPdf, /ANGUTSA CHAMPIONSHIP/);
     assert.match(emailedPdf, /Town FC/);
     assert.match(emailedPdf, /TR-123/);
+    assert.match(emailedPdf, /Championship/);
+    assert.match(emailedPdf, /M-Pesa/);
+    assert.match(emailedPdf, /Confirmed/);
     assert.match(emailedPdf, /KES 1,500/);
+    assert.match(emailedPdf, /\/MediaBox \[0 0 420 \d+\]/);
+    assert.doesNotMatch(emailedPdf, /Payer|private@example\.com|PRIVATE ADMIN|Recorded by/);
     assert.equal(emailedPdf, downloadedPdf);
     const xrefOffset = Number(emailedPdf.match(/startxref\n(\d+)\n%%EOF$/)[1]);
     assert.equal(emailedPdf.slice(xrefOffset, xrefOffset + 5), "xref\n");
