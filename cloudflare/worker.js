@@ -1178,6 +1178,8 @@ export function adminPermissionForRequest(path, method) {
     if (match && method === "PUT") return "fixtures.edit";
     match = path.match(/^\/api\/v1\/admin\/payments\/[A-Za-z0-9_-]+\/review$/);
     if (match && method === "POST") return "payments.review";
+    match = path.match(/^\/api\/v1\/admin\/payments\/[A-Za-z0-9_-]+\/receipt$/);
+    if (match && method === "GET") return "payments.view";
     if (path === API_PREFIX + "/admin/payments" && method === "POST") return "payments.create";
     match = path.match(/^\/api\/v1\/admin\/tournaments\/[A-Za-z0-9_-]+\/groups$/);
     if (match && method === "PUT") return "tournaments.edit";
@@ -2175,6 +2177,185 @@ function formatEmailDateTime(value) {
     }).format(date) + " EAT";
 }
 
+function pdfSafeText(value) {
+    return String(value === null || value === undefined ? "" : value)
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\x20-\x7E]/g, "?")
+        .replace(/\\/g, "\\\\")
+        .replace(/\(/g, "\\(")
+        .replace(/\)/g, "\\)");
+}
+
+function pdfWrappedLines(value, maximumLength) {
+    const text = String(value === null || value === undefined ? "" : value)
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\x20-\x7E]/g, "?")
+        .trim();
+    const lines = [];
+    let line = "";
+    text.split(/\s+/).filter(Boolean).forEach(function (word) {
+        while (word.length > maximumLength) {
+            if (line) {
+                lines.push(line);
+                line = "";
+            }
+            lines.push(word.slice(0, maximumLength));
+            word = word.slice(maximumLength);
+        }
+        if (line && (line.length + word.length + 1) > maximumLength) {
+            lines.push(line);
+            line = "";
+        }
+        line = line ? line + " " + word : word;
+    });
+    if (line || !lines.length) lines.push(line);
+    return lines;
+}
+
+function pdfBase64(value) {
+    const bytes = new TextEncoder().encode(value);
+    let binary = "";
+    for (let index = 0; index < bytes.length; index += 0x8000) {
+        binary += String.fromCharCode.apply(null, bytes.subarray(index, index + 0x8000));
+    }
+    return btoa(binary);
+}
+
+export function buildPaymentReceiptPdf(data) {
+    const amount = "KES " + Number(data.amount || 0).toLocaleString("en-KE");
+    const entries = [
+        ["Payment reference", data.paymentReference],
+        ["Registration reference", data.registrationReference],
+        ["Team", data.teamName],
+        ["Tournament", data.tournamentName],
+        ["Payer", data.payerName],
+        ["Payer email", data.payerEmail],
+        ["Payment method", data.method],
+        ["Payment status", data.status],
+        ["Recorded on", data.recordedAt],
+        ["Recorded by", data.recordedBy]
+    ].filter(function (entry) {
+        return entry[1] !== null && entry[1] !== undefined && String(entry[1]) !== "";
+    });
+    const commands = [
+        "0.06 0.09 0.18 rg 0 640 612 202 re f",
+        "1 1 1 rg",
+        "BT /F1 11 Tf 48 790 Td (ANGUTSA CHAMPIONSHIP) Tj ET",
+        "BT /F1 8 Tf 48 774 Td (OFFICIAL PAYMENT RECEIPT) Tj ET",
+        "BT /F1 24 Tf 48 724 Td (Payment receipt) Tj ET",
+        "BT /F1 10 Tf 48 700 Td (Receipt reference: " +
+            pdfSafeText(data.paymentReference) + ") Tj ET",
+        "0.83 0.69 0.39 rg 48 678 516 2 re f",
+        "0.12 0.16 0.25 rg",
+        "BT /F1 10 Tf 48 646 Td (PAYMENT DETAILS) Tj ET"
+    ];
+    let y = 614;
+    entries.forEach(function (entry, index) {
+        const valueLines = pdfWrappedLines(entry[1], 48);
+        const rowHeight = Math.max(30, valueLines.length * 13 + 12);
+        const textY = y - Math.max(0, (rowHeight - 22) / 2);
+        if (index % 2 === 0) {
+            commands.push("0.96 0.97 0.98 rg 48 " + (y - rowHeight + 8) +
+                " 516 " + rowHeight + " re f");
+        }
+        commands.push("0.38 0.42 0.49 rg");
+        commands.push("BT /F1 9 Tf 60 " + textY + " Td (" + pdfSafeText(entry[0]) + ") Tj ET");
+        commands.push("0.12 0.16 0.25 rg");
+        valueLines.forEach(function (line, lineIndex) {
+            commands.push("BT /F1 10 Tf 300 " + (textY - lineIndex * 12) +
+                " Td (" + pdfSafeText(line) + ") Tj ET");
+        });
+        y -= rowHeight;
+    });
+    const totalY = y - 10;
+    commands.push("0.93 0.95 0.97 rg 48 " + (totalY - 16) + " 516 48 re f");
+    commands.push("0.38 0.42 0.49 rg");
+    commands.push("BT /F1 9 Tf 62 " + (totalY + 1) + " Td (AMOUNT RECEIVED) Tj ET");
+    commands.push("0.12 0.16 0.25 rg");
+    commands.push("BT /F1 18 Tf 300 " + (totalY - 2) + " Td (" +
+        pdfSafeText(amount) + ") Tj ET");
+    commands.push("0.38 0.42 0.49 rg");
+    commands.push("BT /F1 8 Tf 48 72 Td (Keep this receipt for your records. Please contact the competitions office if you have questions.) Tj ET");
+    commands.push("BT /F1 8 Tf 48 54 Td (Angutsa Championship | angutsachampionship@gmail.com) Tj ET");
+
+    const stream = commands.join("\n");
+    const objects = [
+        "<< /Type /Catalog /Pages 2 0 R >>",
+        "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+        "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
+        "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+        "<< /Length " + stream.length + " >>\nstream\n" + stream + "\nendstream"
+    ];
+    let pdf = "%PDF-1.4\n";
+    const offsets = [0];
+    objects.forEach(function (object, index) {
+        offsets.push(pdf.length);
+        pdf += (index + 1) + " 0 obj\n" + object + "\nendobj\n";
+    });
+    const xrefOffset = pdf.length;
+    pdf += "xref\n0 " + (objects.length + 1) + "\n0000000000 65535 f \n";
+    offsets.slice(1).forEach(function (offset) {
+        pdf += String(offset).padStart(10, "0") + " 00000 n \n";
+    });
+    pdf += "trailer\n<< /Size " + (objects.length + 1) + " /Root 1 0 R >>\nstartxref\n" +
+        xrefOffset + "\n%%EOF";
+    return pdfBase64(pdf);
+}
+
+async function loadPaymentReceiptData(db, paymentId) {
+    return db.prepare(
+        "SELECT p.id, p.reference, p.amount, p.method, p.status, p.recorded_at, " +
+        "p.tournament_id, r.public_reference AS registration_reference, tm.name AS team_name, " +
+        "t.name AS tournament_name, manager.full_name AS payer_name, manager.email AS payer_email, " +
+        "recorder.full_name AS recorded_by " +
+        "FROM afc_payments p JOIN afc_team_registrations r ON r.id = p.registration_id " +
+        "JOIN afc_teams tm ON tm.id = p.team_id " +
+        "JOIN afc_tournaments t ON t.id = p.tournament_id " +
+        "JOIN afc_users manager ON manager.firebase_uid = r.manager_uid " +
+        "LEFT JOIN afc_users recorder ON recorder.firebase_uid = p.recorded_by " +
+        "WHERE p.id = ?"
+    ).bind(paymentId).first();
+}
+
+function paymentReceiptPdf(receipt) {
+    return buildPaymentReceiptPdf({
+        paymentReference: receipt.reference,
+        registrationReference: receipt.registration_reference,
+        teamName: receipt.team_name,
+        tournamentName: receipt.tournament_name,
+        payerName: receipt.payer_name,
+        payerEmail: receipt.payer_email,
+        method: receipt.method,
+        status: receipt.status === "confirmed" ? "Confirmed" :
+            receipt.status === "partial" ? "Partially confirmed" : "Rejected",
+        recordedAt: receipt.recorded_at,
+        recordedBy: receipt.recorded_by,
+        amount: receipt.amount
+    });
+}
+
+function paymentReceiptEmailAttachment(receipt) {
+    if (!receipt || (receipt.status !== "confirmed" && receipt.status !== "partial")) return [];
+    return [{
+        name: "Angutsa-payment-receipt-" + receipt.reference + ".pdf",
+        content: paymentReceiptPdf(receipt)
+    }];
+}
+
+async function paymentReceipt(actor, paymentId) {
+    await requireUserPermission(actor, "payments.view");
+    const receipt = await loadPaymentReceiptData(actor.db, paymentId);
+    if (!receipt) fail(404, "NOT_FOUND", "The payment was not found.");
+    await requireTournamentScope(actor, receipt.tournament_id);
+    return success({
+        fileName: "Angutsa-payment-receipt-" + receipt.reference + ".pdf",
+        contentType: "application/pdf",
+        content: paymentReceiptPdf(receipt)
+    });
+}
+
 export function buildEmailContent(eventType, data) {
     const recipientName = data.recipientName || "there";
     let subject;
@@ -2450,7 +2631,13 @@ export function buildEmailContent(eventType, data) {
         '<a href="mailto:angutsachampionship@gmail.com" style="color:#5d557f;text-decoration:underline;">angutsachampionship@gmail.com</a>.' +
         "</td></tr></table></body></html>";
 
-    return { subject: subject, textContent: textContent, htmlContent: htmlContent };
+    const attachments = eventType === "payment_status" && data.paymentReceipt
+        ? paymentReceiptEmailAttachment(data.paymentReceipt)
+        : [];
+    return {
+        subject: subject, textContent: textContent, htmlContent: htmlContent,
+        attachments: attachments
+    };
 }
 
 async function sendTransactionalEmail(env, db, eventType, eventKey, recipient, data) {
@@ -2496,7 +2683,8 @@ async function sendTransactionalEmail(env, db, eventType, eventKey, recipient, d
                 to: [{ email: recipient.email, name: recipient.name || "" }],
                 subject: content.subject,
                 textContent: content.textContent,
-                htmlContent: content.htmlContent
+                htmlContent: content.htmlContent,
+                ...(content.attachments.length ? { attachment: content.attachments } : {})
             })
         });
     } catch (_error) {
@@ -3932,6 +4120,8 @@ async function createPayment(request, actor) {
         "SELECT id, reference, status, amount FROM afc_payments WHERE id = ?"
     ).bind(id).first();
     if (!insertedPayment) throw new Error("The recorded payment could not be verified.");
+    const receipt = await loadPaymentReceiptData(actor.db, id);
+    if (!receipt) throw new Error("The payment receipt could not be verified.");
     await logAudit(actor.db, actor.user.firebase_uid, "record_payment", "payment", id);
     const paidRegistration = await completeFullFeeRegistration(
         actor.db, registrationId, actor.user.firebase_uid
@@ -3964,7 +4154,8 @@ async function createPayment(request, actor) {
             balanceDue: balanceDue > 0
                 ? "KES " + Number(balanceDue).toLocaleString("en-KE")
                 : "",
-            reviewNote: reviewNote
+            reviewNote: reviewNote,
+            paymentReceipt: receipt
         }
     );
     const ownerEmailStatus = await notifyPlatformOwnersByEmail(
@@ -4080,6 +4271,9 @@ async function reviewPayment(request, actor, paymentId) {
         actor.db, payment.registration_id, actor.user.firebase_uid
     );
     const balanceDue = paidRegistration.balanceDue;
+    const receipt = finalStatus === "rejected"
+        ? null
+        : await loadPaymentReceiptData(actor.db, payment.id);
     const emailStatus = await sendTransactionalEmail(
         actor.env,
         actor.db,
@@ -4105,7 +4299,8 @@ async function reviewPayment(request, actor, paymentId) {
             balanceDue: balanceDue > 0
                 ? "KES " + Number(balanceDue).toLocaleString("en-KE")
                 : "",
-            reviewNote: reviewNote
+            reviewNote: reviewNote,
+            paymentReceipt: receipt
         }
     );
     const ownerEmailStatus = finalStatus === "rejected"
@@ -7865,6 +8060,13 @@ async function route(request, env, context, url) {
     if (paymentReviewMatch && method === "POST") {
         const admin = await requireRole(request, env, ["platform_owner", "tournament_admin"]);
         return reviewPayment(request, admin, paymentReviewMatch[1]);
+    }
+    const paymentReceiptMatch = path.match(
+        /^\/api\/v1\/admin\/payments\/([A-Za-z0-9_-]+)\/receipt$/
+    );
+    if (paymentReceiptMatch && method === "GET") {
+        const admin = await requireRole(request, env, ["platform_owner", "tournament_admin"]);
+        return paymentReceipt(admin, paymentReceiptMatch[1]);
     }
     if (path === API_PREFIX + "/admin/payments" && method === "POST") {
         const admin = await requireRole(request, env, ["platform_owner", "tournament_admin"]);
