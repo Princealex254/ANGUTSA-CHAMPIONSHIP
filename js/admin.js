@@ -3293,11 +3293,11 @@ window.AngutsaAdmin = (function () {
                    so a team's fee can be cleared exactly without overpaying. */
                 if (moduleKey === "payments") {
                     var note = $("#feeContextNote", form);
+                    var teamControl = $('[name="teamId"]', form);
+                    var tournamentControl = $('[name="tournamentId"]', form);
                     var updateFeeNote = function () {
                         if (!note) return;
 
-                        var teamControl = $('[name="teamId"]', form);
-                        var tournamentControl = $('[name="tournamentId"]', form);
                         var amountControl = $('[name="amount"]', form);
 
                         var teamId = teamControl ? teamControl.value : "";
@@ -3338,6 +3338,13 @@ window.AngutsaAdmin = (function () {
                         note.innerHTML = icon("wallet") + "<p>" + esc(parts.join(" ")) + "</p>";
                     };
 
+                    on(teamControl, "change", function () {
+                        var team = byId(DEMO.teams, teamControl.value);
+                        tournamentControl.value = team && team.tournamentId
+                            ? team.tournamentId
+                            : "";
+                        updateFeeNote();
+                    });
                     on(form, "change", updateFeeNote);
                     on(form, "input", updateFeeNote);
                     updateFeeNote();
