@@ -1130,6 +1130,9 @@ export function adminPermissionForRequest(path, method) {
     if (/^\/api\/v1\/admin\/rules\/[A-Za-z0-9_-]+\/reminders$/.test(path) &&
         method === "POST") return "rules.edit";
     if (path === API_PREFIX + "/admin/teams" && method === "POST") return "teams.create";
+    if (/^\/api\/v1\/admin\/teams\/[A-Za-z0-9_-]+$/.test(path) && method === "PUT") {
+        return "teams.edit";
+    }
     if (/^\/api\/v1\/admin\/teams\/[A-Za-z0-9_-]+\/archive$/.test(path) && method === "PATCH") {
         return "teams.archive";
     }
@@ -3349,6 +3352,56 @@ async function createAdminTeamRegistration(request, actor) {
         emailStatus: emailStatus,
         ownerEmailStatus: ownerEmailStatus
     }, 201);
+}
+
+async function updateAdminTeam(request, actor, id) {
+    if (actor.user.role !== "platform_owner") {
+        fail(403, "FORBIDDEN", "Only a platform owner can edit team details.");
+    }
+    const body = await readJson(request);
+    const teamId = validId(id, "Team");
+    const name = text(body.name, "Team name", { required: true, max: 120 });
+    const shortCode = text(body.shortName, "Team short code", {
+        required: true, max: 8
+    }).toUpperCase();
+    if (!/^[A-Z0-9_-]+$/.test(shortCode)) {
+        fail(400, "INVALID_INPUT",
+            "Team short code can contain only letters, numbers, hyphens, and underscores.");
+    }
+    const location = text(body.location || "", "Team location", { max: 120 });
+    const team = await actor.db.prepare(
+        "SELECT id FROM afc_teams WHERE id = ?"
+    ).bind(teamId).first();
+    if (!team) fail(404, "NOT_FOUND", "The team was not found.");
+
+    const duplicateShortCode = await actor.db.prepare(
+        "SELECT 1 AS present FROM afc_teams WHERE short_code = ? COLLATE NOCASE AND id <> ?"
+    ).bind(shortCode, teamId).first();
+    if (duplicateShortCode) {
+        fail(409, "DUPLICATE_TEAM_CODE", "Another team already uses that short code.");
+    }
+    const duplicateName = await actor.db.prepare(
+        "SELECT 1 AS present FROM afc_team_registrations target " +
+        "JOIN afc_team_registrations existing ON existing.tournament_id = target.tournament_id " +
+        "JOIN afc_teams other ON other.id = existing.team_id " +
+        "WHERE target.team_id = ? AND existing.team_id <> ? " +
+        "AND target.status IN ('pending_review', 'approved') " +
+        "AND existing.status IN ('pending_review', 'approved') " +
+        "AND LOWER(other.name) = LOWER(?) LIMIT 1"
+    ).bind(teamId, teamId, name).first();
+    if (duplicateName) {
+        fail(409, "DUPLICATE_TEAM",
+            "A team with that name is already registered in one of this team's tournaments.");
+    }
+    const result = await actor.db.prepare(
+        "UPDATE afc_teams SET name = ?, short_code = ?, location = ?, " +
+        "updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+    ).bind(name, shortCode, location, teamId).run();
+    if (!result.meta || result.meta.changes !== 1) {
+        fail(404, "NOT_FOUND", "The team could not be updated.");
+    }
+    await logAudit(actor.db, actor.user.firebase_uid, "update_team", "team", teamId);
+    return success({ id: teamId, name: name, shortName: shortCode, location: location });
 }
 
 async function uniqueShortCode(db, teamName) {
@@ -7899,6 +7952,11 @@ async function route(request, env, context, url) {
     if (path === API_PREFIX + "/admin/teams" && method === "POST") {
         const admin = await requireRole(request, env, ["platform_owner"]);
         return createAdminTeamRegistration(request, admin);
+    }
+    const adminTeamMatch = path.match(/^\/api\/v1\/admin\/teams\/([A-Za-z0-9_-]+)$/);
+    if (adminTeamMatch && method === "PUT") {
+        const admin = await requireRole(request, env, ["platform_owner"]);
+        return updateAdminTeam(request, admin, adminTeamMatch[1]);
     }
     const adminTeamArchiveMatch = path.match(
         /^\/api\/v1\/admin\/teams\/([A-Za-z0-9_-]+)\/archive$/
