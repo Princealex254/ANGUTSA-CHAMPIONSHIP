@@ -3358,6 +3358,17 @@ async function createAdminTeamRegistration(request, actor) {
     }, 201);
 }
 
+export function matchTeamRegistrationsToCategoryTournaments(registrations, tournaments) {
+    return registrations.map(function (registration) {
+        return {
+            registration: registration,
+            targets: tournaments.filter(function (tournament) {
+                return Number(tournament.season) === Number(registration.season);
+            })
+        };
+    });
+}
+
 async function updateAdminTeam(request, actor, id) {
     if (actor.user.role !== "platform_owner") {
         fail(403, "FORBIDDEN", "Only a platform owner can edit team details.");
@@ -3368,15 +3379,22 @@ async function updateAdminTeam(request, actor, id) {
     const shortCode = text(body.shortName, "Team short code", {
         required: true, max: 8
     }).toUpperCase();
+    const categoryId = validId(body.categoryId, "Category");
     if (!/^[A-Z0-9_-]+$/.test(shortCode)) {
         fail(400, "INVALID_INPUT",
             "Team short code can contain only letters, numbers, hyphens, and underscores.");
     }
     const location = text(body.location || "", "Team location", { max: 120 });
     const team = await actor.db.prepare(
-        "SELECT id FROM afc_teams WHERE id = ?"
+        "SELECT id, category_id FROM afc_teams WHERE id = ?"
     ).bind(teamId).first();
     if (!team) fail(404, "NOT_FOUND", "The team was not found.");
+    const category = await actor.db.prepare(
+        "SELECT id, status FROM afc_categories WHERE id = ?"
+    ).bind(categoryId).first();
+    if (!category || (category.status === "archived" && team.category_id !== categoryId)) {
+        fail(404, "CATEGORY_NOT_FOUND", "Choose an active team category.");
+    }
 
     const duplicateShortCode = await actor.db.prepare(
         "SELECT 1 AS present FROM afc_teams WHERE short_code = ? COLLATE NOCASE AND id <> ?"
@@ -3384,28 +3402,129 @@ async function updateAdminTeam(request, actor, id) {
     if (duplicateShortCode) {
         fail(409, "DUPLICATE_TEAM_CODE", "Another team already uses that short code.");
     }
-    const duplicateName = await actor.db.prepare(
-        "SELECT 1 AS present FROM afc_team_registrations target " +
-        "JOIN afc_team_registrations existing ON existing.tournament_id = target.tournament_id " +
-        "JOIN afc_teams other ON other.id = existing.team_id " +
-        "WHERE target.team_id = ? AND existing.team_id <> ? " +
-        "AND target.status IN ('pending_review', 'approved') " +
-        "AND existing.status IN ('pending_review', 'approved') " +
-        "AND LOWER(other.name) = LOWER(?) LIMIT 1"
-    ).bind(teamId, teamId, name).first();
-    if (duplicateName) {
-        fail(409, "DUPLICATE_TEAM",
-            "A team with that name is already registered in one of this team's tournaments.");
+    const registrationRows = await actor.db.prepare(
+        "SELECT r.id, r.tournament_id, r.fee_amount, t.season " +
+        "FROM afc_team_registrations r JOIN afc_tournaments t ON t.id = r.tournament_id " +
+        "WHERE r.team_id = ?"
+    ).bind(teamId).all();
+    const registrations = registrationRows.results || [];
+    const categoryChanged = team.category_id !== categoryId;
+    const registrationMoves = [];
+    if (categoryChanged && registrations.length) {
+        const targetRows = await actor.db.prepare(
+            "SELECT id, season, registration_fee FROM afc_tournaments WHERE category_id = ?"
+        ).bind(categoryId).all();
+        const candidates = targetRows.results || [];
+        const categoryMatches = matchTeamRegistrationsToCategoryTournaments(registrations, candidates);
+        const plannedTournaments = new Set();
+        for (const match of categoryMatches) {
+            const registration = match.registration;
+            const targets = match.targets;
+            if (targets.length !== 1) {
+                fail(409, targets.length
+                    ? "AMBIGUOUS_CATEGORY_TOURNAMENT"
+                    : "CATEGORY_TOURNAMENT_NOT_FOUND",
+                targets.length
+                    ? "The new category has multiple tournaments for season " +
+                        registration.season + "; resolve the tournament before changing the category."
+                    : "The new category has no tournament for season " +
+                        registration.season + "; create one before changing the category.");
+            }
+            const target = targets[0];
+            if (plannedTournaments.has(target.id)) {
+                fail(409, "MULTIPLE_TEAM_REGISTRATIONS_IN_SEASON",
+                    "This team has multiple registrations in season " + registration.season +
+                    "; they cannot all be moved to one tournament.");
+            }
+            plannedTournaments.add(target.id);
+            if (target.id !== registration.tournament_id) {
+                const assignment = await actor.db.prepare(
+                    "SELECT 1 AS present FROM afc_group_teams WHERE registration_id = ? LIMIT 1"
+                ).bind(registration.id).first();
+                const fixture = await actor.db.prepare(
+                    "SELECT 1 AS present FROM afc_matches WHERE tournament_id = ? " +
+                    "AND (home_team_id = ? OR away_team_id = ?) LIMIT 1"
+                ).bind(registration.tournament_id, teamId, teamId).first();
+                const stageParticipant = await actor.db.prepare(
+                    "SELECT 1 AS present FROM afc_stage_participants p " +
+                    "JOIN afc_tournament_stages s ON s.id = p.stage_id " +
+                    "WHERE s.tournament_id = ? AND p.team_id = ? LIMIT 1"
+                ).bind(registration.tournament_id, teamId).first();
+                if (assignment || fixture || stageParticipant) {
+                    fail(409, "TEAM_CATEGORY_SCHEDULED",
+                        "This team already has a group assignment or fixture in season " +
+                        registration.season + "; its category cannot be changed.");
+                }
+                const paymentTotal = await actor.db.prepare(
+                    "SELECT COALESCE(SUM(amount), 0) AS total FROM afc_payments " +
+                    "WHERE registration_id = ? AND status IN ('confirmed', 'partial', 'pending')"
+                ).bind(registration.id).first();
+                if (Number(paymentTotal && paymentTotal.total || 0) > Number(target.registration_fee)) {
+                    fail(409, "CATEGORY_FEE_BELOW_PAYMENTS",
+                        "The new category fee for season " + registration.season +
+                        " is lower than the team's recorded or pending payments.");
+                }
+            }
+            const duplicateName = await actor.db.prepare(
+                "SELECT 1 AS present FROM afc_team_registrations existing " +
+                "JOIN afc_teams other ON other.id = existing.team_id " +
+                "WHERE existing.tournament_id = ? AND existing.team_id <> ? " +
+                "AND existing.status IN ('pending_review', 'approved') " +
+                "AND LOWER(other.name) = LOWER(?) LIMIT 1"
+            ).bind(target.id, teamId, name).first();
+            if (duplicateName) {
+                fail(409, "DUPLICATE_TEAM",
+                    "A team with that name is already registered in the matching tournament.");
+            }
+            registrationMoves.push({
+                id: registration.id,
+                tournamentId: target.id,
+                categoryId: categoryId,
+                feeAmount: Number(target.registration_fee)
+            });
+        }
+    } else {
+        const duplicateName = await actor.db.prepare(
+            "SELECT 1 AS present FROM afc_team_registrations target " +
+            "JOIN afc_team_registrations existing ON existing.tournament_id = target.tournament_id " +
+            "JOIN afc_teams other ON other.id = existing.team_id " +
+            "WHERE target.team_id = ? AND existing.team_id <> ? " +
+            "AND target.status IN ('pending_review', 'approved') " +
+            "AND existing.status IN ('pending_review', 'approved') " +
+            "AND LOWER(other.name) = LOWER(?) LIMIT 1"
+        ).bind(teamId, teamId, name).first();
+        if (duplicateName) {
+            fail(409, "DUPLICATE_TEAM",
+                "A team with that name is already registered in one of this team's tournaments.");
+        }
     }
-    const result = await actor.db.prepare(
+
+    const statements = [actor.db.prepare(
         "UPDATE afc_teams SET name = ?, short_code = ?, location = ?, " +
-        "updated_at = CURRENT_TIMESTAMP WHERE id = ?"
-    ).bind(name, shortCode, location, teamId).run();
-    if (!result.meta || result.meta.changes !== 1) {
+        "category_id = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+    ).bind(name, shortCode, location, categoryId, teamId)];
+    registrationMoves.forEach(function (registration) {
+        statements.push(actor.db.prepare(
+            "UPDATE afc_team_registrations SET tournament_id = ?, category_id = ?, fee_amount = ? " +
+            "WHERE id = ?"
+        ).bind(registration.tournamentId, registration.categoryId,
+            registration.feeAmount, registration.id));
+        statements.push(actor.db.prepare(
+            "UPDATE afc_payments SET tournament_id = ? WHERE registration_id = ?"
+        ).bind(registration.tournamentId, registration.id));
+    });
+    statements.push(actor.db.prepare(
+        "INSERT INTO afc_audit_log(id, actor_uid, action, entity_type, entity_id) " +
+        "VALUES(?, ?, 'update_team', 'team', ?)"
+    ).bind(newId("AUD-"), actor.user.firebase_uid, teamId));
+    const results = await actor.db.batch(statements);
+    if (!results[0].meta || results[0].meta.changes !== 1) {
         fail(404, "NOT_FOUND", "The team could not be updated.");
     }
-    await logAudit(actor.db, actor.user.firebase_uid, "update_team", "team", teamId);
-    return success({ id: teamId, name: name, shortName: shortCode, location: location });
+    return success({
+        id: teamId, name: name, shortName: shortCode, categoryId: categoryId,
+        location: location, registrationsUpdated: registrationMoves.length
+    });
 }
 
 async function uniqueShortCode(db, teamName) {
