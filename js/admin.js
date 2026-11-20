@@ -2204,18 +2204,9 @@ window.AngutsaAdmin = (function () {
             icon: "shield",
             fields: [
                 { name: "name", label: "Team name", type: "text", required: true, full: true },
-                { name: "shortName", label: "Short name", type: "text", required: true, placeholder: "KIS" },
-                { name: "categoryId", label: "Category", type: "select", required: true, options: categoryOptions },
-                { name: "tournamentId", label: "Tournament", type: "select", required: true, options: tournamentOptions },
-                { name: "group", label: "Group or pool", type: "text" },
-                { name: "location", label: "Home location", type: "text" },
-                { name: "squadSize", label: "Squad size", type: "number", min: 0, max: 60 },
-                { name: "registrationStatus", label: "Registration status", type: "select", required: true,
-                    options: optionList(STATUS_OPTIONS.teams) },
-                { name: "manager", label: "Team manager", type: "text", full: true,
-                    hint: "Enter the current manager details." },
-                { name: "contact", label: "Contact details", type: "text", full: true,
-                    hint: "Real contact data must be handled by the backend with appropriate consent." }
+                { name: "shortName", label: "Team short code", type: "text", required: true,
+                    placeholder: "KIS", hint: "Up to 8 letters, numbers, hyphens, or underscores." },
+                { name: "location", label: "Home location", type: "text", full: true }
             ]
         },
         players: {
@@ -3364,7 +3355,7 @@ window.AngutsaAdmin = (function () {
             return;
         }
 
-        if (["categories", "tournaments", "payments", "rules", "users", "fixtures", "media"]
+        if (["categories", "tournaments", "teams", "payments", "rules", "users", "fixtures", "media"]
             .indexOf(moduleKey) === -1) {
             toast("This record type is not connected to the backend. Nothing was saved.", "error");
             return;
@@ -3396,7 +3387,7 @@ window.AngutsaAdmin = (function () {
             return;
         }
 
-        if (["categories", "tournaments", "payments", "rules", "users", "media"]
+        if (["categories", "tournaments", "teams", "payments", "rules", "users", "media"]
             .indexOf(moduleKey) !== -1) {
             saveLiveRecord(moduleKey, id, payload, existing);
             return;
@@ -3431,6 +3422,14 @@ window.AngutsaAdmin = (function () {
                     amount: payload.amount,
                     method: payload.method,
                     reviewNote: payload.reviewNote || ""
+                };
+            } else if (moduleKey === "teams") {
+                if (!id) throw new Error("Teams can only be updated after their registration has been created.");
+                path = "/admin/teams/" + encodeURIComponent(id);
+                body = {
+                    name: payload.name,
+                    shortName: payload.shortName,
+                    location: payload.location || ""
                 };
             } else if (moduleKey === "users") {
                 if (!id) throw new Error("Create the account first, then assign its access role.");
