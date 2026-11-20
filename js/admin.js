@@ -2206,6 +2206,8 @@ window.AngutsaAdmin = (function () {
                 { name: "name", label: "Team name", type: "text", required: true, full: true },
                 { name: "shortName", label: "Team short code", type: "text", required: true,
                     placeholder: "KIS", hint: "Up to 8 letters, numbers, hyphens, or underscores." },
+                { name: "categoryId", label: "Category", type: "select", required: true,
+                    options: categoryOptions },
                 { name: "location", label: "Home location", type: "text", full: true }
             ]
         },
@@ -3109,6 +3111,52 @@ window.AngutsaAdmin = (function () {
             onMount: function (root) {
                 var form = $("#recordForm", root);
 
+                if (moduleKey === "teams" && record) {
+                    var categoryControl = $('[name="categoryId"]', form);
+                    var categoryField = categoryControl && categoryControl.closest(".form-field");
+                    if (categoryField) {
+                        var feePreview = document.createElement("p");
+                        feePreview.className = "form-hint";
+                        categoryField.appendChild(feePreview);
+                        var updateFeePreview = function () {
+                            var registrations = (record.tournamentIds || []).map(function (tournamentId) {
+                                return byId(DEMO.tournaments, tournamentId);
+                            }).filter(Boolean);
+                            var candidates = registrations.length
+                                ? registrations.map(function (registration) {
+                                    var matches = DEMO.tournaments.filter(function (tournament) {
+                                        return tournament.categoryId === categoryControl.value &&
+                                            tournament.season === registration.season;
+                                    });
+                                    return {
+                                        season: registration.season,
+                                        matches: matches
+                                    };
+                                })
+                                : DEMO.tournaments.filter(function (tournament) {
+                                    return tournament.categoryId === categoryControl.value;
+                                }).map(function (tournament) {
+                                    return { season: tournament.season, matches: [tournament] };
+                                });
+                            var lines = candidates.map(function (candidate) {
+                                if (candidate.matches.length !== 1) {
+                                    return candidate.season + ": " +
+                                        (candidate.matches.length ? "multiple matching tournaments" :
+                                            "no matching tournament");
+                                }
+                                var tournament = candidate.matches[0];
+                                return candidate.season + " · " + tournament.name + ": " +
+                                    formatMoney(tournament.registrationFee);
+                            });
+                            feePreview.textContent = lines.length
+                                ? "Registration fee for the selected category: " + lines.join("; ")
+                                : "No tournament pricing is configured for this category.";
+                        };
+                        categoryControl.addEventListener("change", updateFeePreview);
+                        updateFeePreview();
+                    }
+                }
+
                 if (publishedStageFixture) {
                     ["tournamentId", "categoryId", "round", "group", "homeId", "awayId", "status"]
                         .forEach(function (name) {
@@ -3429,6 +3477,7 @@ window.AngutsaAdmin = (function () {
                 body = {
                     name: payload.name,
                     shortName: payload.shortName,
+                    categoryId: payload.categoryId,
                     location: payload.location || ""
                 };
             } else if (moduleKey === "users") {
@@ -3542,8 +3591,14 @@ window.AngutsaAdmin = (function () {
                 }
                 toast(paymentMessage, paymentTone);
             } else {
-                toast((id ? "Record updated." : "Record created.") +
-                    " Changes are saved to the database.", "success");
+                var savedMessage = (id ? "Record updated." : "Record created.") +
+                    " Changes are saved to the database.";
+                if (moduleKey === "teams" && savedRecord &&
+                    Number(savedRecord.registrationsUpdated) > 0) {
+                    savedMessage = "Team updated. " + savedRecord.registrationsUpdated +
+                        " registration fee(s) now match the selected category's tournament pricing.";
+                }
+                toast(savedMessage, "success");
             }
         } catch (error) {
             if (uploadedMediaKey) {
