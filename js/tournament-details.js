@@ -515,7 +515,7 @@
                 "</tr>";
             }).join("");
             return (item.group ? "<h4>" + U.escapeHtml(item.group) + "</h4>" : "") +
-                '<div class="table-wrap"><table class="data-table is-stackable">' +
+                '<div class="table-wrap is-stackable"><table class="data-table is-stackable">' +
                     "<caption>" + (item.group ? U.escapeHtml(item.group) + " standings" : "League table") +
                         " for " + U.escapeHtml(tournament.name) + "</caption>" +
                     '<thead><tr><th scope="col">Pos</th><th scope="col">Team</th>' +

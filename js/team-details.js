@@ -341,7 +341,7 @@
                 (record.difference > 0 ? "+" + record.difference : record.difference) + ").</p>") +
             panelBlock("Player statistics",
                 scorers.length
-                    ? '<div class="table-wrap"><table class="data-table is-stackable">' +
+                    ? '<div class="table-wrap is-stackable"><table class="data-table is-stackable">' +
                         "<caption>Leading players by goals scored.</caption>" +
                         '<thead><tr><th scope="col">Player</th><th scope="col">Position</th>' +
                         '<th scope="col" class="is-numeric">Apps</th>' +

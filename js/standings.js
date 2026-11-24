@@ -272,7 +272,7 @@
                     U.escapeHtml(item.name ? item.name + " table" : "League table") +
                     ' - ' + U.escapeHtml(tournament.name) + '</h3><p>Calculated from published results. ' +
                     'Goal difference is considered before goals scored.</p></div></div>' +
-                '<div class="panel-body is-flush"><div class="table-wrap">' +
+                '<div class="panel-body is-flush"><div class="table-wrap is-stackable">' +
                     '<table class="data-table standings-table is-stackable">' +
                         '<caption>' + U.escapeHtml(item.name ? item.name + " table" : "League table") +
                             ' for ' + U.escapeHtml(tournament.name) + '</caption>' +
