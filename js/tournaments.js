@@ -79,8 +79,20 @@
        Card rendering
        ------------------------- */
 
+    function isTournamentFull(tournament) {
+        var limit = Number(tournament && tournament.teamLimit);
+        var registered = Number(tournament && tournament.teamsRegistered);
+        return Number.isFinite(limit) && limit > 0 &&
+            Number.isFinite(registered) && registered >= limit;
+    }
+
     function registrationAction(tournament) {
         var slug = encodeURIComponent(tournament.slug);
+
+        if (isTournamentFull(tournament)) {
+            return '<button type="button" class="btn btn-dark-outline btn-sm" disabled ' +
+                'title="This tournament has reached its team limit">Registration full</button>';
+        }
 
         if (tournament.status === "registration-open") {
             return '<a class="btn btn-primary btn-sm" href="/team-registration/?tournament=' + slug +

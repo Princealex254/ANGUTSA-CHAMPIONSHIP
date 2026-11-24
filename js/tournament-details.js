@@ -18,6 +18,13 @@
        Registration action
        ------------------------- */
 
+    function isTournamentFull() {
+        var limit = Number(tournament && tournament.teamLimit);
+        var registered = Number(tournament && tournament.teamsRegistered);
+        return Number.isFinite(limit) && limit > 0 &&
+            Number.isFinite(registered) && registered >= limit;
+    }
+
     function registerButtonMarkup(compact) {
         var slug = tournament ? encodeURIComponent(tournament.slug) : "";
         var size = compact ? " btn-block" : "";
@@ -25,6 +32,11 @@
         if (!tournament) {
             return '<a class="btn btn-dark-outline' + size +
                 '" href="/tournaments/">Browse tournaments</a>';
+        }
+
+        if (isTournamentFull()) {
+            return '<button type="button" class="btn btn-dark-outline' + size +
+                '" disabled title="This tournament has reached its team limit">Registration full</button>';
         }
 
         if (tournament.status === "registration-open") {
@@ -107,8 +119,10 @@
         els.sideRegister.outerHTML = registerButtonMarkup(true);
         els.sideRegister = document.getElementById("sideRegister");
 
-        els.sideRegisterNote.textContent = tournament.status === "registration-open"
-            ? "Registration is open. The competitions office reviews each submission before approval."
+        els.sideRegisterNote.textContent = isTournamentFull()
+            ? "This competition has reached its team limit."
+            : tournament.status === "registration-open"
+                ? "Registration is open. The competitions office reviews each submission before approval."
             : (tournament.status === "upcoming"
                 ? "Registration for this competition has not opened yet."
                 : "Registration for this competition is closed. Contact the competitions office for late entries.");

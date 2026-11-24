@@ -122,7 +122,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             const feeText = tournament.entryFee === 0
                 ? "No fee"
                 : `KES ${Number(tournament.entryFee).toLocaleString("en-KE")}`;
-            const registrationOpen = tournament.status === "registration-open";
+            const registrationFull = tournament.teamLimit &&
+                registered >= Number(tournament.teamLimit);
+            const registrationOpen = tournament.status === "registration-open" && !registrationFull;
 
             return `
                 <article class="card tournament-card">
@@ -155,7 +157,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                             <a class="btn btn-dark-outline btn-sm" href="/tournament-details/?slug=${slug}">View Details</a>
                             ${registrationOpen
                                 ? `<a class="btn btn-primary btn-sm" href="/team-registration/?tournament=${slug}">Register Team</a>`
-                                : '<button type="button" class="btn btn-dark-outline btn-sm" disabled title="Registration has not opened yet">Registration not open</button>'}
+                                : registrationFull
+                                    ? '<button type="button" class="btn btn-dark-outline btn-sm" disabled title="This tournament has reached its team limit">Registration full</button>'
+                                    : '<button type="button" class="btn btn-dark-outline btn-sm" disabled title="Registration has not opened yet">Registration not open</button>'}
                         </div>
                     </div>
                 </article>`;
