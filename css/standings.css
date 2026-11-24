@@ -119,8 +119,55 @@
 }
 
 @media (max-width: 720px) {
+    .standings-table {
+        width: 100%;
+        min-width: 0;
+        table-layout: fixed;
+        font-size: 10px;
+    }
+
+    .standings-table th,
+    .standings-table td {
+        padding-inline: 3px;
+    }
+
+    .standings-table th:first-child,
+    .standings-table td:first-child {
+        width: 8.5%;
+    }
+
+    .standings-table th:nth-child(2),
+    .standings-table td:nth-child(2) {
+        width: 32%;
+    }
+
+    .standings-table th:nth-child(n + 3):nth-child(-n + 10),
+    .standings-table td:nth-child(n + 3):nth-child(-n + 10) {
+        width: 5.75%;
+    }
+
+    .standings-table th:last-child,
+    .standings-table td:last-child {
+        width: 13.5%;
+    }
+
+    .standings-table .team-cell {
+        gap: 4px;
+    }
+
+    .standings-table .team-cell strong {
+        font-size: 10px;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .standings-table .team-cell span,
+    .standings-table .position-cell span {
+        font-size: 9px;
+    }
+
     .standings-table td:nth-child(10) {
-        font-size: 12px;
+        font-size: 10px;
     }
 
     .standings-legend {

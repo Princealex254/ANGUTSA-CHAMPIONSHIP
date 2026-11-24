@@ -284,8 +284,8 @@
         els.tableWrap.innerHTML = '<div class="standings-table-groups">' +
             tables.map(function (item) {
             return '<div class="panel">' +
-                '<div class="panel-body is-flush"><div class="table-wrap is-stackable">' +
-                    '<table class="data-table standings-table is-stackable">' +
+                '<div class="panel-body is-flush"><div class="table-wrap">' +
+                    '<table class="data-table standings-table">' +
                         '<caption class="visually-hidden">' +
                             U.escapeHtml(item.name ? item.name + " table" : "League table") +
                             ' for ' + U.escapeHtml(tournament.name) + '</caption>' +
