@@ -17,7 +17,9 @@
     var state = {
         tournamentId: "",
         categoryId: "",
-        group: ""
+        group: "",
+        shareTables: [],
+        tournament: null
     };
 
     var els = {};
@@ -52,8 +54,8 @@
         return Object.keys(groups).sort();
     }
 
-    function tableScopes(matches) {
-        if (state.group) return [{ name: state.group, group: state.group }];
+    function tableScopes(matches, selectedGroup) {
+        if (selectedGroup) return [{ name: selectedGroup, group: selectedGroup }];
         var groups = groupsForTournament(state.tournamentId);
         var scopes = groups.map(function (group) {
             return { name: group, group: group };
@@ -62,6 +64,22 @@
             scopes.unshift({ name: "", group: "" });
         }
         return scopes;
+    }
+
+    function tablesForMatches(matches, tournament, selectedGroup) {
+        return tournament ? tableScopes(matches, selectedGroup).map(function (scope) {
+            var scopedMatches = scope.group
+                ? matches.filter(function (match) { return match.group === scope.group; })
+                : matches.filter(function (match) { return !match.group; });
+            return {
+                name: scope.name,
+                rows: U.computeStandings(scopedMatches, Data.teams, {
+                    tournamentId: state.tournamentId,
+                    categoryId: state.categoryId,
+                    group: scope.group
+                })
+            };
+        }).filter(function (item) { return item.rows.length; }) : [];
     }
 
     /* Qualification places are configured per competition. The
@@ -214,19 +232,17 @@
     function render() {
         var tournament = state.tournamentId ? U.tournamentById(state.tournamentId) : null;
         var matches = matchesForSelection();
-        var tables = tournament ? tableScopes(matches).map(function (scope) {
-            var scopedMatches = scope.group
-                ? matches.filter(function (match) { return match.group === scope.group; })
-                : matches.filter(function (match) { return !match.group; });
-            return {
-                name: scope.name,
-                rows: U.computeStandings(scopedMatches, Data.teams, {
-                    tournamentId: state.tournamentId,
-                    categoryId: state.categoryId,
-                    group: scope.group
-                })
-            };
-        }).filter(function (item) { return item.rows.length; }) : [];
+        var allMatches = state.group ? U.filterMatches((Data.matches || []).filter(U.isStandingsMatch), {
+            tournamentId: state.tournamentId,
+            categoryId: state.categoryId
+        }) : matches;
+        var shareTables = tablesForMatches(allMatches, tournament, "");
+        var tables = state.group
+            ? shareTables.filter(function (table) { return table.name === state.group; })
+            : shareTables;
+        state.shareTables = shareTables;
+        state.tournament = tournament;
+        if (els.share) els.share.disabled = !tables.length;
 
         if (els.summary) {
             var allRows = tables.reduce(function (rows, item) {
@@ -287,6 +303,244 @@
             '<span><i class="is-out"></i> Outside qualification</span></div>';
     }
 
+    function roundedRect(ctx, x, y, width, height, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.arcTo(x + width, y, x + width, y + height, radius);
+        ctx.arcTo(x + width, y + height, x, y + height, radius);
+        ctx.arcTo(x, y + height, x, y, radius);
+        ctx.arcTo(x, y, x + width, y, radius);
+        ctx.closePath();
+    }
+
+    function drawStandingsImage() {
+        var width = 1200;
+        var topHeight = 230;
+        var footerHeight = 110;
+        var groupGap = 24;
+        var headingHeight = 58;
+        var columnHeadingHeight = 48;
+        var rowHeight = 52;
+        var totalTeams = state.shareTables.reduce(function (count, table) {
+            return count + table.rows.length;
+        }, 0);
+        var groupsHeight = state.shareTables.reduce(function (height, table) {
+            return height + headingHeight + columnHeadingHeight +
+                table.rows.length * rowHeight + groupGap;
+        }, 0);
+        var height = topHeight + groupsHeight + footerHeight;
+        var canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        var ctx = canvas.getContext("2d");
+        if (!ctx) throw new Error("Canvas is unavailable.");
+
+        var background = ctx.createLinearGradient(0, 0, width, height);
+        background.addColorStop(0, "#10152E");
+        background.addColorStop(1, "#302569");
+        ctx.fillStyle = background;
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.fillStyle = "rgba(255,255,255,0.06)";
+        ctx.beginPath();
+        ctx.arc(width - 80, 90, 250, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#F2C94C";
+        ctx.fillRect(0, topHeight - 5, width, 5);
+
+        var logo = document.querySelector(".brand-logo");
+        if (logo && logo.complete && logo.naturalWidth) {
+            roundedRect(ctx, 54, 42, 226, 80, 14);
+            ctx.fillStyle = "#ffffff";
+            ctx.fill();
+            var logoScale = Math.min(196 / logo.naturalWidth, 56 / logo.naturalHeight);
+            var logoWidth = logo.naturalWidth * logoScale;
+            var logoHeight = logo.naturalHeight * logoScale;
+            ctx.drawImage(logo, 69 + (196 - logoWidth) / 2, 54 + (56 - logoHeight) / 2,
+                logoWidth, logoHeight);
+        }
+
+        ctx.textAlign = "left";
+        ctx.fillStyle = "#F2C94C";
+        ctx.font = "700 20px Arial, sans-serif";
+        ctx.fillText("THE ANGUTSA FOOTBALL CHAMPIONSHIP", 310, 68);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "800 42px Arial, sans-serif";
+        ctx.fillText("TOURNAMENT STANDINGS", 310, 120);
+        ctx.fillStyle = "#D5D1EF";
+        ctx.font = "600 21px Arial, sans-serif";
+        var category = state.categoryId ? U.categoryById(state.categoryId) : null;
+        var subtitle = state.tournament.name +
+            (state.tournament.season ? "  ·  " + state.tournament.season : "") +
+            (category ? "  ·  " + category.name : "");
+        ctx.fillText(subtitle, 310, 163, width - 370);
+        ctx.font = "500 18px Arial, sans-serif";
+        var allGroups = state.shareTables.every(function (table) { return !!table.name; });
+        var scopeLabel = allGroups ? "group" : "table";
+        ctx.fillText(totalTeams + " teams  ·  " + state.shareTables.length + " " + scopeLabel +
+            (state.shareTables.length === 1 ? "" : "s"), 310, 199);
+
+        var columns = [
+            { label: "POS", x: 82, align: "center" },
+            { label: "TEAM", x: 142, align: "left" },
+            { label: "P", x: 655, align: "center" },
+            { label: "W", x: 722, align: "center" },
+            { label: "D", x: 789, align: "center" },
+            { label: "L", x: 856, align: "center" },
+            { label: "GD", x: 938, align: "center" },
+            { label: "PTS", x: 1014, align: "center" },
+            { label: "FORM", x: 1090, align: "center" }
+        ];
+        var y = topHeight + 20;
+
+        state.shareTables.forEach(function (table) {
+            var sectionHeight = headingHeight + columnHeadingHeight +
+                table.rows.length * rowHeight;
+            roundedRect(ctx, 52, y, width - 104, sectionHeight, 16);
+            ctx.fillStyle = "#ffffff";
+            ctx.fill();
+
+            roundedRect(ctx, 52, y, width - 104, headingHeight, 16);
+            ctx.fillStyle = "#211B50";
+            ctx.fill();
+            ctx.fillRect(52, y + headingHeight - 16, width - 104, 16);
+            ctx.textAlign = "left";
+            ctx.fillStyle = "#F2C94C";
+            ctx.font = "800 22px Arial, sans-serif";
+            ctx.fillText(table.name || "LEAGUE TABLE", 78, y + 37);
+            ctx.textAlign = "right";
+            ctx.fillStyle = "#D5D1EF";
+            ctx.font = "600 16px Arial, sans-serif";
+            ctx.fillText(table.rows.length + (table.rows.length === 1 ? " TEAM" : " TEAMS"),
+                width - 78, y + 36);
+
+            var columnY = y + headingHeight;
+            ctx.fillStyle = "#F0EFF7";
+            ctx.fillRect(52, columnY, width - 104, columnHeadingHeight);
+            ctx.font = "800 15px Arial, sans-serif";
+            ctx.fillStyle = "#68647E";
+            columns.forEach(function (column) {
+                ctx.textAlign = column.align;
+                ctx.fillText(column.label, column.x, columnY + 30);
+            });
+
+            table.rows.forEach(function (row, index) {
+                var rowY = columnY + columnHeadingHeight + index * rowHeight;
+                if (index % 2 === 1) {
+                    ctx.fillStyle = "#FAF9FC";
+                    ctx.fillRect(52, rowY, width - 104, rowHeight);
+                }
+                ctx.fillStyle = "#211B50";
+                ctx.font = "700 19px Arial, sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(String(row.position), 82, rowY + 33);
+                ctx.textAlign = "left";
+                ctx.font = "700 18px Arial, sans-serif";
+                ctx.fillText(row.name || row.shortName || "", 142, rowY + 33, 490);
+                ctx.font = "600 17px Arial, sans-serif";
+                ctx.fillStyle = "#45425A";
+                [row.played, row.won, row.drawn, row.lost].forEach(function (value, columnIndex) {
+                    ctx.textAlign = "center";
+                    ctx.fillText(String(value), columns[columnIndex + 2].x, rowY + 33);
+                });
+                ctx.fillText(String(row.difference > 0 ? "+" + row.difference : row.difference),
+                    columns[6].x, rowY + 33);
+                ctx.fillStyle = "#211B50";
+                ctx.font = "800 18px Arial, sans-serif";
+                ctx.fillText(String(row.points), columns[7].x, rowY + 33);
+                var form = (row.form || []).slice(-5);
+                var formStart = columns[8].x - (form.length * 22) / 2;
+                form.forEach(function (result, formIndex) {
+                    var color = result === "W" ? "#25805B" : result === "D" ? "#A87912" : "#B24B55";
+                    roundedRect(ctx, formStart + formIndex * 22, rowY + 14, 18, 24, 6);
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                    ctx.fillStyle = "#ffffff";
+                    ctx.font = "800 12px Arial, sans-serif";
+                    ctx.textAlign = "center";
+                    ctx.fillText(result, formStart + formIndex * 22 + 9, rowY + 31);
+                });
+            });
+            y += sectionHeight + groupGap;
+        });
+
+        ctx.textAlign = "left";
+        ctx.fillStyle = "#F2C94C";
+        ctx.font = "800 17px Arial, sans-serif";
+        ctx.fillText("THE ANGUTSA FOOTBALL CHAMPIONSHIP", 58, height - 60);
+        ctx.fillStyle = "#D5D1EF";
+        ctx.font = "500 15px Arial, sans-serif";
+        ctx.fillText("More than a tournament. A community united by football.", 58, height - 34);
+        ctx.textAlign = "right";
+        ctx.fillText("OFFICIAL TOURNAMENT TABLE", width - 58, height - 46);
+        return canvas;
+    }
+
+    function shareStandingsImage() {
+        if (!state.tournament || !state.shareTables.length) return;
+
+        var canvas;
+        try {
+            canvas = drawStandingsImage();
+        } catch (error) {
+            U.toast("Could not create the standings image on this device.", "error");
+            return;
+        }
+
+        var slug = String(state.tournament.name || "tournament")
+            .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        var fileName = "angutsa-" + (slug || "tournament") + "-standings.png";
+
+        function download(blob) {
+            var url = URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+            U.toast("Standings image saved. You can now share it.", "success");
+        }
+
+        canvas.toBlob(function (blob) {
+            if (!blob) {
+                U.toast("Could not create the standings image.", "error");
+                return;
+            }
+
+            var shareData;
+            try {
+                shareData = {
+                    files: [new File([blob], fileName, { type: "image/png" })],
+                    title: state.tournament.name + " standings"
+                };
+            } catch (error) {
+                download(blob);
+                return;
+            }
+
+            var canShare = false;
+            try {
+                canShare = !!(navigator.share && navigator.canShare && navigator.canShare(shareData));
+            } catch (error) {
+                canShare = false;
+            }
+            if (!canShare) {
+                download(blob);
+                return;
+            }
+            try {
+                navigator.share(shareData).catch(function (error) {
+                    if (error && error.name !== "AbortError") download(blob);
+                });
+            } catch (error) {
+                download(blob);
+            }
+        }, "image/png");
+    }
+
     /* -------------------------
        Bindings and initialisation
        ------------------------- */
@@ -317,6 +571,7 @@
         U.on(document.getElementById("printStandings"), "click", function () {
             window.print();
         });
+        U.on(els.share, "click", shareStandingsImage);
     }
 
     /* Deep links: /standings/?tournament=TRN-2026-MEN&group=Group A */
@@ -353,6 +608,7 @@
         els.tournament = document.getElementById("filterTournament");
         els.category = document.getElementById("filterCategory");
         els.group = document.getElementById("filterGroup");
+        els.share = document.getElementById("shareStandingsImage");
         els.tableTitle = document.getElementById("tableTitle");
         els.tableSubtitle = document.getElementById("tableSubtitle");
         var staleNotice = document.getElementById("dataNotice");
