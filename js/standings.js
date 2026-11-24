@@ -113,10 +113,7 @@
                 "<span>" + row.position + "</span>" +
             "</span></td>" +
             '<td data-label="Team"><span class="team-cell">' +
-                '<span class="crest crest-sm" style="--crest-accent:' + U.escapeHtml(row.accent) +
-                    '" aria-hidden="true">' + U.escapeHtml(row.shortName) + "</span>" +
-                "<span><strong>" + U.escapeHtml(row.name) + "</strong><span>" +
-                    U.escapeHtml(row.shortName) + "</span></span>" +
+                "<strong>" + U.escapeHtml(row.name) + "</strong>" +
             "</span></td>" +
             '<td data-label="Played" class="is-numeric">' + row.played + "</td>" +
             '<td data-label="Won" class="is-numeric">' + row.won + "</td>" +
@@ -284,6 +281,8 @@
         els.tableWrap.innerHTML = '<div class="standings-table-groups">' +
             tables.map(function (item) {
             return '<div class="panel">' +
+                (item.name ? '<h3 class="standings-group-title">' +
+                    U.escapeHtml(item.name) + '</h3>' : '') +
                 '<div class="panel-body is-flush"><div class="table-wrap">' +
                     '<table class="data-table standings-table">' +
                         '<caption class="visually-hidden">' +
