@@ -18,6 +18,14 @@
     gap: 16px;
 }
 
+.standings-group-title {
+    padding: 8px 12px;
+    color: var(--white);
+    background: var(--navy);
+    font-size: 13px;
+    text-align: center;
+}
+
 .standings-table {
     min-width: 860px;
 }
@@ -119,6 +127,14 @@
 }
 
 @media (max-width: 720px) {
+    #main > .section {
+        padding: 38px 0 48px;
+    }
+
+    .directory-head {
+        margin-bottom: 20px;
+    }
+
     .standings-table {
         width: 100%;
         min-width: 0;
@@ -128,40 +144,52 @@
 
     .standings-table th,
     .standings-table td {
-        padding-inline: 3px;
-    }
-
-    .standings-table th:first-child,
-    .standings-table td:first-child {
-        width: 8.5%;
-    }
-
-    .standings-table th:nth-child(2),
-    .standings-table td:nth-child(2) {
-        width: 32%;
-    }
-
-    .standings-table th:nth-child(n + 3):nth-child(-n + 10),
-    .standings-table td:nth-child(n + 3):nth-child(-n + 10) {
-        width: 5.75%;
+        padding: 8px 2px;
+        border-right: 1px solid var(--border);
+        line-height: 1.3;
+        text-align: center;
     }
 
     .standings-table th:last-child,
     .standings-table td:last-child {
-        width: 13.5%;
+        border-right: 0;
+    }
+
+    .standings-table th:first-child,
+    .standings-table td:first-child {
+        width: 6.5%;
+    }
+
+    .standings-table th:nth-child(2),
+    .standings-table td:nth-child(2) {
+        width: 35.5%;
+        text-align: left;
+    }
+
+    .standings-table th:nth-child(n + 3):nth-child(-n + 10),
+    .standings-table td:nth-child(n + 3):nth-child(-n + 10) {
+        width: 7.25%;
+    }
+
+    .standings-table th:last-child,
+    .standings-table td:last-child {
+        display: none;
     }
 
     .standings-table .team-cell {
-        gap: 4px;
+        display: block;
+        min-width: 0;
     }
 
     .standings-table .team-cell strong {
-        font-size: 10px;
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
         white-space: normal;
-        overflow-wrap: anywhere;
+        overflow-wrap: break-word;
+        line-height: 1.35;
     }
 
-    .standings-table .team-cell span,
     .standings-table .position-cell span {
         font-size: 9px;
     }
@@ -171,7 +199,13 @@
     }
 
     .standings-legend {
-        padding-inline: 16px;
+        display: grid;
+        gap: 10px;
+        padding: 14px 16px 16px;
+    }
+
+    .standings-table-groups {
+        gap: 14px;
     }
 }
 
