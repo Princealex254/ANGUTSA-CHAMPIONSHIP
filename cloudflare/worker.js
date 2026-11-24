@@ -1529,7 +1529,7 @@ async function publicBootstrap(db, url) {
             "t.registration_closes, t.team_limit, t.registration_fee, t.banner, t.featured, " +
             "t.standings_available, t.overview, t.prize_information, " +
             "(SELECT COUNT(*) FROM afc_team_registrations r " +
-            "WHERE r.tournament_id = t.id AND r.status = 'approved') AS teams_registered " +
+            "WHERE r.tournament_id = t.id AND r.status IN ('pending_review', 'approved')) AS teams_registered " +
             "FROM afc_tournaments t WHERE t.status IN ('upcoming', 'active', 'completed') " +
             "ORDER BY t.start_date DESC LIMIT ? OFFSET ?"
         ).bind(page.limit, page.offset).all(); }),
@@ -3605,14 +3605,14 @@ async function loadAdminBootstrap(actor, url) {
     const tournamentRows = owner
         ? await actor.db.prepare(
             "SELECT t.*, (SELECT COUNT(*) FROM afc_team_registrations r " +
-            "WHERE r.tournament_id = t.id AND r.status = 'approved') AS teams_registered " +
+            "WHERE r.tournament_id = t.id AND r.status IN ('pending_review', 'approved')) AS teams_registered " +
             "FROM afc_tournaments t ORDER BY t.season DESC, t.name LIMIT ? OFFSET ?"
         ).bind(page.limit, page.offset).all()
         : scopes.length
             ? await prepareBound(
                 actor.db,
                 "SELECT t.*, (SELECT COUNT(*) FROM afc_team_registrations r " +
-                "WHERE r.tournament_id = t.id AND r.status = 'approved') AS teams_registered " +
+                "WHERE r.tournament_id = t.id AND r.status IN ('pending_review', 'approved')) AS teams_registered " +
                 "FROM afc_tournaments t WHERE t.id IN (" +
                 scopes.map(function () { return "?"; }).join(",") + ") " +
                 "ORDER BY t.season DESC, t.name LIMIT ? OFFSET ?",
@@ -7961,7 +7961,7 @@ async function route(request, env, context, url) {
         const page = paginate(url, 50);
         const rows = await db.prepare(
             "SELECT t.*, (SELECT COUNT(*) FROM afc_team_registrations r " +
-            "WHERE r.tournament_id = t.id AND r.status = 'approved') AS teams_registered " +
+            "WHERE r.tournament_id = t.id AND r.status IN ('pending_review', 'approved')) AS teams_registered " +
             "FROM afc_tournaments t WHERE t.status IN ('upcoming', 'active', 'completed') " +
             "ORDER BY t.start_date DESC LIMIT ? OFFSET ?"
         ).bind(page.limit, page.offset).all();
@@ -7979,7 +7979,7 @@ async function route(request, env, context, url) {
         const slug = publicTournamentMatch[1];
         const tournament = await db.prepare(
             "SELECT t.*, (SELECT COUNT(*) FROM afc_team_registrations r " +
-            "WHERE r.tournament_id = t.id AND r.status = 'approved') AS teams_registered " +
+            "WHERE r.tournament_id = t.id AND r.status IN ('pending_review', 'approved')) AS teams_registered " +
             "FROM afc_tournaments t WHERE t.slug = ? AND t.status <> 'draft'"
         ).bind(slug).first();
         if (!tournament) fail(404, "NOT_FOUND", "The tournament was not found.");

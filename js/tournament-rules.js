@@ -28,6 +28,13 @@
         })[0] || null;
     }
 
+    function isTournamentFull(tournament) {
+        var limit = Number(tournament && tournament.teamLimit);
+        var registered = Number(tournament && tournament.teamsRegistered);
+        return Number.isFinite(limit) && limit > 0 &&
+            Number.isFinite(registered) && registered >= limit;
+    }
+
     function renderRuleBody(body) {
         return window.AngutsaRulesFormat.render(body);
     }
@@ -42,7 +49,7 @@
         }
 
         registerLink.hidden = false;
-        if (tournament.status === "registration-open") {
+        if (tournament.status === "registration-open" && !isTournamentFull(tournament)) {
             registerLink.href = "/team-registration/?tournament=" +
                 encodeURIComponent(tournament.id);
             registerLink.textContent = "Register a team";

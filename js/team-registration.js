@@ -69,8 +69,15 @@
     /* A submission must be tied to a competition that is accepting entries. */
     function selectableTournaments() {
         return (Data.tournaments || []).filter(function (tournament) {
-            return tournament.status === "registration-open";
+            return tournament.status === "registration-open" && !isTournamentFull(tournament);
         });
+    }
+
+    function isTournamentFull(tournament) {
+        var limit = Number(tournament && tournament.teamLimit);
+        var registered = Number(tournament && tournament.teamsRegistered);
+        return Number.isFinite(limit) && limit > 0 &&
+            Number.isFinite(registered) && registered >= limit;
     }
 
     function panelFor(step) {
@@ -504,8 +511,10 @@
 
         if (step === 1) {
             var tournament = currentTournament();
-            if (!tournament || tournament.status !== "registration-open") {
-                U.showFieldError(els.tournament, "Select a tournament that is open for registration.");
+            if (!tournament || tournament.status !== "registration-open" || isTournamentFull(tournament)) {
+                U.showFieldError(els.tournament, isTournamentFull(tournament)
+                    ? "This tournament has reached its team limit. Select another competition."
+                    : "Select a tournament that is open for registration.");
                 return false;
             }
             if (!currentCategory()) {
@@ -931,7 +940,7 @@
             return tournament.id === requested || tournament.slug === requested;
         })[0];
 
-        if (!match || match.status !== "registration-open") return false;
+        if (!match || match.status !== "registration-open" || isTournamentFull(match)) return false;
 
         els.tournament.value = match.id;
         state.tournamentId = match.id;

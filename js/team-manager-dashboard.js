@@ -2450,7 +2450,11 @@
 
     function openManagedTeamModal() {
         var tournaments = (Data.tournaments || []).filter(function (tournament) {
-            return tournament.status === "registration-open";
+            var limit = Number(tournament.teamLimit);
+            var registered = Number(tournament.teamsRegistered);
+            return tournament.status === "registration-open" &&
+                (!Number.isFinite(limit) || limit <= 0 ||
+                    !Number.isFinite(registered) || registered < limit);
         });
 
         if (!tournaments.length) {
@@ -2619,7 +2623,12 @@
 
         var name = nameField.value.trim().replace(/\s+/g, " ");
         var tournament = (Data.tournaments || []).filter(function (entry) {
-            return entry.id === tournamentField.value && entry.status === "registration-open";
+            var limit = Number(entry.teamLimit);
+            var registered = Number(entry.teamsRegistered);
+            return entry.id === tournamentField.value &&
+                entry.status === "registration-open" &&
+                (!Number.isFinite(limit) || limit <= 0 ||
+                    !Number.isFinite(registered) || registered < limit);
         })[0];
         var category = tournament ? U.categoryById(tournament.categoryId) : null;
         if (!tournament || !category) {
