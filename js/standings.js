@@ -268,13 +268,10 @@
         els.tableWrap.innerHTML = '<div class="standings-table-groups">' +
             tables.map(function (item) {
             return '<div class="panel">' +
-                '<div class="panel-head"><div><h3>' +
-                    U.escapeHtml(item.name ? item.name + " table" : "League table") +
-                    ' - ' + U.escapeHtml(tournament.name) + '</h3><p>Calculated from published results. ' +
-                    'Goal difference is considered before goals scored.</p></div></div>' +
                 '<div class="panel-body is-flush"><div class="table-wrap is-stackable">' +
                     '<table class="data-table standings-table is-stackable">' +
-                        '<caption>' + U.escapeHtml(item.name ? item.name + " table" : "League table") +
+                        '<caption class="visually-hidden">' +
+                            U.escapeHtml(item.name ? item.name + " table" : "League table") +
                             ' for ' + U.escapeHtml(tournament.name) + '</caption>' +
                         '<thead><tr><th scope="col">Pos</th><th scope="col">Team</th>' +
                             '<th scope="col" class="is-numeric">P</th><th scope="col" class="is-numeric">W</th>' +
