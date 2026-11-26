@@ -133,6 +133,8 @@ test("published stage fixtures allow schedule edits but lock fixture identity an
     };
     assert.equal(workerModule.publishedStageFixtureEditPolicy(fixture, scheduleEdit), null);
     assert.equal(workerModule.publishedStageFixtureEditPolicy(fixture,
+        Object.assign({}, scheduleEdit, { round: "Matchday 2" })), null);
+    assert.equal(workerModule.publishedStageFixtureEditPolicy(fixture,
         Object.assign({}, scheduleEdit, { homeId: "TEAM-3" })), "protected_fields");
     assert.equal(workerModule.publishedStageFixtureEditPolicy(fixture,
         Object.assign({}, scheduleEdit, { status: "cancelled" })), "protected_fields");

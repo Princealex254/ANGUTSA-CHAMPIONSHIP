@@ -3096,13 +3096,13 @@ window.AngutsaAdmin = (function () {
         openModal({
             title: (record ? "Edit " : "Create ") + config.singular.toLowerCase(),
             subtitle: publishedStageFixture
-                ? "Only the kickoff and venue can be changed for a published stage fixture."
+                ? "Only the kickoff, venue, and round or matchday can be changed for a published stage fixture."
                 : moduleKey === "media"
                 ? "Images and media details are saved to the live gallery."
                 : "Changes submitted here are saved to the backend.",
             size: "is-wide",
             body: (publishedStageFixture
-                ? '<p class="tm-notice is-warning">Its approved stage, pairing, round, group, and status are locked. Changing kickoff requires reschedule permission.</p>'
+                ? '<p class="tm-notice is-warning">Its approved stage, pairing, group, and status are locked. Changing kickoff requires reschedule permission.</p>'
                 : "") + formMarkup(moduleKey, record),
             footer: '<button type="button" class="btn btn-outline" data-action="close-modal">Cancel</button>' +
                 '<button type="button" class="btn btn-primary" data-save>' +
@@ -3158,7 +3158,7 @@ window.AngutsaAdmin = (function () {
                 }
 
                 if (publishedStageFixture) {
-                    ["tournamentId", "categoryId", "round", "group", "homeId", "awayId", "status"]
+                    ["tournamentId", "categoryId", "group", "homeId", "awayId", "status"]
                         .forEach(function (name) {
                             var control = $('[name="' + name + '"]', form);
                             if (control) control.disabled = true;

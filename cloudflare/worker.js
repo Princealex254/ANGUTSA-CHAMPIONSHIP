@@ -4799,7 +4799,6 @@ export function publishedStageFixtureEditPolicy(existing, body) {
     const fields = [
         ["tournamentId", existing.tournament_id],
         ["categoryId", existing.category_id],
-        ["round", existing.round],
         ["group", existing.group_name || ""],
         ["homeId", existing.home_team_id],
         ["awayId", existing.away_team_id]
@@ -4847,6 +4846,7 @@ async function saveFixture(request, actor, fixtureId) {
     }
     const tournamentId = validId(body.tournamentId, "Tournament");
     const categoryId = validId(body.categoryId, "Category");
+    const round = text(body.round, "Round or matchday", { required: true, max: 80 });
     if (existing && existing.stage_id && Number(existing.published) === 1) {
         const policy = publishedStageFixtureEditPolicy(existing, body);
         if (policy === "fixture_started") {
@@ -4855,7 +4855,7 @@ async function saveFixture(request, actor, fixtureId) {
         }
         if (policy === "protected_fields") {
             fail(409, "PUBLISHED_STAGE_FIXTURE_LOCKED",
-                "Only the kickoff and venue can be edited on a published stage fixture. Its approved stage, pairing, round, group, and status are locked.");
+                "Only the kickoff, venue, and round or matchday can be edited on a published stage fixture. Its approved stage, pairing, group, and status are locked.");
         }
         const kickoff = validKickoff(body.kickoff);
         const venue = text(body.venue, "Venue", { required: true, max: 160 });
@@ -4863,13 +4863,14 @@ async function saveFixture(request, actor, fixtureId) {
             await requireUserPermission(actor, "fixtures.reschedule");
         }
         const result = await actor.db.prepare(
-            "UPDATE afc_matches SET kickoff = ?, venue = ?, updated_by = ?, " +
+            "UPDATE afc_matches SET round = ?, kickoff = ?, venue = ?, updated_by = ?, " +
             "updated_at = CURRENT_TIMESTAMP WHERE id = ? AND stage_id = ? AND published = 1 " +
-            "AND kickoff = ? AND venue = ? AND status = ? AND status NOT IN ('live', 'completed') " +
+            "AND round = ? AND kickoff = ? AND venue = ? AND status = ? AND status NOT IN ('live', 'completed') " +
             "AND home_score IS ? AND away_score IS ? AND home_score IS NULL AND away_score IS NULL"
         ).bind(
-            kickoff, venue, actor.user.firebase_uid, fixtureId, existing.stage_id,
-            existing.kickoff, existing.venue, existing.status, existing.home_score, existing.away_score
+            round, kickoff, venue, actor.user.firebase_uid, fixtureId, existing.stage_id,
+            existing.round, existing.kickoff, existing.venue, existing.status,
+            existing.home_score, existing.away_score
         ).run();
         if (!result.meta || result.meta.changes !== 1) {
             fail(409, "FIXTURE_CHANGED_CONCURRENTLY",
@@ -4887,7 +4888,6 @@ async function saveFixture(request, actor, fixtureId) {
         fail(400, "INVALID_CATEGORY", "The fixture category must match the tournament category.");
     }
     const stageId = body.stageId ? validId(body.stageId, "Tournament stage") : null;
-    const round = text(body.round, "Round or matchday", { required: true, max: 80 });
     const groupName = text(body.group || "", "Group", { max: 80 });
     let stage = text(body.stage || (groupName ? "group" : "knockout"), "Fixture stage",
         { required: true, max: 32 }).toLowerCase();
