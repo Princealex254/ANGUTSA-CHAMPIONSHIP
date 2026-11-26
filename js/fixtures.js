@@ -496,12 +496,18 @@
         report.hidden = false;
         report.setAttribute("aria-hidden", "false");
         document.body.classList.add("is-printing-fixtures");
-        window.setTimeout(function () { window.print(); }, 0);
-        window.setTimeout(function () {
+
+        function cleanupPrint() {
             document.body.classList.remove("is-printing-fixtures");
             report.hidden = true;
             report.setAttribute("aria-hidden", "true");
-        }, 1000);
+            window.removeEventListener("afterprint", cleanupPrint);
+            window.clearTimeout(cleanupTimer);
+        }
+
+        var cleanupTimer = window.setTimeout(cleanupPrint, 2000);
+        window.addEventListener("afterprint", cleanupPrint);
+        window.print();
     }
 
     function populateOptions() {
