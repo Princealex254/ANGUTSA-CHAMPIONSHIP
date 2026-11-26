@@ -12,15 +12,7 @@
 
     var state = {
         view: "list",
-        quick: "all",
-        query: "",
-        tournamentId: "",
         categoryId: "",
-        group: "",
-        round: "",
-        teamId: "",
-        status: "",
-        date: "",
         month: null,
         liveError: "",
         liveRequestPending: false,
@@ -33,88 +25,18 @@
        Date helpers and filtering
        ------------------------- */
 
-    function startOfDay(date) {
-        var copy = new Date(date);
-        copy.setHours(0, 0, 0, 0);
-        return copy;
-    }
-
     function addDays(date, days) {
         var copy = new Date(date);
         copy.setDate(copy.getDate() + days);
         return copy;
     }
 
-    function searchableFields(match) {
-        var home = U.teamById(match.homeTeamId);
-        var away = U.teamById(match.awayTeamId);
-        var tournament = U.tournamentById(match.tournamentId);
-
-        return [
-            match.id, match.round, match.stage, match.group, match.venue, match.note,
-            home ? home.name : "to be confirmed",
-            away ? away.name : "to be confirmed",
-            tournament ? tournament.name : ""
-        ].join(" | ");
-    }
-
-    function applyQuick(list) {
-        var today = startOfDay(new Date());
-
-        if (state.quick === "upcoming") {
-            return list.filter(function (match) {
-                return match.status === "scheduled" && new Date(match.kickoff) >= today;
-            });
-        }
-
-        if (state.quick === "today") {
-            return list.filter(function (match) {
-                return startOfDay(new Date(match.kickoff)).getTime() === today.getTime();
-            });
-        }
-
-        if (state.quick === "week") {
-            var limit = addDays(today, 7).getTime();
-            return list.filter(function (match) {
-                var kickoff = new Date(match.kickoff).getTime();
-                return kickoff >= today.getTime() && kickoff <= limit;
-            });
-        }
-
-        if (state.quick === "completed") {
-            return list.filter(function (match) { return match.status === "completed"; });
-        }
-
-        if (state.quick === "live") {
-            return list.filter(function (match) { return match.status === "live"; });
-        }
-
-        return list;
-    }
-
     function filteredList() {
         var list = U.filterMatches(Data.matches || [], {
-            tournamentId: state.tournamentId,
-            categoryId: state.categoryId,
-            group: state.group,
-            round: state.round,
-            teamId: state.teamId,
-            status: state.status
+            categoryId: state.categoryId
         });
 
-        if (state.date) {
-            list = list.filter(function (match) {
-                return String(match.kickoff).slice(0, 10) === state.date;
-            });
-        }
-
-        if (U.normalise(state.query)) {
-            list = list.filter(function (match) {
-                return U.normalise(searchableFields(match)).indexOf(U.normalise(state.query)) > -1;
-            });
-        }
-
-        return U.sortMatchesByKickoff(applyQuick(list), "asc");
+        return U.sortMatchesByKickoff(list, "asc");
     }
 
     /* -------------------------
@@ -267,6 +189,9 @@
                 '<span class="match-meta">' +
                     "<span>" + U.icon("clock") + U.formatTime(match.kickoff) + "</span>" +
                     "<span>" + U.icon("pin") + U.escapeHtml(match.venue) + "</span>" +
+                    (U.categoryById(match.categoryId)
+                        ? "<span>" + U.icon("flag") + U.escapeHtml(U.categoryById(match.categoryId).name) + "</span>"
+                        : "") +
                     (tournament
                         ? "<span>" + U.icon("trophy") + U.escapeHtml(tournament.name) + "</span>"
                         : "") +
@@ -435,22 +360,6 @@
         });
     }
 
-    function bindQuickFilters() {
-        U.$$("[data-quick]").forEach(function (chip) {
-            U.on(chip, "click", function () {
-                state.quick = chip.getAttribute("data-quick");
-
-                U.$$("[data-quick]").forEach(function (other) {
-                    var isActive = other === chip;
-                    other.classList.toggle("is-active", isActive);
-                    other.setAttribute("aria-pressed", String(isActive));
-                });
-
-                render();
-            });
-        });
-    }
-
     function bindCalendarNav() {
         U.on(els.calendarPrev, "click", function () {
             var month = state.month || monthStart(new Date());
@@ -479,9 +388,7 @@
             return '<div class="alert alert-warning" role="status">' +
                 U.icon("alert") + "<span>Live scores could not be refreshed. Retrying automatically.</span></div>";
         }
-        if (state.quick !== "live") return "";
-        return '<div class="alert alert-info" role="status">' +
-            U.icon("info") + "<span>Live scores and goal events refresh automatically while this page is open.</span></div>";
+        return "";
     }
 
     async function refreshLiveMatches() {
@@ -513,7 +420,7 @@
         } catch (error) {
             state.liveError = error && error.message ? error.message : "Live scores are unavailable.";
             console.error("Live match updates could not be loaded.", error);
-            if (state.quick === "live") render();
+            render();
         } finally {
             state.liveRequestPending = false;
             scheduleLiveRefresh();
@@ -532,14 +439,9 @@
 
     function metaMarkup(count) {
         var parts = [count + (count === 1 ? " fixture" : " fixtures")];
-        var tournament = state.tournamentId ? U.tournamentById(state.tournamentId) : null;
         var category = state.categoryId ? U.categoryById(state.categoryId) : null;
 
-        if (tournament) parts.push(tournament.name);
         if (category) parts.push(category.name);
-        if (state.group) parts.push(state.group);
-        if (state.round) parts.push(state.round);
-        if (state.date) parts.push(U.formatDate(state.date));
         if (state.view === "calendar") parts.push("calendar view");
 
         return '<div class="result-count"><span>Showing <strong>' + parts[0] + "</strong></span>" +
@@ -549,41 +451,71 @@
         "</div>";
     }
 
-    function populateOptions() {
-        var teams = (Data.teams || []).filter(function (team) { return team.status !== "rejected"; });
+    function fixturePdfMarkup(list) {
+        var category = state.categoryId ? U.categoryById(state.categoryId) : null;
+        var categoryLabel = category ? category.name : "All categories";
+        var rows = list.map(function (match) {
+            var home = U.teamById(match.homeTeamId);
+            var away = U.teamById(match.awayTeamId);
+            var matchCategory = U.categoryById(match.categoryId);
+            var teams = (home ? home.name : "To be confirmed") + " vs " +
+                (away ? away.name : "To be confirmed");
 
-        U.fillSelect(document.getElementById("filterTournament"), Data.tournaments || [], {
-            placeholder: "All tournaments",
-            label: function (item) { return item.name + " (" + item.season + ")"; }
+            return "<tr><td>" + U.escapeHtml(U.formatDate(String(match.kickoff).slice(0, 10))) +
+                "</td><td>" + U.escapeHtml(U.formatTime(match.kickoff)) +
+                "</td><td>" + U.escapeHtml(matchCategory ? matchCategory.name : "Category to be confirmed") +
+                "</td><td><strong>" + U.escapeHtml(teams) + "</strong><small>" +
+                U.escapeHtml(readableStageLabel(match.stage || match.group || match.round)) +
+                "</small></td><td>" + U.escapeHtml(match.venue || "Venue to be confirmed") +
+                "</td><td>" + U.escapeHtml(U.matchStatusLabel(match.status)) + "</td></tr>";
+        }).join("");
+
+        return '<article class="fixture-pdf-sheet">' +
+            '<header class="fixture-pdf-header">' +
+                '<div><p class="fixture-pdf-kicker">ANGUTSA CHAMPIONSHIP</p>' +
+                    "<h1>Fixture Schedule</h1><p>Official published fixtures</p></div>" +
+                '<div class="fixture-pdf-mark">FIXTURES</div>' +
+            "</header>" +
+            '<div class="fixture-pdf-summary"><span><b>Category</b>' +
+                U.escapeHtml(categoryLabel) + "</span><span><b>Fixtures</b>" +
+                list.length + "</span><span><b>Prepared</b>" +
+                U.escapeHtml(new Date().toLocaleDateString()) + "</span></div>" +
+            (list.length
+                ? '<table class="fixture-pdf-table"><thead><tr><th>Date</th><th>Time</th>' +
+                    "<th>Category</th><th>Fixture</th><th>Venue</th><th>Status</th></tr></thead>" +
+                    "<tbody>" + rows + "</tbody></table>"
+                : '<p class="fixture-pdf-empty">No fixtures match the selected category.</p>') +
+            '<footer class="fixture-pdf-footer">The Angutsa Football Championship</footer>' +
+        "</article>";
+    }
+
+    function exportPdf() {
+        var report = document.getElementById("fixturePdfReport");
+        if (!report) return;
+        report.innerHTML = fixturePdfMarkup(filteredList());
+        report.hidden = false;
+        report.setAttribute("aria-hidden", "false");
+        document.body.classList.add("is-printing-fixtures");
+        window.setTimeout(function () { window.print(); }, 0);
+        window.setTimeout(function () {
+            document.body.classList.remove("is-printing-fixtures");
+            report.hidden = true;
+            report.setAttribute("aria-hidden", "true");
+        }, 1000);
+    }
+
+    function populateOptions() {
+        var availableIds = {};
+        (Data.matches || []).forEach(function (match) {
+            if (match.categoryId) availableIds[match.categoryId] = true;
+        });
+        var availableCategories = (Data.categories || []).filter(function (category) {
+            return availableIds[category.id];
         });
 
-        U.fillSelect(document.getElementById("filterCategory"), Data.categories || [], {
+        U.fillSelect(document.getElementById("filterCategory"), availableCategories, {
             placeholder: "All categories",
             label: function (item) { return item.name; }
-        });
-
-        U.fillSelect(document.getElementById("filterTeam"), teams, {
-            placeholder: "All teams",
-            label: function (item) { return item.name; }
-        });
-
-        var stages = {};
-        var rounds = {};
-        (Data.matches || []).forEach(function (match) {
-            stages[match.group || match.stage] = true;
-            rounds[match.round] = true;
-        });
-
-        U.fillSelect(document.getElementById("filterGroup"), Object.keys(stages).sort(), {
-            placeholder: "All groups",
-            value: function (value) { return value; },
-            label: function (value) { return value; }
-        });
-
-        U.fillSelect(document.getElementById("filterRound"), Object.keys(rounds), {
-            placeholder: "All rounds",
-            value: function (value) { return value; },
-            label: function (value) { return value; }
         });
     }
 
@@ -593,21 +525,14 @@
 
     function syncFromControls() {
         var values = U.readFilters(els.scope || document);
-        state.query = values.query || "";
-        state.tournamentId = values.tournamentId || "";
         state.categoryId = values.categoryId || "";
-        state.group = values.group || "";
-        state.round = values.round || "";
-        state.teamId = values.teamId || "";
-        state.status = values.status || "";
-        state.date = values.date || "";
     }
 
     function emptyMarkup() {
         return U.emptyState({
             icon: "calendar",
-            title: "No fixtures match these filters",
-            message: "Try another tournament, category or date range, or clear the filters to see every published fixture.",
+            title: "No fixtures match this category",
+            message: "Choose another category to see published fixtures.",
             actionLabel: "Reset filters"
         });
     }
@@ -619,7 +544,7 @@
         if (els.liveNotice) els.liveNotice.innerHTML = liveNotice();
         if (els.viewMeta) {
             els.viewMeta.textContent = list.length + (list.length === 1 ? " fixture" : " fixtures") +
-                " for the current filters";
+                " for the current selection";
         }
 
         if (state.view === "calendar") {
@@ -635,21 +560,7 @@
     }
 
     function resetFilters() {
-        state.query = "";
-        state.tournamentId = "";
         state.categoryId = "";
-        state.group = "";
-        state.round = "";
-        state.teamId = "";
-        state.status = "";
-        state.date = "";
-        state.quick = "all";
-
-        U.$$("[data-quick]").forEach(function (chip) {
-            var isAll = chip.getAttribute("data-quick") === "all";
-            chip.classList.toggle("is-active", isAll);
-            chip.setAttribute("aria-pressed", String(isAll));
-        });
 
         U.$$("[data-filter]", els.scope || document).forEach(function (control) {
             control.value = control.defaultValue || "";
@@ -658,33 +569,14 @@
         render();
     }
 
-    /* Deep links: /fixtures/?tournament=TRN-2026-MEN&status=scheduled */
+    /* Deep links: /fixtures/?category=CAT-MEN-OPEN&view=calendar */
     function applyDeepLinks() {
-        var tournament = U.getParam("tournament") || U.getParam("tournamentId");
         var category = U.getParam("category");
-        var quick = U.getParam("quick");
         var view = U.getParam("view");
-
-        if (tournament) {
-            var tournamentControl = document.getElementById("filterTournament");
-            if (tournamentControl) tournamentControl.value = tournament;
-        }
 
         if (category) {
             var categoryControl = document.getElementById("filterCategory");
             if (categoryControl) categoryControl.value = category;
-        }
-
-        if (quick) {
-            var chip = document.querySelector('[data-quick="' + quick + '"]');
-            if (chip) {
-                state.quick = quick;
-                U.$$("[data-quick]").forEach(function (other) {
-                    var isActive = other === chip;
-                    other.classList.toggle("is-active", isActive);
-                    other.setAttribute("aria-pressed", String(isActive));
-                });
-            }
         }
 
         if (view === "calendar" || view === "list") {
@@ -717,7 +609,6 @@
         setView(state.view);
 
         bindViewSwitch();
-        bindQuickFilters();
         bindCalendarNav();
         applyDeepLinks();
 
@@ -728,6 +619,7 @@
 
         syncFromControls();
         render();
+        U.on(document.getElementById("exportFixturesPdf"), "click", exportPdf);
         U.on(document, "visibilitychange", function () {
             if (document.visibilityState === "visible") refreshLiveMatches();
             else if (state.liveTimer) window.clearTimeout(state.liveTimer);

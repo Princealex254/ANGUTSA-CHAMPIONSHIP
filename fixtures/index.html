@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#10152E">
-    <meta name="description" content="The Angutsa Football Championship fixture centre: filter by tournament, category, group, round and venue, or browse the calendar view.">
+    <meta name="description" content="The Angutsa Football Championship fixture centre: browse fixtures by category or calendar view.">
 
     <title>Fixtures | The Angutsa Football Championship</title>
 
@@ -113,16 +113,17 @@
                     <span class="view-switch-meta" id="viewMeta" aria-live="polite"></span>
                 </div>
 
-                <!-- Quick filters -->
-                <div class="chip-row filter-chips" role="group" aria-label="Quick fixture filters">
-                    <button type="button" class="chip is-active" data-quick="all" aria-pressed="true">All fixtures</button>
-                    <button type="button" class="chip" data-quick="upcoming" aria-pressed="false">Upcoming</button>
-                    <button type="button" class="chip" data-quick="today" aria-pressed="false">Today</button>
-                    <button type="button" class="chip" data-quick="week" aria-pressed="false">Next 7 days</button>
-                    <button type="button" class="chip" data-quick="completed" aria-pressed="false">Completed</button>
-                    <button type="button" class="chip" data-quick="live" aria-pressed="false">Live</button>
+                <div class="fixture-toolbar" id="fixtureFilters">
+                    <label class="form-field">
+                        <span>Category</span>
+                        <select id="filterCategory" data-filter="categoryId">
+                            <option value="">All categories</option>
+                        </select>
+                    </label>
+                    <button type="button" class="btn btn-primary" id="exportFixturesPdf">
+                        Export PDF <span class="btn-arrow" aria-hidden="true">&#8599;</span>
+                    </button>
                 </div>
-
 
                 <div class="toolbar-meta" id="resultMeta" aria-live="polite"></div>
 
@@ -164,6 +165,8 @@
         </section>
 
     </main>
+
+    <section id="fixturePdfReport" class="fixture-pdf-report" hidden aria-hidden="true"></section>
 
     <!-- Footer -->
     <footer class="site-footer">
